@@ -12,21 +12,21 @@ import java.util.Date;
 public class Admin {
 
     @Id
-    @Column(name = "id")
+    @Column()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "adminId", unique = true, nullable = false, length = 20)
+    @Column(unique = true, nullable = false, length = 20)
     private String adminId;
 
-    @Column(name = "password", nullable = false, length = 18)
+    @Column(nullable = false, length = 18)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(nullable = false)
     private Role role;
 
-    @Column(name = "createdAt")
+    @Column()
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
