@@ -11,10 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public interface AdminController {
 
     @Operation(summary = "관리자 로그인", description = "관리자 계정에 로그인합니다.")
     @ApiResponse(description = "로그인 성공", responseCode = "204", content = @Content(schema = @Schema(implementation = Void.class)))
-    ResponseEntity<Void> login(@RequestBody RequestAdminLoginDto requestAdminLoginDto);
+    ResponseEntity<Void> login(@Valid @RequestBody RequestAdminLoginDto requestAdminLoginDto);
 
     @Operation(summary = "밈 이미지 승인 및 등록 & 반려 처리", description = "해당 밈 이미지를 회원 게시판에 등록 및 반려처리합니다.")
     @ApiResponses(value = {
