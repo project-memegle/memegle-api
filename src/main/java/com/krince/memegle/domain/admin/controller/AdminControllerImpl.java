@@ -1,6 +1,7 @@
 package com.krince.memegle.domain.admin.controller;
 
 import com.krince.memegle.domain.admin.dto.request.RequestAdminLoginDto;
+import com.krince.memegle.domain.admin.dto.response.RequestConfirmMimeImageDto;
 import com.krince.memegle.domain.admin.dto.response.ResponseGetAdminPostsDto;
 import com.krince.memegle.domain.admin.service.AdminService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +22,12 @@ public class AdminControllerImpl implements AdminController {
     @Override
     @PostMapping("/sign/in")
     public ResponseEntity<Void> login(RequestAdminLoginDto requestAdminLoginDto) {
+        return null;
+    }
+
+    @Override
+    @PostMapping("/images/{mimeImageId}")
+    public ResponseEntity<Void> confirmMimeImage(Long mimeImageId, RequestConfirmMimeImageDto requestConfirmMimeImageDto) {
         return null;
     }
 
