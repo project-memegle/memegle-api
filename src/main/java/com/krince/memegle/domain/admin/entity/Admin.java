@@ -2,17 +2,20 @@ package com.krince.memegle.domain.admin.entity;
 
 import com.krince.memegle.global.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "admins")
 @Getter
 public class Admin {
 
     @Id
-    @Column()
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -26,12 +29,16 @@ public class Admin {
     @Column(nullable = false)
     private Role role;
 
-    @Column()
+    @Column
+    @NotBlank
+    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column
+    @NotBlank
+    @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedAt;
+    private LocalDateTime modifiedAt;
 
 }

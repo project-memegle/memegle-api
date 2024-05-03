@@ -22,7 +22,9 @@ public class AdminControllerImpl implements AdminController {
     @Override
     @PostMapping("/sign/in")
     public ResponseEntity<Void> login(RequestAdminLoginDto requestAdminLoginDto) {
-        return null;
+        adminService.login(requestAdminLoginDto);
+
+        return ResponseEntity.status(204).build();
     }
 
     @Override
