@@ -23,7 +23,7 @@ public interface PostController {
     @Operation(summary = "모든 게시물 조회", description = "게시물 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponsePostListDto.class)))),
-            @ApiResponse(responseCode = "500", description = "예상치 못한 오류", content = @Content(schema = @Schema(implementation = String.class)))
+            @ApiResponse(responseCode = "500", description = "예상치 못한 오류", content = @Content(schema = @Schema(implementation = Void.class)))
     })
     ResponseEntity<List<ResponsePostListDto>> getPosts();
 
@@ -31,8 +31,8 @@ public interface PostController {
     @Operation(summary = "밈 이미지 등록 신청", description = "밈 이미지를 등록 신청합니다. 관리자의 승인이 있으면 게시물로 등록됩니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "등록 성공"),
-            @ApiResponse(responseCode = "400", description = "누락, 잘못된 요청 양식", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", description = "예상치 못한 오류", content = @Content(schema = @Schema(implementation = String.class)))
+            @ApiResponse(responseCode = "400", description = "누락, 잘못된 요청 양식", content = @Content(schema = @Schema(implementation = Void.class))),
+            @ApiResponse(responseCode = "500", description = "예상치 못한 오류", content = @Content(schema = @Schema(implementation = Void.class)))
     })
     ResponseEntity<Void> resistPost(@ModelAttribute RequestResistPostDto requestResistPostDto);
 }
