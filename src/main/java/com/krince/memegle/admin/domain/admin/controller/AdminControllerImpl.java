@@ -2,13 +2,10 @@ package com.krince.memegle.admin.domain.admin.controller;
 
 import com.krince.memegle.admin.domain.admin.dto.request.RequestAdminLoginDto;
 import com.krince.memegle.admin.domain.admin.dto.response.RequestConfirmMimeImageDto;
-import com.krince.memegle.admin.domain.admin.dto.response.ResponseGetAdminPostsDto;
 import com.krince.memegle.admin.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController()
 @RequestMapping("/api/admin")
@@ -28,12 +25,6 @@ public class AdminControllerImpl implements AdminController {
     @Override
     @PostMapping("/images/{mimeImageId}")
     public ResponseEntity<Void> confirmMimeImage(Long mimeImageId, RequestConfirmMimeImageDto requestConfirmMimeImageDto) {
-        return null;
-    }
-
-    @Override
-    @GetMapping("/posts")
-    public ResponseEntity<List<ResponseGetAdminPostsDto>> getAdminPosts() {
         return null;
     }
 }
