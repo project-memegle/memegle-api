@@ -1,6 +1,5 @@
 package com.krince.memegle.domain.post.controller;
 
-import com.krince.memegle.domain.post.dto.request.RequestResistPostDto;
 import com.krince.memegle.domain.post.dto.response.ResponsePostListDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,5 +34,5 @@ public interface PostController {
             @ApiResponse(responseCode = "400", description = "누락, 잘못된 요청 양식", content = @Content(schema = @Schema(implementation = Void.class))),
             @ApiResponse(responseCode = "500", description = "예상치 못한 오류", content = @Content(schema = @Schema(implementation = Void.class)))
     })
-    ResponseEntity<Void> resistPost(@ModelAttribute RequestResistPostDto requestResistPostDto);
+    ResponseEntity<Void> resistPost(@ModelAttribute MultipartFile mimeImage, String content);
 }
