@@ -30,6 +30,7 @@ repositories {
 dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j' //mysql
+	implementation "com.amazonaws:aws-java-sdk-s3:1.12.281"
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta' //querydsl
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
