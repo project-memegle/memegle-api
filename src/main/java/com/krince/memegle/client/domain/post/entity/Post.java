@@ -49,6 +49,12 @@ public class Post {
     private Date modifiedAt;
 
     public void saveImage(Image image) {
+
         this.images.add(image);
+    }
+
+    public void changeIsConfirm(Boolean isConfirm) {
+
+        this.isConfirm = isConfirm;
     }
 }

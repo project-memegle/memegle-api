@@ -18,6 +18,10 @@ public class ResponseGetAdminPostsDto {
     private Long postId;
 
     @NotBlank
+    @Schema(description = "밈 이미지 고유번호", example = "1")
+    private Long imageId;
+
+    @NotBlank
     @Schema(description = "밈 이미지 url", example = "http://172.0.0.1:9802/uploads/dev/171463841004649253432.jpeg")
     private String mimeImageUrl;
 

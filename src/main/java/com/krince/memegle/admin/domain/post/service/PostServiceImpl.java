@@ -3,6 +3,7 @@ package com.krince.memegle.admin.domain.post.service;
 import com.krince.memegle.admin.domain.post.dto.response.ResponseGetAdminPostsDto;
 import com.krince.memegle.admin.domain.post.repository.AdminPostRepository;
 import com.krince.memegle.client.domain.post.entity.Post;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class PostServiceImpl implements PostService {
         List<ResponseGetAdminPostsDto> responseGetAdminPostsDtos = findPosts.stream().map(post -> {
             return ResponseGetAdminPostsDto.builder()
                     .postId(post.getId())
+                    .imageId(post.getImages().get(0).getId())
                     .mimeImageUrl(post.getImages().get(0).getImageUrl())
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
@@ -30,5 +32,12 @@ public class PostServiceImpl implements PostService {
         }).toList();
 
         return responseGetAdminPostsDtos;
+    }
+
+    @Override
+    @Transactional
+    public void deletePost(Post post) {
+
+        adminPostRepository.delete(post);
     }
 }

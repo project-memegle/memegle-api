@@ -1,4 +1,4 @@
-package com.krince.memegle.admin.domain.admin.dto.response;
+package com.krince.memegle.admin.domain.image.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
