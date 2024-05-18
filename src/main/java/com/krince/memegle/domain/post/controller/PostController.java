@@ -22,7 +22,7 @@ public interface PostController {
     @GetMapping()
     @Operation(summary = "모든 게시물 조회", description = "게시물 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponsePostListDto.class)))),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponsePostListDto.class)))),
             @ApiResponse(responseCode = "500", description = "예상치 못한 오류", content = @Content(schema = @Schema(implementation = Void.class)))
     })
     ResponseEntity<List<ResponsePostListDto>> getPosts();

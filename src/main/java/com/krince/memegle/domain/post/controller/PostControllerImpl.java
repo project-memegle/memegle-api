@@ -22,7 +22,9 @@ public class PostControllerImpl implements PostController {
     @Override
     @GetMapping()
     public ResponseEntity<List<ResponsePostListDto>> getPosts() {
-        return null;
+        List<ResponsePostListDto> posts = postService.getPosts();
+
+        return ResponseEntity.status(200).body(posts);
     }
 
     @Override
