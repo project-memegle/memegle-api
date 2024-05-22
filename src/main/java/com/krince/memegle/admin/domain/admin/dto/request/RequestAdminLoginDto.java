@@ -5,14 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-@Schema(title = "관리자 로그인 api request body")
+@Schema(title = "RequestAdminLoginDto")
 public class RequestAdminLoginDto {
 
     @NotBlank(message = "아이디를 입력해주세요")
-    @Schema(description = "관리자 로그인 아이디", example = "admin")
+    @Schema(description = "관리자 로그인 아이디")
     private String adminId;
 
     @NotBlank(message = "비밀번호를 입력해주세요")
-    @Schema(description = "관리자 비밀번호", example = "password1234!")
+    @Schema(description = "관리자 비밀번호")
     private String password;
 }

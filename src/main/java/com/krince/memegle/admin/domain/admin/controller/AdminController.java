@@ -14,6 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AdminController {
 
     @Operation(summary = "관리자 로그인", description = "관리자 계정에 로그인합니다.")
-    @ApiResponse(description = "로그인 성공", responseCode = "204", content = @Content(schema = @Schema(implementation = Void.class)))
-    ResponseEntity<Void> login(@Valid @RequestBody RequestAdminLoginDto requestAdminLoginDto);
+    @ApiResponse(description = "로그인 성공", responseCode = "204")
+    ResponseEntity<Void> login(@RequestBody @Valid RequestAdminLoginDto requestAdminLoginDto);
 }

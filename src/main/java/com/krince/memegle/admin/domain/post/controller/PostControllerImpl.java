@@ -2,6 +2,8 @@ package com.krince.memegle.admin.domain.post.controller;
 
 import com.krince.memegle.admin.domain.post.dto.response.ResponseGetAdminPostsDto;
 import com.krince.memegle.admin.domain.post.service.PostService;
+import com.krince.memegle.global.response.GlobalResponseDto;
+import com.krince.memegle.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +21,12 @@ public class PostControllerImpl implements PostController {
 
     @Override
     @GetMapping()
-    public ResponseEntity<List<ResponseGetAdminPostsDto>> getAdminPosts() {
+    public ResponseEntity<GlobalResponseDto<List<ResponseGetAdminPostsDto>>> getAdminPosts() {
 
         List<ResponseGetAdminPostsDto> responseGetAdminPostsDtos = postService.getAdminPosts();
+        ResponseCode status = ResponseCode.OK;
+        GlobalResponseDto<List<ResponseGetAdminPostsDto>> response = new GlobalResponseDto<>(status, responseGetAdminPostsDtos);
 
-        return ResponseEntity.ok(responseGetAdminPostsDtos);
+        return ResponseEntity.ok().body(response);
     }
 }
