@@ -11,24 +11,24 @@ import java.util.Date;
 
 @Getter
 @Builder
-@Schema(title = "메인 페이지 게시물 리스트 조회 api response")
+@Schema(title = "ResponsePostListDto")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponsePostListDto {
 
     @NotBlank
-    @Schema(description = "게시물 id", example = "1")
+    @Schema(description = "게시물 id")
     private Long postId;
 
     @NotBlank
-    @Schema(description = "게시물 이미지 url", example = "http://localhost:8080/uploads/dev/314798134245.jpg")
+    @Schema(description = "게시물 이미지 url")
     private String postImageUrl;
 
     @NotBlank
     @Builder.Default
-    @Schema(description = "좋아요 개수", example = "0")
+    @Schema(description = "좋아요 개수")
     private Long likeCount = 0L;
 
     @NotBlank
-    @Schema(description = "게시물 게시일", example = "2024-04-29T14:30:00Z")
+    @Schema(description = "게시물 게시일")
     private Date createdAt;
 }

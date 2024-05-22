@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-@Schema(title = "밈 이미지 등록 승인 및 반려 처리 requestBody")
+@Schema(title = "RequestConfirmMimeImageDto")
 public class RequestConfirmMimeImageDto {
 
     @NotBlank(message = "isConfirm은 필수 입력값입니다.")
-    @Schema(description = "승인 여부", example = "true")
+    @Schema(description = "승인 여부")
     private Boolean isConfirm;
 }

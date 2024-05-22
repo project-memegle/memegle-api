@@ -1,14 +1,14 @@
 package com.krince.memegle.client.domain.post.controller;
 
 
+import com.krince.memegle.client.domain.post.dto.request.RequestResistPostDto;
 import com.krince.memegle.client.domain.post.dto.response.ResponsePostListDto;
 import com.krince.memegle.client.domain.post.service.PostService;
+import com.krince.memegle.global.response.GlobalResponseDto;
+import com.krince.memegle.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -22,17 +22,19 @@ public class PostControllerImpl implements PostController {
 
     @Override
     @GetMapping()
-    public ResponseEntity<List<ResponsePostListDto>> getPosts() {
+    public ResponseEntity<GlobalResponseDto<List<ResponsePostListDto>>> getPosts() {
         List<ResponsePostListDto> posts = postService.getPosts();
+        ResponseCode status = ResponseCode.OK;
+        GlobalResponseDto<List<ResponsePostListDto>> response = new GlobalResponseDto<>(status, posts);
 
-        return ResponseEntity.status(200).body(posts);
+        return ResponseEntity.ok().body(response);
     }
 
     @Override
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Void> resistPost(MultipartFile mimeImage, String content) {
-        postService.resistPost(mimeImage, content);
+    public ResponseEntity<Void> resistPost( MultipartFile mimeImage, RequestResistPostDto requestResistPostDto) {
+        postService.resistPost(mimeImage, requestResistPostDto);
 
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.noContent().build();
     }
 }

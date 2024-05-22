@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.krince.memegle.client.domain.image.entity.Image;
 import com.krince.memegle.client.domain.image.service.ImageService;
+import com.krince.memegle.client.domain.post.dto.request.RequestResistPostDto;
 import com.krince.memegle.client.domain.post.dto.response.ResponsePostListDto;
 import com.krince.memegle.client.domain.post.entity.Post;
 import com.krince.memegle.client.domain.post.repository.PostRepository;
@@ -25,8 +26,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void resistPost(MultipartFile mimeImage, String content) {
+    public void resistPost(MultipartFile mimeImage, RequestResistPostDto requestResistPostDto) {
         final String BUCKET = "mimegle";
+
         try {
             String fileName = mimeImage.getOriginalFilename();
             ObjectMetadata metadata = new ObjectMetadata();
@@ -35,7 +37,7 @@ public class PostServiceImpl implements PostService {
 
             amazonS3Client.putObject(BUCKET, fileName, mimeImage.getInputStream(), metadata);
             String mimeImageUrl = amazonS3Client.getUrl(BUCKET, fileName).toString();
-            Post post = Post.builder().content(content).build();
+            Post post = Post.builder().content(requestResistPostDto.getContent()).build();
             Image image = imageService.createMimeImage(mimeImageUrl, post);
             post.saveImage(image);
 
