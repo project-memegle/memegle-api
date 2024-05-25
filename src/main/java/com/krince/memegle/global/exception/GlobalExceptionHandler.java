@@ -45,10 +45,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponseDto> exceptionHandler(Exception exception) {
-        System.out.println(exception.getClass().getName());
-        System.out.println(exception.getMessage());
 
-        ResponseCode status = ResponseCode.OK;
+        ResponseCode status = ResponseCode.INTERNAL_SERVER_ERROR;
         ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(status);
 
         return ResponseEntity.internalServerError().body(exceptionResponseDto);

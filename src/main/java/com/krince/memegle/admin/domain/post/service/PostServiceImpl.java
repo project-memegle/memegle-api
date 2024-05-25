@@ -19,19 +19,19 @@ public class PostServiceImpl implements PostService {
     public List<ResponseGetAdminPostsDto> getAdminPosts() {
 
         Boolean isConfirm = false;
-
         List<Post> findPosts = adminPostRepository.findAllByIsConfirm(isConfirm);
-        List<ResponseGetAdminPostsDto> responseGetAdminPostsDtos = findPosts.stream().map(post -> {
-            return ResponseGetAdminPostsDto.builder()
-                    .postId(post.getId())
-                    .imageId(post.getImages().get(0).getId())
-                    .mimeImageUrl(post.getImages().get(0).getImageUrl())
-                    .content(post.getContent())
-                    .createdAt(post.getCreatedAt())
-                    .build();
-        }).toList();
 
-        return responseGetAdminPostsDtos;
+        return findPosts.stream().map(this::generateResponseGetAdminPostsDto).toList();
+    }
+
+    private ResponseGetAdminPostsDto generateResponseGetAdminPostsDto(Post post) {
+        return ResponseGetAdminPostsDto.builder()
+                .postId(post.getId())
+                .imageId(post.getImages().get(0).getId())
+                .mimeImageUrl(post.getImages().get(0).getImageUrl())
+                .content(post.getContent())
+                .createdAt(post.getCreatedAt())
+                .build();
     }
 
     @Override
