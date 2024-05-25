@@ -17,6 +17,7 @@ public enum ResponseCode {
     INVALID_TOKEN(40101, 401, "Invalid Token", "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(40102, 401, "Expired Token", "만료된 토큰입니다."),
     EMPTY_TOKEN(40103, 401, "Empty Token", "토큰이 없습니다."),
+    FORBIDDEN(40300, 403, "Forbidden", "해당 리소스에 접근 권한이 없습니다."),
     NOT_FOUND(40400, 404, "Not Found", "리소스가 존재하지 않습니다."),
     NOT_FOUND_RESOURCE(40401, 404, "Not Found Resource", "리소스가 존재하지 않습니다."),
     INTERNAL_SERVER_ERROR(50000, 500, "Internal Server Error", "서버 에러입니다 개발자에게 문의해주세요."),

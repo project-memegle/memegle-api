@@ -4,9 +4,11 @@ import com.krince.memegle.global.response.ExceptionResponseDto;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.validation.UnexpectedTypeException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -27,6 +29,11 @@ public class GlobalExceptionHandler {
         return generateExceptionResponse(exception, ResponseCode.NOT_FOUND_RESOURCE);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ExceptionResponseDto> accessDeniedExceptionHandler(AccessDeniedException exception) {
+        return generateExceptionResponse(exception, ResponseCode.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponseDto> exceptionHandler(Exception exception) {
         return generateExceptionResponse(exception, ResponseCode.INTERNAL_SERVER_ERROR);
@@ -34,6 +41,13 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ExceptionResponseDto> generateExceptionResponse(Exception exception, ResponseCode status) {
         StackTraceElement[] stackTrace = exception.getStackTrace();
+
+        System.out.println("==============================");
+        System.out.println("==============================");
+        System.out.println(exception.getMessage());
+        System.out.println("==============================");
+        System.out.println("==============================");
+
         for (StackTraceElement element : stackTrace) {
             System.out.println("exception: " + element.getClassName() + "." + element.getMethodName() + "(" + element.getFileName() + ":" + element.getLineNumber() + ")");
         }
