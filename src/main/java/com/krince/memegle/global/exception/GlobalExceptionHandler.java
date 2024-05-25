@@ -3,52 +3,43 @@ package com.krince.memegle.global.exception;
 import com.krince.memegle.global.response.ExceptionResponseDto;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.validation.UnexpectedTypeException;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponseDto> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
-        Map<String, String> errors = new HashMap<>();
-        exception.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            System.out.println(fieldName + ": " + errorMessage);
-            errors.put(fieldName, errorMessage);
-        });
-
-        ResponseCode status = ResponseCode.BAD_REQUEST;
-        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(status);
-
-        return ResponseEntity.badRequest().body(exceptionResponseDto);
+        return generateExceptionResponse(exception, ResponseCode.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnexpectedTypeException.class)
     public ResponseEntity<ExceptionResponseDto> missingServletRequestPartExceptionHandler(UnexpectedTypeException exception) {
-        ResponseCode status = ResponseCode.REQUIRE_VALUE;
-        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(status);
+        return generateExceptionResponse(exception, ResponseCode.REQUIRE_VALUE);
+    }
 
-        return ResponseEntity.badRequest().body(exceptionResponseDto);
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ExceptionResponseDto> noSuchElementExceptionHandler(NoSuchElementException exception) {
+        return generateExceptionResponse(exception, ResponseCode.NOT_FOUND_RESOURCE);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponseDto> exceptionHandler(Exception exception) {
+        return generateExceptionResponse(exception, ResponseCode.INTERNAL_SERVER_ERROR);
+    }
 
-        ResponseCode status = ResponseCode.INTERNAL_SERVER_ERROR;
+    private ResponseEntity<ExceptionResponseDto> generateExceptionResponse(Exception exception, ResponseCode status) {
+        StackTraceElement[] stackTrace = exception.getStackTrace();
+        for (StackTraceElement element : stackTrace) {
+            System.out.println("exception: " + element.getClassName() + "." + element.getMethodName() + "(" + element.getFileName() + ":" + element.getLineNumber() + ")");
+        }
+
         ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(status);
 
-        return ResponseEntity.internalServerError().body(exceptionResponseDto);
+        return ResponseEntity.status(status.getHttpCode()).body(exceptionResponseDto);
     }
 }
