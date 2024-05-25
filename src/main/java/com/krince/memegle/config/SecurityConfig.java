@@ -1,15 +1,15 @@
 package com.krince.memegle.config;
 
-import com.krince.memegle.global.security.CustomUserDetailsService;
-import com.krince.memegle.global.security.JwtAuthFilter;
-import com.krince.memegle.global.security.JwtProvider;
+import com.krince.memegle.global.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,11 +20,13 @@ import static org.springframework.security.config.http.SessionCreationPolicy.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,17 +40,22 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(SecurityConfig::stateless)
+                .sessionManagement(this::stateless)
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(SecurityConfig::authorizeRequests)
+                .exceptionHandling(this::authExceptionHandler)
+                .authorizeHttpRequests(this::authorizeRequests)
                 .getOrBuild();
     }
 
-    private static void stateless(SessionManagementConfigurer<HttpSecurity> sessionManagementConfigurer) {
+    private void stateless(SessionManagementConfigurer<HttpSecurity> sessionManagementConfigurer) {
         sessionManagementConfigurer.sessionCreationPolicy(STATELESS);
     }
+    
+    private void authExceptionHandler(ExceptionHandlingConfigurer<HttpSecurity> exceptionHandling) {
+        exceptionHandling.authenticationEntryPoint(authenticationEntryPoint);
+    }
 
-    private static void authorizeRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationRequest) {
+    private void authorizeRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationRequest) {
         authorizationRequest
                 .requestMatchers(
                         "/api/admin/sign/in",
