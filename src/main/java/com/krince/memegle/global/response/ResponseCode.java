@@ -19,6 +19,7 @@ public enum ResponseCode {
     EXPIRED_TOKEN(40102, "UNAUTHORIZED", "만료된 토큰입니다."),
     EMPTY_TOKEN(40103, "UNAUTHORIZED", "토큰이 없습니다."),
     NOT_FOUND(40400, "NOT_FOUND", "리소스가 존재하지 않습니다."),
+    INTERNAL_SERVER_ERROR(50000, "INTERNAL_SERVER_ERROR", "서버 에러입니다 개발자에게 문의해주세요."),
     ;
 
     private final Integer code;
