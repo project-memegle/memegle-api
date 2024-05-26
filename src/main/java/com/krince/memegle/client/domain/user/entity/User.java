@@ -1,65 +1,66 @@
-package com.krince.memegle.client.domain.post.entity;
+package com.krince.memegle.client.domain.user.entity;
 
-import com.krince.memegle.client.domain.image.entity.Image;
 import com.krince.memegle.client.domain.like.entity.Like;
+import com.krince.memegle.global.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
-@Builder
-@Table(name = "posts")
 @Getter
+@Builder
+@Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
+public class User {
 
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 2000)
-    private String content;
+    @Column(nullable = false, length = 20, unique = true)
+    @NotBlank
+    private String loginId;
 
-    @Builder.Default
-    @ColumnDefault("false")
+    @Column(nullable = false, length = 18)
+    @NotBlank
+    private String password;
+
     @Column(nullable = false)
-    private Boolean isConfirm = false;
+    @NotBlank
+    private String name;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String nickname;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
     @Column(nullable = false)
     @CreatedDate
+    @NotBlank
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     @LastModifiedDate
+    @NotBlank
     @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedAt;
+    private LocalDateTime modifiedAt;
 
-    public void saveImage(Image image) {
-
-        this.images.add(image);
-    }
-
-    public void changeIsConfirm(Boolean isConfirm) {
-
-        this.isConfirm = isConfirm;
-    }
 }

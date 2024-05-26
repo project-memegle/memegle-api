@@ -3,6 +3,10 @@ package com.krince.memegle.admin.domain.post.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krince.memegle.admin.domain.post.dto.response.ResponseGetAdminPostsDto;
 import com.krince.memegle.admin.domain.post.service.PostService;
+import com.krince.memegle.global.Role;
+import com.krince.memegle.global.security.CustomUserDetails;
+import com.krince.memegle.global.security.CustomUserDetailsService;
+import com.krince.memegle.global.security.JwtProvider;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class PostControllerTest {
 
+    @MockBean
+    CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    JwtProvider jwtProvider;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -46,12 +56,16 @@ class PostControllerTest {
     @Test
     @DisplayName("개발자 메인 페이지 조회 테스트")
     void getAdminPostsTest() throws Exception {
+        when(userDetailsService.loadUserById(1L)).thenReturn(new CustomUserDetails(1L, Role.ROLE_ADMIN));
+        String token = jwtProvider.createAccessToken(1L, Role.ROLE_ADMIN);
+
         ResponseGetAdminPostsDto postDto1 = ResponseGetAdminPostsDto.builder().build();
         List<ResponseGetAdminPostsDto> posts = Arrays.asList(postDto1);
         when(postService.getAdminPosts()).thenReturn(posts);
 
         mockMvc.perform(
                         get("/api/admin/posts")
+                                .header("Authorization", token)
                                 .contentType(APPLICATION_JSON)
                 )
                 .andDo(print())
