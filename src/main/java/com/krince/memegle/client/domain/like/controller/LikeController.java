@@ -1,12 +1,9 @@
 package com.krince.memegle.client.domain.like.controller;
 
-import com.krince.memegle.client.domain.like.service.LikeService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-@RestController
-@RequiredArgsConstructor
-public class LikeController {
-
-    private final LikeService likeService;
+@Tag(name = "좋아요", description = "좋아요 관련 API")
+@PreAuthorize("hasRole('ROLE_USER')")
+public interface LikeController {
 }
