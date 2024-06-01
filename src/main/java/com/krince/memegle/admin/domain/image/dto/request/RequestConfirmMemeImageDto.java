@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Schema(title = "RequestConfirmMimeImageDto")
-public class RequestConfirmMimeImageDto {
+public class RequestConfirmMemeImageDto {
 
     @NotBlank(message = "isConfirm은 필수 입력값입니다.")
     @Schema(description = "승인 여부")

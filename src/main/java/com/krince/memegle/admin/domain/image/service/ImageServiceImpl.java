@@ -2,7 +2,7 @@ package com.krince.memegle.admin.domain.image.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.krince.memegle.admin.domain.image.dto.request.RequestConfirmMimeImageDto;
+import com.krince.memegle.admin.domain.image.dto.request.RequestConfirmMemeImageDto;
 import com.krince.memegle.admin.domain.image.repository.AdminImageRepository;
 import com.krince.memegle.admin.domain.post.service.PostService;
 import com.krince.memegle.client.domain.image.entity.Image;
@@ -25,10 +25,10 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public void confirmMimeImage(Long mimeImageId, RequestConfirmMimeImageDto requestConfirmMimeImageDto) {
+    public void confirmMemeImage(Long memeImageId, RequestConfirmMemeImageDto requestConfirmMemeImageDto) {
 
-        Boolean isConfirm = requestConfirmMimeImageDto.getIsConfirm();
-        Image image = adminImageRepository.findById(mimeImageId).orElseThrow(IllegalArgumentException::new);
+        Boolean isConfirm = requestConfirmMemeImageDto.getIsConfirm();
+        Image image = adminImageRepository.findById(memeImageId).orElseThrow(IllegalArgumentException::new);
         Post post = image.getPost();
 
         if (isConfirm) {

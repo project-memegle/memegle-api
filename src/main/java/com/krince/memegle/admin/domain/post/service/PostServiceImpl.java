@@ -18,7 +18,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<ResponseGetAdminPostsDto> getAdminPosts() {
 
-        Boolean isConfirm = false;
+        boolean isConfirm = false;
         List<Post> findPosts = adminPostRepository.findAllByIsConfirm(isConfirm);
 
         return findPosts.stream().map(this::generateResponseGetAdminPostsDto).toList();

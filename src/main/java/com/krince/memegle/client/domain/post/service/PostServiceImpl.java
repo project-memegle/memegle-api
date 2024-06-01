@@ -26,10 +26,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void resistPost(MultipartFile mimeImage, RequestResistPostDto requestResistPostDto) {
+    public void resistPost(MultipartFile mimeImage, RequestResistPostDto requestResistPostDto) throws IOException {
         final String BUCKET = "mimegle";
 
-        try {
             String fileName = mimeImage.getOriginalFilename();
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(mimeImage.getContentType());
@@ -38,15 +37,11 @@ public class PostServiceImpl implements PostService {
             amazonS3Client.putObject(BUCKET, fileName, mimeImage.getInputStream(), metadata);
             String mimeImageUrl = amazonS3Client.getUrl(BUCKET, fileName).toString();
             Post post = Post.builder().content(requestResistPostDto.getContent()).build();
-            Image image = imageService.createMimeImage(mimeImageUrl, post);
+            Image image = imageService.createMemeImage(mimeImageUrl, post);
             post.saveImage(image);
 
             postRepository.save(post);
-            imageService.saveMimeImage(image);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            imageService.saveMemeImage(image);
     }
 
     @Override

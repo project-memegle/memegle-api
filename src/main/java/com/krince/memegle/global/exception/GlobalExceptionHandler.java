@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ExceptionResponseDto> accessDeniedExceptionHandler(AccessDeniedException exception) {
         return generateExceptionResponse(exception, ResponseCode.FORBIDDEN);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ExceptionResponseDto> iOExceptionHandler(IOException exception) {
+        return generateExceptionResponse(exception, ResponseCode.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
