@@ -9,15 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -44,7 +39,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String substringToken = token.substring(TOKEN_TYPE.length());
 
-        if (jwtProvider.isValidToken(substringToken)) {
+        if (!jwtProvider.isValidToken(substringToken)) {
+            throw new JwtTokenInvalidException();
+        }
+
+        Role role = jwtProvider.getRole(substringToken);
+
+        if (role.equals(Role.ROLE_ADMIN)) {
+            Long id = jwtProvider.getId(substringToken);
+            CustomUserDetails userDetails = customUserDetailsService.loadAdminById(id);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        }
+
+        if (role.equals(Role.ROLE_USER)) {
             Long id = jwtProvider.getId(substringToken);
             CustomUserDetails userDetails = customUserDetailsService.loadUserById(id);
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
