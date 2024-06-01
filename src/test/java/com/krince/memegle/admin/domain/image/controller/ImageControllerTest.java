@@ -48,7 +48,7 @@ class ImageControllerTest {
     void confirmMemeImage() throws Exception {
         //given
         RequestConfirmMemeImageDto requestConfirmMemeImageDto = mock(RequestConfirmMemeImageDto.class);
-        when(userDetailsService.loadUserById(1L)).thenReturn(new CustomUserDetails(1L, Role.ROLE_ADMIN));
+        when(userDetailsService.loadAdminById(1L)).thenReturn(new CustomUserDetails(1L, Role.ROLE_ADMIN));
         String token = jwtProvider.createAccessToken(1L, Role.ROLE_ADMIN);
         doNothing().when(imageService).confirmMemeImage(1L, requestConfirmMemeImageDto);
 
