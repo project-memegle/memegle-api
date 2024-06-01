@@ -3,7 +3,7 @@ package com.krince.memegle.admin.domain.admin.entity;
 import com.krince.memegle.global.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "admins")
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin {
 
     @Id
@@ -30,13 +33,11 @@ public class Admin {
     private Role role;
 
     @Column
-    @NotBlank
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @Column
-    @NotBlank
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;

@@ -1,6 +1,6 @@
 package com.krince.memegle.admin.domain.image.controller;
 
-import com.krince.memegle.admin.domain.image.dto.request.RequestConfirmMimeImageDto;
+import com.krince.memegle.admin.domain.image.dto.request.RequestConfirmMemeImageDto;
 import com.krince.memegle.admin.domain.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +16,9 @@ public class ImageControllerImpl implements ImageController {
     private final ImageService imageService;
 
     @Override
-    @PostMapping("/{mimeImageId}")
-    public ResponseEntity<Void> confirmMimeImage(Long mimeImageId, RequestConfirmMimeImageDto requestConfirmMimeImageDto) {
-
-        imageService.confirmMimeImage(mimeImageId, requestConfirmMimeImageDto);
+    @PostMapping("/{memeImageId}")
+    public ResponseEntity<Void> confirmMemeImage(Long memeImageId, RequestConfirmMemeImageDto requestConfirmMemeImageDto) {
+        imageService.confirmMemeImage(memeImageId, requestConfirmMemeImageDto);
 
         return ResponseEntity.noContent().build();
     }

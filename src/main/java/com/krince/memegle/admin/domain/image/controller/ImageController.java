@@ -1,6 +1,6 @@
 package com.krince.memegle.admin.domain.image.controller;
 
-import com.krince.memegle.admin.domain.image.dto.request.RequestConfirmMimeImageDto;
+import com.krince.memegle.admin.domain.image.dto.request.RequestConfirmMemeImageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,8 +21,8 @@ public interface ImageController {
     )
     @ApiResponse(responseCode = "204", description = "등록 및 반려 처리 성공")
     @ApiResponse(responseCode = "400", description = "필수값 누락")
-    ResponseEntity<Void> confirmMimeImage(
+    ResponseEntity<Void> confirmMemeImage(
             @Parameter(description = "밈 이미지 고유번호") @PathVariable Long mimeImageId,
-            @RequestBody RequestConfirmMimeImageDto requestConfirmMimeImageDto
+            @RequestBody RequestConfirmMemeImageDto requestConfirmMemeImageDto
     );
 }

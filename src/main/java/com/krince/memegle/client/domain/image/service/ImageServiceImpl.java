@@ -15,7 +15,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public Image createMimeImage(String mimeImageUrl, Post post) {
+    public Image createMemeImage(String mimeImageUrl, Post post) {
 
         return Image.builder().
                 post(post)
@@ -25,7 +25,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public Image saveMimeImage(Image image) {
+    public Image saveMemeImage(Image image) {
 
         return imageRepository.save(image);
     }

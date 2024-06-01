@@ -7,10 +7,12 @@ import com.krince.memegle.client.domain.post.service.PostService;
 import com.krince.memegle.global.response.GlobalResponseDto;
 import com.krince.memegle.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -32,7 +34,7 @@ public class PostControllerImpl implements PostController {
 
     @Override
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Void> resistPost( MultipartFile mimeImage, RequestResistPostDto requestResistPostDto) {
+    public ResponseEntity<Void> resistPost( MultipartFile mimeImage, RequestResistPostDto requestResistPostDto) throws IOException {
         postService.resistPost(mimeImage, requestResistPostDto);
 
         return ResponseEntity.noContent().build();
