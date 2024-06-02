@@ -1,16 +1,17 @@
 package com.krince.memegle.admin.domain.post.dto.response;
 
+import com.krince.memegle.client.domain.post.entity.Post;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
-@Builder
 @Schema(title = "ResponseGetAdminPostsDto")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResponseGetAdminPostsDto {
 
     @NotBlank
@@ -23,7 +24,7 @@ public class ResponseGetAdminPostsDto {
 
     @NotBlank
     @Schema(description = "밈 이미지 url")
-    private String mimeImageUrl;
+    private String memeImageUrl;
 
     @NotBlank
     @Schema(description = "밈 이미지 설명")
@@ -32,4 +33,14 @@ public class ResponseGetAdminPostsDto {
     @NotBlank
     @Schema(description = "등록 일시")
     private Date createdAt;
+
+    public static ResponseGetAdminPostsDto fromDto(Post post) {
+        return new ResponseGetAdminPostsDto(
+                post.getId(),
+                post.getImages().get(0).getId(),
+                post.getImages().get(0).getImageUrl(),
+                post.getContent(),
+                post.getCreatedAt()
+        );
+    }
 }

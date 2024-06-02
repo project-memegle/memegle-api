@@ -50,13 +50,7 @@ public class PostServiceImpl implements PostService {
         boolean isConfirm = true;
 
         List<Post> findPosts = postRepository.findAllByIsConfirm(isConfirm);
-        List<ResponsePostListDto> responsePostListDtos = findPosts.stream().map(post -> {
-            return ResponsePostListDto.builder()
-                    .postId(post.getId())
-                    .postImageUrl(post.getImages().get(0).getImageUrl())
-                    .createdAt(post.getCreatedAt())
-                    .build();
-        }).toList();
+        List<ResponsePostListDto> responsePostListDtos = findPosts.stream().map(ResponsePostListDto::fromEntity).toList();
 
         return responsePostListDtos;
     }

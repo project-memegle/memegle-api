@@ -1,18 +1,17 @@
 package com.krince.memegle.client.domain.post.dto.response;
 
+import com.krince.memegle.client.domain.post.entity.Post;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
 
 @Getter
-@Builder
 @Schema(title = "ResponsePostListDto")
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResponsePostListDto {
 
     @NotBlank
@@ -24,11 +23,19 @@ public class ResponsePostListDto {
     private String postImageUrl;
 
     @NotBlank
-    @Builder.Default
     @Schema(description = "좋아요 개수")
-    private Long likeCount = 0L;
+    private Long likeCount;
 
     @NotBlank
     @Schema(description = "게시물 게시일")
     private Date createdAt;
+
+    public static ResponsePostListDto fromEntity(Post post) {
+        return new ResponsePostListDto(
+                post.getId(),
+                post.getImages().get(0).getImageUrl(),
+                (long) post.getLikes().size(),
+                post.getCreatedAt()
+        );
+    }
 }
