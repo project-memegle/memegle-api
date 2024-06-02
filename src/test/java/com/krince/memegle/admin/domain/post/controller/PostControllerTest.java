@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,8 +57,8 @@ class PostControllerTest {
         String token = jwtProvider.createAccessToken(1L, Role.ROLE_ADMIN);
         ResponseCode responseCode = ResponseCode.OK;
 
-        ResponseGetAdminPostsDto postDto1 = ResponseGetAdminPostsDto.builder().build();
-        List<ResponseGetAdminPostsDto> posts = List.of(postDto1);
+        ResponseGetAdminPostsDto responseGetAdminPostsDto = Mockito.mock(ResponseGetAdminPostsDto.class);
+        List<ResponseGetAdminPostsDto> posts = List.of(responseGetAdminPostsDto);
         when(postService.getAdminPosts()).thenReturn(posts);
 
         mockMvc.perform(
@@ -73,7 +74,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("message").value(responseCode.getMessage()))
                 .andExpect(jsonPath("results[0].postId").value(anything()))
                 .andExpect(jsonPath("results[0].imageId").value(anything()))
-                .andExpect(jsonPath("results[0].mimeImageUrl").value(anything()))
+                .andExpect(jsonPath("results[0].memeImageUrl").value(anything()))
                 .andExpect(jsonPath("results[0].content").value(anything()))
                 .andExpect(jsonPath("results[0].createdAt").value(anything()));
     }
