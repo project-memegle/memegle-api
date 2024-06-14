@@ -46,4 +46,14 @@ public class Image {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
+
+    public List<String> getTagNames() {
+        return this.getTagMaps().stream()
+                .map(tagMap -> tagMap.getTag().getTagName())
+                .toList();
+    }
+
+    public void saveTagMap(TagMap tagMap) {
+        this.tagMaps.add(tagMap);
+    }
 }

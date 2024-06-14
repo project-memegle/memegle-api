@@ -28,4 +28,7 @@ public class Tag {
     @Column
     private String tagName;
 
+    public void saveTagMap(TagMap tagMap) {
+        this.tagMaps.add(tagMap);
+    }
 }
