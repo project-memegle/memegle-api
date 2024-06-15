@@ -1,6 +1,7 @@
 package com.krince.memegle.client.domain.image.entity;
 
 import com.krince.memegle.client.domain.post.entity.Post;
+import com.krince.memegle.client.domain.tag.entity.TagMap;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -8,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -27,6 +30,10 @@ public class Image {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "image", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TagMap> tagMaps = new ArrayList<>();
+
     @Column(unique = true, nullable = false)
     private String imageUrl;
 
@@ -39,4 +46,14 @@ public class Image {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
+
+    public List<String> getTagNames() {
+        return this.getTagMaps().stream()
+                .map(tagMap -> tagMap.getTag().getTagName())
+                .toList();
+    }
+
+    public void saveTagMap(TagMap tagMap) {
+        this.tagMaps.add(tagMap);
+    }
 }
