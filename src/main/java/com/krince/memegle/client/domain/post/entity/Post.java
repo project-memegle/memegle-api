@@ -35,14 +35,6 @@ public class Post {
     @Column(nullable = false)
     private Boolean isConfirm = false;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
-
     @Column(nullable = false)
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,11 +44,6 @@ public class Post {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;
-
-    public void saveImage(Image image) {
-
-        this.images.add(image);
-    }
 
     public void changeIsConfirm(Boolean isConfirm) {
 

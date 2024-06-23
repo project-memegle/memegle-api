@@ -7,6 +7,7 @@ import com.krince.memegle.client.domain.image.service.ImageService;
 import com.krince.memegle.client.domain.post.dto.request.RequestResistPostDto;
 import com.krince.memegle.client.domain.post.dto.response.ResponsePostListDto;
 import com.krince.memegle.client.domain.post.entity.Post;
+import com.krince.memegle.client.domain.post.repository.PostQueryRepository;
 import com.krince.memegle.client.domain.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class PostServiceImpl implements PostService {
 
     private final AmazonS3Client amazonS3Client;
     private final PostRepository postRepository;
+    private final PostQueryRepository postQueryRepository;
     private final ImageService imageService;
 
     @Override
@@ -38,7 +40,6 @@ public class PostServiceImpl implements PostService {
             String mimeImageUrl = amazonS3Client.getUrl(BUCKET, fileName).toString();
             Post post = Post.builder().content(requestResistPostDto.getContent()).build();
             Image image = imageService.createMemeImage(mimeImageUrl, post);
-            post.saveImage(image);
 
             postRepository.save(post);
             imageService.saveMemeImage(image);
@@ -49,9 +50,6 @@ public class PostServiceImpl implements PostService {
     public List<ResponsePostListDto> getPosts() {
         boolean isConfirm = true;
 
-        List<Post> findPosts = postRepository.findAllByIsConfirm(isConfirm);
-        List<ResponsePostListDto> responsePostListDtos = findPosts.stream().map(ResponsePostListDto::fromEntity).toList();
-
-        return responsePostListDtos;
+        return postQueryRepository.findAllByIsConfirm(isConfirm);
     }
 }

@@ -6,6 +6,7 @@ import com.krince.memegle.client.domain.image.service.ImageServiceImpl;
 import com.krince.memegle.client.domain.post.dto.request.RequestResistPostDto;
 import com.krince.memegle.client.domain.post.dto.response.ResponsePostListDto;
 import com.krince.memegle.client.domain.post.entity.Post;
+import com.krince.memegle.client.domain.post.repository.PostQueryRepository;
 import com.krince.memegle.client.domain.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,9 @@ class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
+
+    @Mock
+    private PostQueryRepository postQueryRepository;
 
     @Mock
     private AmazonS3Client amazonS3Client;
@@ -67,12 +71,10 @@ class PostServiceTest {
     @Test
     @DisplayName("밈 이미지 전체 조회 테스트")
     void getPosts() {
-        Post post1 = mock(Post.class);
-        Image image1 = mock(Image.class);
-        when(post1.getImages()).thenReturn(List.of(image1));
-        List<Post> posts = List.of(post1);
+        ResponsePostListDto responsePostListDto1 = mock(ResponsePostListDto.class);
+        List<ResponsePostListDto> responseDtos = List.of(responsePostListDto1);
 
-        when(postRepository.findAllByIsConfirm(anyBoolean())).thenReturn(posts);
+        when(postQueryRepository.findAllByIsConfirm(anyBoolean())).thenReturn(responseDtos);
         List<ResponsePostListDto> responsePostListDtos = postService.getPosts();
 
         assertThat(responsePostListDtos.size()).isEqualTo(1);

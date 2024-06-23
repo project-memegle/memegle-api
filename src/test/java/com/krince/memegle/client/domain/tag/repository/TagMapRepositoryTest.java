@@ -48,18 +48,11 @@ class TagMapRepositoryTest {
         Image image = Image.builder().imageUrl("https://testImage.com").post(savedPost).build();
         Image savedImage = imageRepository.save(image);
 
-        savedPost.saveImage(savedImage);
 
         TagMap tagMap1 = TagMap.builder().tag(tag1).image(savedImage).build();
         TagMap tagMap2 = TagMap.builder().tag(tag2).image(savedImage).build();
         TagMap tagMap3 = TagMap.builder().tag(tag3).image(savedImage).build();
 
-        tag1.saveTagMap(tagMap1);
-        tag2.saveTagMap(tagMap2);
-        tag3.saveTagMap(tagMap3);
-        savedImage.saveTagMap(tagMap1);
-        savedImage.saveTagMap(tagMap2);
-        savedImage.saveTagMap(tagMap3);
 
         tagRepository.saveAll(List.of(tag1, tag2, tag3));
 
