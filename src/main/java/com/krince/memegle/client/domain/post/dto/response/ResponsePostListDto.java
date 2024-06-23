@@ -1,6 +1,5 @@
 package com.krince.memegle.client.domain.post.dto.response;
 
-import com.krince.memegle.client.domain.post.entity.Post;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -29,13 +28,4 @@ public class ResponsePostListDto {
     @NotBlank
     @Schema(description = "게시물 게시일")
     private Date createdAt;
-
-    public static ResponsePostListDto fromEntity(Post post) {
-        return new ResponsePostListDto(
-                post.getId(),
-                post.getImages().get(0).getImageUrl(),
-                (long) post.getLikes().size(),
-                post.getCreatedAt()
-        );
-    }
 }
