@@ -21,14 +21,6 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TagMap> tagMaps = new ArrayList<>();
-
     @Column
     private String tagName;
-
-    public void saveTagMap(TagMap tagMap) {
-        this.tagMaps.add(tagMap);
-    }
 }

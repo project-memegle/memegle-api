@@ -47,10 +47,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
-
     @Column(nullable = false)
     @CreatedDate
     @NotBlank

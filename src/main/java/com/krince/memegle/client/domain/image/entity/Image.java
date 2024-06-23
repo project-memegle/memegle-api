@@ -30,10 +30,6 @@ public class Image {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "image", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TagMap> tagMaps = new ArrayList<>();
-
     @Column(unique = true, nullable = false)
     private String imageUrl;
 
@@ -46,14 +42,4 @@ public class Image {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
-
-    public List<String> getTagNames() {
-        return this.getTagMaps().stream()
-                .map(tagMap -> tagMap.getTag().getTagName())
-                .toList();
-    }
-
-    public void saveTagMap(TagMap tagMap) {
-        this.tagMaps.add(tagMap);
-    }
 }
