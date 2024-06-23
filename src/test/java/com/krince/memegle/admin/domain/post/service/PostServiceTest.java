@@ -1,6 +1,7 @@
 package com.krince.memegle.admin.domain.post.service;
 
 import com.krince.memegle.admin.domain.post.dto.response.ResponseGetAdminPostsDto;
+import com.krince.memegle.admin.domain.post.repository.AdminPostQueryRepository;
 import com.krince.memegle.admin.domain.post.repository.AdminPostRepository;
 import com.krince.memegle.client.domain.image.entity.Image;
 import com.krince.memegle.client.domain.post.entity.Post;
@@ -29,20 +30,16 @@ class PostServiceTest {
     @Mock
     AdminPostRepository postRepository;
 
+    @Mock
+    AdminPostQueryRepository adminPostQueryRepository;
+
     @Test
     @DisplayName("관리자 메인 페이지 조회 - 승인 대기 게시물 있음")
     void getAdminPosts() {
         //given
-        Post post1 = mock(Post.class);
-        Image image1 = mock(Image.class);
+        ResponseGetAdminPostsDto responseGetAdminPostsDto1 = mock(ResponseGetAdminPostsDto.class);
 
-        when(post1.getId()).thenReturn(1L);
-        when(post1.getContent()).thenReturn("테스트 이자쉭아~");
-        when(post1.getCreatedAt()).thenReturn(new Date());
-        when(post1.getImages()).thenReturn(List.of(image1));
-        when(image1.getId()).thenReturn(1L);
-        when(image1.getImageUrl()).thenReturn("https://test.com");
-        when(postRepository.findAllByIsConfirm(false)).thenReturn(List.of(post1));
+        when(adminPostQueryRepository.findAllByIsConfirm(false)).thenReturn(List.of(responseGetAdminPostsDto1));
 
         //when
         List<ResponseGetAdminPostsDto> responseGetAdminPostsDtos = postService.getAdminPosts();

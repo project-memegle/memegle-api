@@ -24,17 +24,6 @@ class PostTest {
     }
 
     @Test
-    void saveImageTest() {
-        //given
-
-        //when
-        post.saveImage(image1);
-
-        //then
-        assertThat(post.getImages().size()).isEqualTo(1);
-    }
-
-    @Test
     void changeIsConfirmTest() {
         //given
         Boolean isConfirm = true;
