@@ -1,9 +1,7 @@
 package com.krince.memegle.global.security;
 
-import com.krince.memegle.admin.domain.admin.entity.Admin;
-import com.krince.memegle.admin.domain.admin.repository.AdminRepository;
-import com.krince.memegle.client.domain.user.entity.User;
-import com.krince.memegle.client.domain.user.repository.UserRepository;
+import com.krince.memegle.domain.user.entity.User;
+import com.krince.memegle.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AdminRepository adminRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -28,11 +25,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(""));
 
         return new CustomUserDetails(user.getId(), user.getRole());
-    }
-
-    public CustomUserDetails loadAdminById(Long id) throws UsernameNotFoundException {
-        Admin admin = adminRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(""));
-
-        return new CustomUserDetails(admin.getId(), admin.getRole());
     }
 }
