@@ -19,9 +19,13 @@ public class PostQueryRepository {
 
     public List<ResponsePostListDto> findAllByIsConfirm(boolean isConfirm) {
         return queryFactory
-                .select(Projections.constructor(ResponsePostListDto.class))
+                .select(Projections.constructor(ResponsePostListDto.class,
+                        post.id,
+                        image.imageUrl,
+                        post.createdAt
+                ))
                 .from(post)
-                .leftJoin(image).on(image.post.eq(post))
+                .join(image).on(image.post.eq(post))
                 .fetchJoin()
                 .where(post.isConfirm.eq(isConfirm))
                 .fetch();
