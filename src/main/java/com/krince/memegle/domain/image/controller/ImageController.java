@@ -1,12 +1,7 @@
 package com.krince.memegle.domain.image.controller;
 
-import com.krince.memegle.domain.image.service.ImageService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@RestController
-@RequiredArgsConstructor
-public class ImageController {
-
-    private final ImageService imageService;
+@Tag(name = "이미지", description = "이미지 관련 API")
+public interface ImageController {
 }
