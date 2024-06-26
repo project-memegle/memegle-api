@@ -58,10 +58,9 @@ public class SecurityConfig {
     private void authorizeRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationRequest) {
         authorizationRequest
                 .requestMatchers(
-                        "/api/admin/sign/in",
+                        "/api/users/sign/in",
                         "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/api/posts/**"
+                        "/v3/api-docs/**"
                 ).permitAll()
                 .anyRequest().authenticated();
     }
