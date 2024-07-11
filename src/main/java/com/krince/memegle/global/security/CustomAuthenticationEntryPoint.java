@@ -1,7 +1,7 @@
 package com.krince.memegle.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.krince.memegle.global.response.ExceptionResponseDto;
+import com.krince.memegle.global.response.ExceptionResponse;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +24,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ResponseCode status = ResponseCode.UNAUTHORIZED;
-        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(status);
-        String responseBody = objectMapper.writeValueAsString(exceptionResponseDto);
+        ExceptionResponse exceptionResponse = new ExceptionResponse(status);
+        String responseBody = objectMapper.writeValueAsString(exceptionResponse);
 
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setStatus(status.getHttpCode());
