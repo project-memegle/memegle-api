@@ -45,13 +45,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         Role role = jwtProvider.getRole(substringToken);
 
-        if (role.equals(Role.ROLE_ADMIN)) {
-            Long id = jwtProvider.getId(substringToken);
-            CustomUserDetails userDetails = customUserDetailsService.loadAdminById(id);
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        }
-
         if (role.equals(Role.ROLE_USER)) {
             Long id = jwtProvider.getId(substringToken);
             CustomUserDetails userDetails = customUserDetailsService.loadUserById(id);
