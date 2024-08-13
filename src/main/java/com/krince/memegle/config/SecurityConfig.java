@@ -37,13 +37,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .authorizeHttpRequests(this::authorizeRequests)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(this::stateless)
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(this::authExceptionHandler)
-                .authorizeHttpRequests(this::authorizeRequests)
                 .getOrBuild();
     }
 
@@ -58,7 +58,8 @@ public class SecurityConfig {
     private void authorizeRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationRequest) {
         authorizationRequest
                 .requestMatchers(
-                        "/api/users/sign/in",
+                        "/apis/client/users/sign/in",
+                        "/apis/client/images/{imageId}",
                         "/swagger-ui/**",
                         "/v3/api-docs/**"
                 ).permitAll()
