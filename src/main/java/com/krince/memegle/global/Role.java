@@ -1,7 +1,10 @@
 package com.krince.memegle.global;
 
+import lombok.Getter;
+
 public enum Role {
     ROLE_USER("ROLE_USER"),
+    ROLE_GUEST("ROLE_GUEST"),
     ROLE_ADMIN("ROLE_ADMIN");
 
     String role;
@@ -10,7 +13,7 @@ public enum Role {
         this.role = role;
     }
 
-    public String value() {
+    public String getValue() {
         return role;
     }
 }
