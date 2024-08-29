@@ -50,6 +50,7 @@ public class GlobalExceptionHandler {
 
         System.out.println("==============================");
         System.out.println("==============================");
+        System.out.println(exception.getClass());
         System.out.println(exception.getMessage());
         System.out.println("==============================");
         System.out.println("==============================");

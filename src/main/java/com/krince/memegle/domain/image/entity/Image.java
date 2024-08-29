@@ -1,5 +1,6 @@
 package com.krince.memegle.domain.image.entity;
 
+import com.krince.memegle.global.ImageCategory;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,6 +25,10 @@ public class Image {
 
     @Column(unique = true, nullable = false)
     private String imageUrl;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ImageCategory imageCategory;
 
     @Column(nullable = false)
     @CreatedDate

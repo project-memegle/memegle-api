@@ -1,7 +1,5 @@
 package com.krince.memegle.global;
 
-import lombok.Getter;
-
 public enum Role {
     ROLE_USER("ROLE_USER"),
     ROLE_GUEST("ROLE_GUEST"),
