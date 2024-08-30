@@ -11,4 +11,7 @@ public class ExceptionResponse extends GlobalResponse {
         super(responseCode);
     }
 
+    public ExceptionResponse(ResponseCode responseCode, String message) {
+        super(responseCode, message);
+    }
 }

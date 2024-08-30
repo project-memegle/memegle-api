@@ -24,4 +24,11 @@ public class GlobalResponse {
         this.code = responseCode.getCode();
         this.message = responseCode.getMessage();
     }
+
+    public GlobalResponse(ResponseCode responseCode, String message) {
+        this.success = responseCode.getIsSuccess();
+        this.status = responseCode.getHttpStatus();
+        this.code = responseCode.getCode();
+        this.message = message;
+    }
 }
