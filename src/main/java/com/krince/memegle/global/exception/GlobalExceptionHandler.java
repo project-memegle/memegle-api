@@ -20,6 +20,7 @@ import static com.krince.memegle.global.response.ResponseCode.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    //@Valid 검증 실패 예외
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
         String exceptionMessage = exception.getBindingResult()
@@ -31,14 +32,22 @@ public class GlobalExceptionHandler {
                 })
                 .collect(Collectors.joining());
 
-        return generateMessageExceptionResponse(exception, BAD_REQUEST, exceptionMessage);
+        return generateMessageExceptionResponse(exception, INVALID_VALUE, exceptionMessage);
     }
 
+    //request 타입 불일치 예외
     @ExceptionHandler(UnexpectedTypeException.class)
     public ResponseEntity<ExceptionResponse> missingServletRequestPartExceptionHandler(UnexpectedTypeException exception) {
         return generateExceptionResponse(exception, REQUIRE_VALUE);
     }
 
+    //중복 회원 등록 시도 예외
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<ExceptionResponse> duplicateUserExceptionHandler(DuplicateUserException exception) {
+        return generateExceptionResponse(exception, DUPLICATE_USER);
+    }
+
+    //필수 파라미터 누락 예외
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ExceptionResponse> missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException exception) {
         String exceptionMessage = exception.getParameterName() + "은 필수 입력값입니다.";
