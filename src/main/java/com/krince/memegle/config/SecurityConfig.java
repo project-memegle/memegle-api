@@ -58,7 +58,7 @@ public class SecurityConfig {
     private void authorizeRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationRequest) {
         authorizationRequest
                 .requestMatchers(
-                        "/apis/client/users/sign/in",
+                        "/apis/client/users/sign/**",
                         "/apis/client/images/{imageId}",
                         "/swagger-ui/**",
                         "/v3/api-docs/**"

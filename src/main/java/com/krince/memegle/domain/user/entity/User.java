@@ -28,7 +28,7 @@ public class User {
     @NotBlank
     private String loginId;
 
-    @Column(nullable = false, length = 18)
+    @Column(nullable = false)
     @NotBlank
     private String password;
 
@@ -46,13 +46,11 @@ public class User {
 
     @Column(nullable = false)
     @CreatedDate
-    @NotBlank
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     @LastModifiedDate
-    @NotBlank
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
 
