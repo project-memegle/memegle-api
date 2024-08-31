@@ -20,16 +20,19 @@ public class JwtProvider {
 
     private final Key secretKey;
     private final Long ACCESS_TOKEN_EXPIRED;
+    private final Long REFRESH_TOKEN_EXPIRED;
     private final String HEADER_NAME = "Authorization";
     private final String ROLE = "role";
 
     public JwtProvider(
             @Value("${jwt.secret.key}") final String secretKey,
-            @Value("${jwt.access-token-expired}") final Long accessTokenExpired
+            @Value("${jwt.access-token-expired}") final Long accessTokenExpired,
+            @Value("${jwt.refresh-token-expired}") final Long refreshTokenExpired
     ) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
         this.ACCESS_TOKEN_EXPIRED = accessTokenExpired;
+        this.REFRESH_TOKEN_EXPIRED = refreshTokenExpired;
     }
 
     public String createAccessToken(final Long id, final Role role) {
@@ -41,6 +44,18 @@ public class JwtProvider {
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .claim(ROLE, role)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String createRefreshToken(final Long id) {
+        final Date now = new Date();
+        final Date validity = new Date(now.getTime() + REFRESH_TOKEN_EXPIRED);
+
+        return TOKEN_TYPE + Jwts.builder()
+                .setSubject(id.toString())
+                .setIssuedAt(now)
+                .setExpiration(validity)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
