@@ -16,6 +16,7 @@ public enum ResponseCode {
     REQUIRE_VALUE(false, 40002, 400, "Require Value", "필수 입력값이 누락되었습니다."),
     UNAUTHORIZED(false, 40100, 401, "Unauthorized", "인증 정보가 일치하지 않습니다."),
     INVALID_TOKEN(false, 40101, 401, "Invalid Token", "유효하지 않은 토큰입니다."),
+    INVALID_PASSWORD(false, 40102, 401, "Invalid Password", "비밀번호를 확인해주세요."),
     EXPIRED_TOKEN(false, 40102, 401, "Expired Token", "만료된 토큰입니다."),
     EMPTY_TOKEN(false, 40103, 401, "Empty Token", "토큰이 없습니다."),
     FORBIDDEN(false, 40300, 403, "Forbidden", "해당 리소스에 접근 권한이 없습니다."),

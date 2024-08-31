@@ -5,6 +5,7 @@ import com.krince.memegle.global.response.ResponseCode;
 import jakarta.validation.UnexpectedTypeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -54,6 +55,14 @@ public class GlobalExceptionHandler {
         return generateMessageExceptionResponse(exception, BAD_REQUEST, exceptionMessage);
     }
 
+    //비밀번호 오류
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ExceptionResponse> badCredentialsExceptionHandler(BadCredentialsException exception) {
+        String exceptionMessage = exception.getMessage();
+        return generateMessageExceptionResponse(exception, INVALID_PASSWORD, exceptionMessage);
+    }
+
+    //없는 리소스 조회 시도 예외
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ExceptionResponse> noSuchElementExceptionHandler(NoSuchElementException exception) {
         return generateExceptionResponse(exception, NOT_FOUND_RESOURCE);
