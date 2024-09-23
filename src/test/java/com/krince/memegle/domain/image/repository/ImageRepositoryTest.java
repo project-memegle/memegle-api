@@ -1,6 +1,7 @@
 package com.krince.memegle.domain.image.repository;
 
 import com.krince.memegle.domain.image.entity.Image;
+import com.krince.memegle.domain.image.entity.RegistStatus;
 import com.krince.memegle.global.ImageCategory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,7 @@ class ImageRepositoryTest {
             imageRepository.save(
                     Image.builder()
                             .imageUrl("https://www.testImage" + i + UUID.randomUUID() + ".com")
+                            .registStatus(RegistStatus.REGIST)
                             .imageCategory(imageCategory)
                             .build()
             );

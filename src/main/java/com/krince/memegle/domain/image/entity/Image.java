@@ -31,6 +31,10 @@ public class Image {
     private ImageCategory imageCategory;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RegistStatus registStatus;
+
+    @Column(nullable = false)
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;

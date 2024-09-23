@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -62,5 +66,57 @@ class ImageControllerTest {
                         .param("criteria", "CREATED_AT"))
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("밈 이미지 등록 요청 테스트 - 성공")
+    @WithMockUser(username = "testUser")
+    void registMemeImage() throws Exception {
+        //given
+        String uri = "/apis/client/images";
+        String imageCategory = "MUDO";
+        MockPart mockTags = new MockPart("tags", "공격 호통".getBytes());
+        MockPart mockDelimiter = new MockPart("delimiter", " ".getBytes());
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                "memeImageFile",
+                "testImage.jpg",
+                "image/jpeg",
+                "test image content".getBytes()
+        );
+
+        //when, then
+        mockMvc.perform(multipart(uri)
+                        .file(mockMultipartFile)
+                        .part(mockTags)
+                        .part(mockDelimiter)
+                        .queryParam("imageCategory", imageCategory))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저는 밈 이미지 등록 요청을 할 수 없다.")
+    @WithAnonymousUser
+    void registMemeImageNotLogin() throws Exception {
+        //given
+        String uri = "/apis/client/images";
+        String imageCategory = "MUDO";
+        MockPart mockTags = new MockPart("tags", "공격 호통".getBytes());
+        MockPart mockDelimiter = new MockPart("delimiter", " ".getBytes());
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                "memeImageFile",
+                "testImage.jpg",
+                "image/jpeg",
+                "test image content".getBytes()
+        );
+
+        //when, then
+        mockMvc.perform(multipart(uri)
+                        .file(mockMultipartFile)
+                        .part(mockTags)
+                        .part(mockDelimiter)
+                        .queryParam("imageCategory", imageCategory))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 }
