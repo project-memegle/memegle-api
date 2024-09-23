@@ -1,10 +1,15 @@
 package com.krince.memegle.domain.image.service;
 
+import com.krince.memegle.domain.image.dto.RegistImageDto;
 import com.krince.memegle.domain.image.dto.ViewImageDto;
 import com.krince.memegle.domain.image.entity.Image;
 import com.krince.memegle.domain.image.repository.ImageRepository;
+import com.krince.memegle.domain.tag.entity.Tag;
+import com.krince.memegle.domain.tag.entity.TagMap;
+import com.krince.memegle.domain.tag.service.TagService;
 import com.krince.memegle.global.Criteria;
 import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.aws.S3Service;
 import com.krince.memegle.global.dto.PageableDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +19,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,6 +40,12 @@ class ImageServiceTest {
 
     @Mock
     ImageRepository imageRepository;
+
+    @Mock
+    S3Service s3Service;
+
+    @Mock
+    TagService tagService;
 
     @Test
     @DisplayName("이미지 조회 테스트 - 성공")
@@ -86,5 +99,36 @@ class ImageServiceTest {
 
         //then
         assertThat(images.size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("밈 이미지 등록 신청 테스트")
+    void registMemeImage() throws IOException {
+        //given
+        String testImageURL = "https://www.testImageURL.com";
+        String tags = "testTag1 testTag2 testTag3";
+        String delimiter = " ";
+
+        MultipartFile mockMultipartFile = mock(MultipartFile.class);
+        RegistImageDto mockRegistImageDto = mock(RegistImageDto.class);
+        Tag mockTag = mock(Tag.class);
+        Image mockImage = mock(Image.class);
+        TagMap mockTagMap = mock(TagMap.class);
+
+        when(mockRegistImageDto.getImageCategory()).thenReturn(ImageCategory.MUDO);
+        when(mockRegistImageDto.getMemeImageFile()).thenReturn(mockMultipartFile);
+        when(mockRegistImageDto.getTags()).thenReturn(tags);
+        when(mockRegistImageDto.getDelimiter()).thenReturn(delimiter);
+
+        when(tagService.getTags(any(), any())).thenReturn(List.of(mockTag, mockTag, mockTag));
+        when(s3Service.uploadFile(any())).thenReturn("https://www.testImageURL.com");
+        when(imageRepository.save(any())).thenReturn(mockImage);
+        when(tagService.registTagMap(any(), any())).thenReturn(mockTagMap);
+
+        //when
+        String imageURL = imageService.registMemeImage(mockRegistImageDto);
+
+        //then
+        assertThat(imageURL).isEqualTo(testImageURL);
     }
 }

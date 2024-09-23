@@ -1,9 +1,14 @@
 package com.krince.memegle.domain.image.service;
 
+import com.krince.memegle.domain.image.dto.RegistImageDto;
 import com.krince.memegle.domain.image.dto.ViewImageDto;
 import com.krince.memegle.domain.image.entity.Image;
+import com.krince.memegle.domain.image.entity.RegistStatus;
 import com.krince.memegle.domain.image.repository.ImageRepository;
+import com.krince.memegle.domain.tag.entity.Tag;
+import com.krince.memegle.domain.tag.service.TagService;
 import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.aws.S3Service;
 import com.krince.memegle.global.dto.PageableDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,6 +29,8 @@ import java.util.NoSuchElementException;
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
+    private final S3Service s3Service;
+    private final TagService tagService;
 
     @Override
     public ViewImageDto getImage(Long imageId) {
@@ -57,6 +66,25 @@ public class ImageServiceImpl implements ImageService {
                 .imageCategory(image.getImageCategory())
                 .createdAt(image.getCreatedAt())
                 .modifiedAt(image.getModifiedAt())
+                .build();
+    }
+
+    @Override
+    public String registMemeImage(RegistImageDto registImageDto) throws IOException {
+        List<Tag> tagList = tagService.getTags(registImageDto.getTags(), registImageDto.getDelimiter());
+        String memeImageURL = s3Service.uploadFile(registImageDto.getMemeImageFile());
+        Image image = generateImageEntity(memeImageURL, registImageDto.getImageCategory());
+        Image savedImage = imageRepository.save(image);
+        tagList.forEach(tag -> tagService.registTagMap(savedImage, tag));
+
+        return memeImageURL;
+    }
+
+    private Image generateImageEntity(String memeImageURL, ImageCategory imageCategory) {
+        return Image.builder()
+                .imageUrl(memeImageURL)
+                .imageCategory(imageCategory)
+                .registStatus(RegistStatus.WAITING)
                 .build();
     }
 }
