@@ -1,10 +1,7 @@
 package com.krince.memegle.global.exception;
 
 import com.krince.memegle.global.response.ExceptionResponse;
-import com.krince.memegle.global.response.customexception.BadRequestExceptionResponse;
-import com.krince.memegle.global.response.customexception.InternalServerErrorExceptionResponse;
-import com.krince.memegle.global.response.customexception.InvalidValueExceptionResponse;
-import com.krince.memegle.global.response.customexception.NotFoundResourceExceptionResponse;
+import com.krince.memegle.global.response.customexception.*;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.validation.UnexpectedTypeException;
 import org.springframework.http.ResponseEntity;
@@ -80,8 +77,12 @@ public class GlobalExceptionHandler {
     //비밀번호 오류
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> badCredentialsExceptionHandler(BadCredentialsException exception) {
-        String exceptionMessage = exception.getMessage();
-        return generateMessageExceptionResponse(exception, INVALID_PASSWORD, exceptionMessage);
+        ResponseCode responseCode = INVALID_PASSWORD;
+        InvalidPasswordExceptionResponse exceptionResponse = new InvalidPasswordExceptionResponse(responseCode, responseCode.getMessage());
+
+        printExceptionInfo(exception);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     //없는 리소스 조회 시도 예외
