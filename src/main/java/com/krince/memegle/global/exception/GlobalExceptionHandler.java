@@ -1,6 +1,7 @@
 package com.krince.memegle.global.exception;
 
 import com.krince.memegle.global.response.ExceptionResponse;
+import com.krince.memegle.global.response.customexception.BadRequestExceptionResponse;
 import com.krince.memegle.global.response.customexception.InternalServerErrorExceptionResponse;
 import com.krince.memegle.global.response.customexception.InvalidValueExceptionResponse;
 import com.krince.memegle.global.response.customexception.NotFoundResourceExceptionResponse;
@@ -36,8 +37,12 @@ public class GlobalExceptionHandler {
                     return fieldName + ": " + message;
                 })
                 .collect(Collectors.joining());
+        ResponseCode responseCode = INVALID_VALUE;
+        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode, exceptionMessage);
 
-        return generateMessageExceptionResponse(exception, INVALID_VALUE, exceptionMessage);
+        printExceptionInfo(exception);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -64,7 +69,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ExceptionResponse> missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException exception) {
         String exceptionMessage = exception.getParameterName() + "은 필수 입력값입니다.";
-        return generateMessageExceptionResponse(exception, BAD_REQUEST, exceptionMessage);
+        ResponseCode responseCode = BAD_REQUEST;
+        BadRequestExceptionResponse exceptionResponse = new BadRequestExceptionResponse(responseCode, exceptionMessage);
+
+        printExceptionInfo(exception);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     //비밀번호 오류
