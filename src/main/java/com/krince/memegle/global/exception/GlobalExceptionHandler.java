@@ -1,6 +1,7 @@
 package com.krince.memegle.global.exception;
 
 import com.krince.memegle.global.response.ExceptionResponse;
+import com.krince.memegle.global.response.customexception.*;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.validation.UnexpectedTypeException;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -32,8 +34,20 @@ public class GlobalExceptionHandler {
                     return fieldName + ": " + message;
                 })
                 .collect(Collectors.joining());
+        ResponseCode responseCode = INVALID_VALUE;
+        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode, exceptionMessage);
 
-        return generateMessageExceptionResponse(exception, INVALID_VALUE, exceptionMessage);
+        printExceptionInfo(exception);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ExceptionResponse> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException exception) {
+        ResponseCode responseCode = INVALID_VALUE;
+        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     //request 타입 불일치 예외
@@ -52,20 +66,32 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ExceptionResponse> missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException exception) {
         String exceptionMessage = exception.getParameterName() + "은 필수 입력값입니다.";
-        return generateMessageExceptionResponse(exception, BAD_REQUEST, exceptionMessage);
+        ResponseCode responseCode = BAD_REQUEST;
+        BadRequestExceptionResponse exceptionResponse = new BadRequestExceptionResponse(responseCode, exceptionMessage);
+
+        printExceptionInfo(exception);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     //비밀번호 오류
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> badCredentialsExceptionHandler(BadCredentialsException exception) {
-        String exceptionMessage = exception.getMessage();
-        return generateMessageExceptionResponse(exception, INVALID_PASSWORD, exceptionMessage);
+        ResponseCode responseCode = INVALID_PASSWORD;
+        InvalidPasswordExceptionResponse exceptionResponse = new InvalidPasswordExceptionResponse(responseCode, responseCode.getMessage());
+
+        printExceptionInfo(exception);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     //없는 리소스 조회 시도 예외
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ExceptionResponse> noSuchElementExceptionHandler(NoSuchElementException exception) {
-        return generateExceptionResponse(exception, NOT_FOUND_RESOURCE);
+        ResponseCode responseCode = NOT_FOUND_RESOURCE;
+        NotFoundResourceExceptionResponse exceptionResponse = new NotFoundResourceExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -80,7 +106,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> exceptionHandler(Exception exception) {
-        return generateExceptionResponse(exception, INTERNAL_SERVER_ERROR);
+        ResponseCode responseCode = INTERNAL_SERVER_ERROR;
+        InternalServerErrorExceptionResponse exceptionResponse = new InternalServerErrorExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     private ResponseEntity<ExceptionResponse> generateExceptionResponse(Exception exception, ResponseCode status) {
