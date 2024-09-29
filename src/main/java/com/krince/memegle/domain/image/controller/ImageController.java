@@ -3,10 +3,7 @@ package com.krince.memegle.domain.image.controller;
 import com.krince.memegle.domain.image.dto.ViewImageDto;
 import com.krince.memegle.global.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
-import com.krince.memegle.global.response.customexception.BadRequestExceptionResponse;
-import com.krince.memegle.global.response.customexception.InternalServerErrorExceptionResponse;
-import com.krince.memegle.global.response.customexception.InvalidValueExceptionResponse;
-import com.krince.memegle.global.response.customexception.NotFoundResourceExceptionResponse;
+import com.krince.memegle.global.response.customexception.*;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.security.CustomUserDetails;
@@ -67,7 +64,19 @@ public interface ImageController {
             @Parameter(hidden = true) CustomUserDetails userDetails);
 
     @Operation(summary = "밈 이미지 등록 요청", description = "밈 이미지를 등록 요청합니다.")
-    @ApiResponse(description = "밈 이미지 등록 요청 성공", responseCode = "204")
+    @ApiResponse(description = "밈 이미지 등록 요청 성공", responseCode = "204(20400)", content = @Content)
+    @ApiResponse(description = "올바르지 않은 양식", responseCode = "400(40001)",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
+    @ApiResponse(description = "인증 정보 불일치", responseCode = "401(40100)",
+    content = @Content(mediaType = APPLICATION_JSON_VALUE,
+    schema = @Schema(implementation = UnauthorizedExceptionResponse.class)))
+    @ApiResponse(description = "존재하지 않는 태그, 카테고리", responseCode = "404(40401)",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = NotFoundResourceExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "500(50000)",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
     ResponseEntity<ResponseCode> registMemeImage(
             @RequestParam ImageCategory imageCategory,
             @RequestPart MultipartFile memeImage,
