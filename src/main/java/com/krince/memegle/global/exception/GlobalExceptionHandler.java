@@ -59,7 +59,10 @@ public class GlobalExceptionHandler {
     //중복 회원 등록 시도 예외
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ExceptionResponse> duplicateUserExceptionHandler(DuplicateUserException exception) {
-        return generateExceptionResponse(exception, DUPLICATE_USER);
+        ResponseCode responseCode = DUPLICATE_USER;
+        DuplicateUserExceptionResponse exceptionResponse = new DuplicateUserExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     //필수 파라미터 누락 예외

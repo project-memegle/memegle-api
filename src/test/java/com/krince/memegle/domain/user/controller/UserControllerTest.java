@@ -47,7 +47,6 @@ class UserControllerTest {
         SignUpDto mockSignUpDto = mock(SignUpDto.class);
         when(mockSignUpDto.getLoginId()).thenReturn("testLoginId1");
         when(mockSignUpDto.getPassword()).thenReturn("TestPassword1!");
-        when(mockSignUpDto.getName()).thenReturn("testName");
         when(mockSignUpDto.getNickname()).thenReturn("testNickname");
         doNothing().when(userService).signUp(any());
 
@@ -83,7 +82,6 @@ class UserControllerTest {
         SignUpDto mockSignUpDto = mock(SignUpDto.class);
         when(mockSignUpDto.getLoginId()).thenReturn("한글");
         when(mockSignUpDto.getPassword()).thenReturn("h");
-        when(mockSignUpDto.getName()).thenReturn("");
         when(mockSignUpDto.getNickname()).thenReturn(" ");
         doNothing().when(userService).signUp(any());
 

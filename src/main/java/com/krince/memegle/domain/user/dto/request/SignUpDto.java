@@ -25,12 +25,6 @@ public class SignUpDto {
             message = "영어 소문자, 대문자, 숫자, 특수문자의 조합이어야합니다.")
     private String password;
 
-    @Schema(title = "이름", description = "2 ~ 30자 한글과 영문 조합", example = "테스트")
-    @NotBlank(message = "이름을 입력해주세요.")
-    @Size(min = 2, max = 30, message = "2 ~ 30자 이내여야합니다.")
-    @Pattern(regexp = "^[a-zA-Z가-힣]*$", message = "한글과 영문만 사용할 수 있습니다.")
-    private String name;
-
     @Schema(title = "닉네임", description = "2 ~ 20 한글과 영문 조합", example = "testNickname1")
     @NotBlank(message = "닉네임을 입력해주세요.")
     @Size(min = 2, max = 20, message = "2 ~ 20자 이내여야합니다.")

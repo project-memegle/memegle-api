@@ -34,10 +34,6 @@ public class User {
 
     @Column(nullable = false)
     @NotBlank
-    private String name;
-
-    @Column(nullable = false)
-    @NotBlank
     private String nickname;
 
     @Column(nullable = false)

@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService {
         return User.builder()
                 .loginId(signUpDto.getLoginId())
                 .password(encodedPassword)
-                .name(signUpDto.getName())
                 .nickname(signUpDto.getNickname())
                 .role(role)
                 .build();
