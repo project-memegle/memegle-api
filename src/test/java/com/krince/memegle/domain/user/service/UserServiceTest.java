@@ -51,7 +51,6 @@ class UserServiceTest {
         when(userRepository.existsByLoginId(any())).thenReturn(false);
         when(mockSignUpDto.getLoginId()).thenReturn("testLoginId1");
         when(passwordEncoder.encode(any())).thenReturn("$2a$10$B/0v4wZRujJWa5SRIjUOmu/nIP9k2fmg4y23XbtzXT7c7gqqQOAPG");
-        when(mockSignUpDto.getName()).thenReturn("testName");
         when(mockSignUpDto.getNickname()).thenReturn("testNickname1");
         when(userRepository.save(any())).thenReturn(mockUser);
 

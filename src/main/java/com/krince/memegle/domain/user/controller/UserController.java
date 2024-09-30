@@ -21,6 +21,9 @@ public interface UserController {
     @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001",
             content = @Content(mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
+    @ApiResponse(description = "중복 회원", responseCode = "40002",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = DuplicateUserExceptionResponse.class)))
     @ApiResponse(description = "없는 로그인 아이디", responseCode = "40102",
             content = @Content(mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = NotFoundResourceExceptionResponse.class)))

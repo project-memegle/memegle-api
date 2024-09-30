@@ -33,7 +33,6 @@ class UserRepositoryTest {
         user = User.builder()
                 .loginId("testId1")
                 .password(passwordEncoder.encode("testPassword1!"))
-                .name("테스트")
                 .nickname("testNickname")
                 .role(Role.ROLE_USER)
                 .build();
