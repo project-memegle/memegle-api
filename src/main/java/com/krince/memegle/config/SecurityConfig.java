@@ -60,6 +60,7 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/apis/client/users/sign/**",
                         "/apis/client/images/{imageId}",
+                        "/apis/client/auth/email/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**"
                 ).permitAll()

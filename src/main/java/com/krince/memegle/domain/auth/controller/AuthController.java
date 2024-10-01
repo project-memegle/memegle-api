@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +33,7 @@ public interface AuthController {
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000",
             content = @Content(mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
-    ResponseEntity<ResponseCode> sendAuthenticationMail(@RequestBody @Valid UserAuthenticationDto userAuthenticationDto);
+    ResponseEntity<ResponseCode> sendAuthenticationMail(@RequestBody @Valid UserAuthenticationDto userAuthenticationDto) throws MessagingException;
 
     @Operation(summary = "이메일 인증코드 검증", description = "이메일 인증코드와 서버에 저장된 인증코드의 일치유무를 검증합니다. 5분이상 지난 인증코드는 검증되지 않습니다.")
     @ApiResponse(description = "이메일 인증코드 검증 성공", responseCode = "20400", content = @Content)
