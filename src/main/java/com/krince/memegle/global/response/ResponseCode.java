@@ -13,7 +13,7 @@ public enum ResponseCode {
     BAD_REQUEST(false, 40000, 400, "Bad Request", "올바르지 않은 요청입니다."),
     INVALID_VALUE(false, 40001, 400, "Invalid Value", "요청 값이 올바르지 않습니다."),
     DUPLICATE_USER(false, 40002, 400, "Duplicate User", "이미 존재하는 회원입니다."),
-    REQUIRE_VALUE(false, 40002, 400, "Require Value", "필수 입력값이 누락되었습니다."),
+    REQUIRE_VALUE(false, 40003, 400, "Require Value", "필수 입력값이 누락되었습니다."),
     UNAUTHORIZED(false, 40100, 401, "Unauthorized", "인증 정보가 일치하지 않습니다."),
     INVALID_TOKEN(false, 40101, 401, "Invalid Token", "유효하지 않은 토큰입니다."),
     INVALID_PASSWORD(false, 40102, 401, "Invalid Password", "비밀번호를 확인해주세요."),

@@ -48,7 +48,7 @@ public interface ImageController {
             @Parameter(hidden = true) CustomUserDetails userDetails);
 
     @Operation(summary = "카테고리 이미지 리스트 조회", description = "선택한 카테고리의 이미지 리스트를 조회합니다.")
-    @ApiResponse(description = "카테고리 이미지 리스트 조회 성공", responseCode = "200(20000)")
+    @ApiResponse(description = "카테고리 이미지 리스트 조회 성공", responseCode = "20000")
     @ApiResponse(description = "필수값 누락", responseCode = "40000",
             content = @Content(mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BadRequestExceptionResponse.class)))

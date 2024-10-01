@@ -5,6 +5,7 @@ import com.krince.memegle.global.response.customexception.*;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.validation.UnexpectedTypeException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
@@ -54,6 +55,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnexpectedTypeException.class)
     public ResponseEntity<ExceptionResponse> missingServletRequestPartExceptionHandler(UnexpectedTypeException exception) {
         return generateExceptionResponse(exception, REQUIRE_VALUE);
+    }
+
+    // 올바르지 않은 request body
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException exception) {
+        ResponseCode responseCode = INVALID_VALUE;
+        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
     //중복 회원 등록 시도 예외
