@@ -40,6 +40,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security' //security
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0' //swagger
 	implementation 'org.springframework.boot:spring-boot-starter-validation' //validation
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' //redis
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test' //security test
 	annotationProcessor 'org.projectlombok:lombok'
