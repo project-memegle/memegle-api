@@ -1,6 +1,7 @@
 package com.krince.memegle.config;
 
 import com.krince.memegle.global.security.*;
+import com.krince.memegle.util.PermitAllUrlsUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,13 +58,7 @@ public class SecurityConfig {
 
     private void authorizeRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationRequest) {
         authorizationRequest
-                .requestMatchers(
-                        "/apis/client/users/sign/**",
-                        "/apis/client/images/{imageId}",
-                        "/apis/client/auth/email/**",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**"
-                ).permitAll()
+                .requestMatchers(PermitAllUrlsUtil.getPermitAllUrls()).permitAll()
                 .anyRequest().authenticated();
     }
 }
