@@ -14,7 +14,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static com.krince.memegle.util.PermitAllUrlsUtil.*;
 
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -30,8 +33,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         String token = request.getHeader(HEADER_NAME);
         String requestURI = request.getRequestURI();
+        String method = request.getMethod();
 
-        if (isPermitAllURI(requestURI)) {
+        if (isPermitAllURI(requestURI, getPermitAllUrls())) {
+            filterChain.doFilter(request, response);
+
+            return;
+        }
+
+        if (method.equals("GET") || isPermitAllURI(requestURI, getPermitAllGetUrls())) {
             filterChain.doFilter(request, response);
 
             return;
@@ -63,8 +73,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isPermitAllURI(String requestURI) {
-        return PermitAllUrlsUtil.permitAllUrls.stream()
+    private boolean isPermitAllURI(String requestURI, String[] permitAllUrls) {
+        return Arrays.stream(permitAllUrls)
                 .anyMatch(path -> pathMatcher.match(path, requestURI));
     }
 }
