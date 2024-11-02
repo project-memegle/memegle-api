@@ -1,7 +1,7 @@
 package com.krince.memegle.domain.category.controller;
 
 import com.krince.memegle.domain.category.dto.CategoryDto;
-import com.krince.memegle.global.Criteria;
+import com.krince.memegle.global.constant.Criteria;
 import com.krince.memegle.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

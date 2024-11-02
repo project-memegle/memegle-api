@@ -1,6 +1,6 @@
 package com.krince.memegle.domain.image.entity;
 
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

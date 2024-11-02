@@ -1,7 +1,7 @@
 package com.krince.memegle.domain.user.repository;
 
 import com.krince.memegle.domain.user.entity.User;
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;

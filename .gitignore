@@ -41,3 +41,7 @@ out/
 
 ### Q file ###
 **/generated/com/**
+
+### Dockerfile ###
+Dockerfile
+docker-compose.yml

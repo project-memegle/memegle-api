@@ -7,7 +7,7 @@ import com.krince.memegle.domain.image.entity.RegistStatus;
 import com.krince.memegle.domain.image.repository.ImageRepository;
 import com.krince.memegle.domain.tag.entity.Tag;
 import com.krince.memegle.domain.tag.service.TagService;
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.aws.S3Service;
 import com.krince.memegle.global.dto.PageableDto;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

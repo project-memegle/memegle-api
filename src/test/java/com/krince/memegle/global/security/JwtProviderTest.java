@@ -1,6 +1,6 @@
 package com.krince.memegle.global.security;
 
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

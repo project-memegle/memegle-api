@@ -2,7 +2,7 @@ package com.krince.memegle.domain.image.controller;
 
 import com.krince.memegle.domain.image.dto.ViewImageDto;
 import com.krince.memegle.domain.image.service.ImageServiceImpl;
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

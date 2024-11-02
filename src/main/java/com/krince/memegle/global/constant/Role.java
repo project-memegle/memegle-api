@@ -1,4 +1,4 @@
-package com.krince.memegle.global;
+package com.krince.memegle.global.constant;
 
 public enum Role {
     ROLE_USER("ROLE_USER"),

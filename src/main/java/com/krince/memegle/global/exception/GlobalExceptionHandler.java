@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ExceptionResponse> accessDeniedExceptionHandler(AccessDeniedException exception) {
-        return generateExceptionResponse(exception, FORBIDDEN);
+        return generateExceptionResponse(exception, UNAUTHORIZED);
     }
 
     @ExceptionHandler(IOException.class)

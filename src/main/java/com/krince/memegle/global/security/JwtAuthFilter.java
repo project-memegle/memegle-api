@@ -1,9 +1,8 @@
 package com.krince.memegle.global.security;
 
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.EmptyTokenException;
 import com.krince.memegle.global.exception.JwtTokenInvalidException;
-import com.krince.memegle.util.PermitAllUrlsUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +14,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static com.krince.memegle.util.PermitAllUrlsUtil.*;
 

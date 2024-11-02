@@ -1,6 +1,6 @@
 package com.krince.memegle.domain.user.entity;
 
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

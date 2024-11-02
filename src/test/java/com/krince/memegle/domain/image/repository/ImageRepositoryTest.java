@@ -2,7 +2,7 @@ package com.krince.memegle.domain.image.repository;
 
 import com.krince.memegle.domain.image.entity.Image;
 import com.krince.memegle.domain.image.entity.RegistStatus;
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
