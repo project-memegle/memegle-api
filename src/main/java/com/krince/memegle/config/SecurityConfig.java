@@ -5,19 +5,20 @@ import com.krince.memegle.util.PermitAllUrlsUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
-import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
+import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.List;
+
+import static com.krince.memegle.global.constant.CorsArrowedUrl.*;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.*;
 
@@ -44,10 +45,31 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(this::corsConfigSetting)
                 .sessionManagement(this::stateless)
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(this::authExceptionHandler)
                 .getOrBuild();
+    }
+
+    private void corsConfigSetting(CorsConfigurer<HttpSecurity> cors) {
+        List<String> allowedOrigins = List.of(
+                MEMEGLE_PROD_CLIENT_URL.getStringValue(),
+                MEMEGLE_PROD_ADMIN_URL.getStringValue(),
+                MEMEGLE_DEV_CLIENT_URL1.getStringValue(),
+                MEMEGLE_DEV_CLIENT_URL1.getStringValue()
+        );
+        List<String> allowedMethods = List.of("GET", "POST", "PUT", "DELETE", "OPTIONS");
+
+        CorsConfigurationSource corsConfigSource = request -> {
+            CorsConfiguration corsConfig = new CorsConfiguration();
+            corsConfig.setAllowedOrigins(allowedOrigins);
+            corsConfig.setAllowedMethods(allowedMethods);
+            corsConfig.setAllowedHeaders(List.of("*"));
+            return corsConfig;
+        };
+
+        cors.configurationSource(corsConfigSource);
     }
 
     private void stateless(SessionManagementConfigurer<HttpSecurity> sessionManagementConfigurer) {
