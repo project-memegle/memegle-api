@@ -4,6 +4,7 @@ import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.entity.EmailAuthentication;
 import com.krince.memegle.domain.auth.repository.EmailAuthenticationRepository;
 import com.krince.memegle.global.mail.EmailService;
+import com.krince.memegle.global.mail.EmailServiceImpl;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class AuthServiceImpl implements AuthService {
     private final EmailService emailService;
 
     @Override
-    public void sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException {
+    public String sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException {
         String email = userAuthenticationDto.getEmail();
         String userName = userAuthenticationDto.getUserName();
 
@@ -32,5 +33,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         emailAuthenticationRepository.save(emailAuthentication);
+
+        return authenticationCode;
     }
 }

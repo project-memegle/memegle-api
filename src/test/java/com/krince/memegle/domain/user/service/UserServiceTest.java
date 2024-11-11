@@ -3,121 +3,144 @@ package com.krince.memegle.domain.user.service;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
-import com.krince.memegle.domain.user.entity.User;
-import com.krince.memegle.domain.user.repository.UserRepository;
-import com.krince.memegle.global.constant.Role;
+import com.krince.memegle.domain.user.repository.fake.FakeUserRepository;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.security.JwtProvider;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.*;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@Transactional
-@DisplayName("회원 서비스 테스트")
-@ExtendWith(MockitoExtension.class)
+@Tags({
+        @Tag("test"),
+        @Tag("unitTest")
+})
+@DisplayName("회원 서비스 테스트(UserService)")
 class UserServiceTest {
 
-    @InjectMocks
-    private UserServiceImpl userService;
+    static String secretKey = "sdufhasduvhaidufhwaoefjoisdjoviasjdoivjojsdfalskdfnaweivjnaosdivnalskmeflszflijlij";
+    static Long accessTokenExpired = 864000L;
+    static Long refreshTokenExpired = 864000L;
+    static SignUpDto signUpDto;
+    static SignInDto signInDto;
 
-    @Mock
-    UserRepository userRepository;
+    static UserService userService;
 
-    @Mock
-    PasswordEncoder passwordEncoder;
+    static FakeUserRepository userRepository;
 
-    @Mock
-    JwtProvider jwtProvider;
+    static PasswordEncoder passwordEncoder;
 
-    @Test
-    @DisplayName("회원가입 테스트")
-    void signUp() {
-        //given
-        SignUpDto mockSignUpDto = mock(SignUpDto.class);
-        User mockUser = mock(User.class);
-        when(userRepository.existsByLoginId(any())).thenReturn(false);
-        when(mockSignUpDto.getLoginId()).thenReturn("testLoginId1");
-        when(passwordEncoder.encode(any())).thenReturn("$2a$10$B/0v4wZRujJWa5SRIjUOmu/nIP9k2fmg4y23XbtzXT7c7gqqQOAPG");
-        when(mockSignUpDto.getNickname()).thenReturn("testNickname1");
-        when(userRepository.save(any())).thenReturn(mockUser);
+    static JwtProvider jwtProvider;
 
-        //when, then
-        userService.signUp(mockSignUpDto);
+    @BeforeAll
+    static void setUp() {
+        userRepository = new FakeUserRepository();
+        passwordEncoder = new BCryptPasswordEncoder();
+        jwtProvider = new JwtProvider(secretKey, accessTokenExpired, refreshTokenExpired);
+        userService = new UserServiceImpl(userRepository, passwordEncoder, jwtProvider);
+
+        signUpDto = SignUpDto.builder()
+                .loginId("login123")
+                .password("Password123")
+                .nickname("nickName")
+                .build();
+
+        signInDto = SignInDto.builder()
+                .loginId("login123")
+                .password("Password123")
+                .build();
     }
 
-    @Test
-    @DisplayName("중복된 회원은 예외를 발생시킨다")
-    void signUpDuplicateUser() {
-        //given
-        SignUpDto mockSignUpDto = mock(SignUpDto.class);
-        when(userRepository.existsByLoginId(any())).thenReturn(true);
-        when(mockSignUpDto.getLoginId()).thenReturn("testLoginId1");
-
-        //when, then
-        assertThrows(DuplicateUserException.class, () -> userService.signUp(mockSignUpDto));
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
     }
 
-    @Test
+    @Nested
+    @DisplayName("회원가입")
+    class SignUp {
+
+        @Test
+        @DisplayName("성공")
+        void success() {
+            //given, when
+            userService.signUp(signUpDto);
+
+            //then
+            assertThat(userRepository.findAll().size()).isEqualTo(1);
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class SignUpFail {
+            @Test
+            @DisplayName("중복 회원")
+            void fail() {
+                //given
+                userService.signUp(signUpDto);
+
+                //when, then
+                assertThrows(DuplicateUserException.class, () -> userService.signUp(signUpDto));
+            }
+        }
+
+    }
+
+    @Nested
     @DisplayName("회원 로그인")
-    void signIn() {
-        //given
-        User mockUser = mock(User.class);
-        SignInDto mockSignInDto = mock(SignInDto.class);
-        when(mockSignInDto.getLoginId()).thenReturn("testLoginId1");
-        when(mockSignInDto.getPassword()).thenReturn("testPassword1!");
-        when(mockUser.getPassword()).thenReturn("$2a$10$B/0v4wZRujJWa5SRIjUOmu/nIP9k2fmg4y23XbtzXT7c7gqqQOAPG");
-        when(mockUser.getRole()).thenReturn(Role.ROLE_USER);
-        when(jwtProvider.createAccessToken(any(), any())).thenReturn("Bearer access_token");
-        when(jwtProvider.createRefreshToken(any())).thenReturn("Bearer refresh_token");
-        when(userRepository.findByLoginId(any())).thenReturn(Optional.of(mockUser));
-        when(passwordEncoder.matches(any(), any())).thenReturn(true);
+    class signIn {
 
-        //when
-        TokenDto tokenDto = userService.signIn(mockSignInDto);
+        @Test
+        @DisplayName("성공")
+        void success() {
+            //given
+            userService.signUp(signUpDto);
 
-        //then
-        assertThat(tokenDto.getAccessToken()).isEqualTo("Bearer access_token");
-        assertThat(tokenDto.getRefreshToken()).isEqualTo("Bearer refresh_token");
-    }
+            //when
+            TokenDto tokenDto = userService.signIn(signInDto);
 
-    @Test
-    @DisplayName("없는 아이디로 로그인을 시도하면 예외가 발생한다.")
-    void signInWrongLoginId() {
-        //given
-        SignInDto mockSignInDto = mock(SignInDto.class);
-        when(mockSignInDto.getLoginId()).thenReturn("wrongLoginId");
-        when(userRepository.findByLoginId(any())).thenReturn(Optional.empty());
+            //then
+            assertThat(tokenDto.getAccessToken()).startsWith("Bearer");
+            assertThat(tokenDto.getRefreshToken()).startsWith("Bearer");
+        }
 
-        //when, then
-        assertThrows(NoSuchElementException.class, () -> userService.signIn(mockSignInDto));
-    }
+        @Nested
+        @DisplayName("실패")
+        class signInFail {
 
-    @Test
-    @DisplayName("틀린 비밀번호로 로그인을 시도하면 예외를 발생시킨다.")
-    void signInWrongPassword() {
-        //given
-        User mockUser = mock(User.class);
-        SignInDto mockSignInDto = mock(SignInDto.class);
-        when(mockSignInDto.getLoginId()).thenReturn("testLoginId1");
-        when(mockSignInDto.getPassword()).thenReturn("wrongPassword1!");
-        when(mockUser.getPassword()).thenReturn("$2a$10$B/0v4wZRujJWa5SRIjUOmu/nIP9k2fmg4y23XbtzXT7c7gqqQOAPG");
-        when(userRepository.findByLoginId(any())).thenReturn(Optional.of(mockUser));
-        when(passwordEncoder.matches(any(), any())).thenReturn(false);
+            @Test
+            @DisplayName("없는 아이디")
+            void missMatchLoginId() {
+                //given
+                userService.signUp(signUpDto);
 
-        //when, then
-        assertThrows(BadCredentialsException.class, () -> userService.signIn(mockSignInDto));
+                SignInDto wrongLoginIdSignInDto = SignInDto.builder()
+                        .loginId("wrongloginid123")
+                        .password("Password123")
+                        .build();
+
+                //when, then
+                assertThrows(NoSuchElementException.class, () -> userService.signIn(wrongLoginIdSignInDto));
+            }
+
+            @Test
+            @DisplayName("틀린 비밀번호")
+            void wrongPassword() {
+                //given
+                userService.signUp(signUpDto);
+                SignInDto wrongPasswordSignInDto = SignInDto.builder()
+                        .loginId("login123")
+                        .password("wrongpassword123")
+                        .build();
+
+                //when, then
+                assertThrows(BadCredentialsException.class, () -> userService.signIn(wrongPasswordSignInDto));
+            }
+        }
     }
 }

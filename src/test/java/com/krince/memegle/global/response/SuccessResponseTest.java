@@ -1,12 +1,17 @@
 package com.krince.memegle.global.response;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("성공 응답 클래스 테스트")
+@Tags({
+        @Tag("test"),
+        @Tag("unitTest")
+})
+@DisplayName("성공 응답 클래스 테스트(SuccessResponseTest)")
 class SuccessResponseTest {
 
     @Test

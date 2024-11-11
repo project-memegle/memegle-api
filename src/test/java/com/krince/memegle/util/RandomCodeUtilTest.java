@@ -1,11 +1,17 @@
 package com.krince.memegle.util;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("랜덤 문자열 코드 유틸 테스트")
+@Tags({
+        @Tag("test"),
+        @Tag("unitTest")
+})
+@DisplayName("랜덤 문자열 코드 유틸 테스트(RandomCodeUtil)")
 class RandomCodeUtilTest {
 
     @Test
