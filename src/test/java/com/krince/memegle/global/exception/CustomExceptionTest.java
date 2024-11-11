@@ -1,20 +1,23 @@
 package com.krince.memegle.global.exception;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("커스텀 예외 클레스 테스트")
+@Tags({
+        @Tag("test"),
+        @Tag("unitTest")
+})
+@DisplayName("커스텀 예외 클레스 테스트(CustomException)")
 class CustomExceptionTest {
 
     @Test
     @DisplayName("기본 생성 테스트")
-    void defaultConstructorTest() {
-        assertThatThrownBy(() -> {
-                    throw new CustomException();
-                })
-                .isInstanceOf(CustomException.class);
+    void defaultConstructorTest() throws CustomException {
+        assertThrows(CustomException.class, () -> {
+            throw new CustomException();
+        });
     }
 
     @Test
@@ -23,10 +26,13 @@ class CustomExceptionTest {
         //given
         String exceptionMessage = "this is test exception message";
 
-        //when, then
-        assertThatThrownBy(() -> {
+        //when
+        CustomException exception = assertThrows(CustomException.class, () -> {
             throw new CustomException(exceptionMessage);
-        })
+        });
+
+        //then
+        assertThat(exception)
                 .isInstanceOf(CustomException.class)
                 .hasMessage(exceptionMessage);
     }

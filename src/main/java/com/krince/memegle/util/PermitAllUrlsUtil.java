@@ -6,14 +6,16 @@ public class PermitAllUrlsUtil {
 
     public static List<String> permitAllUrls = List.of(
             "/apis/client/users/sign/**",
-            "/apis/client/images/**",
             "/apis/client/auth/email/**",
             "/swagger-ui/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/favicon.ico"
     );
 
     public static List<String> permitAllGetUrls = List.of(
-            "/apis/client/categories"
+            "/apis/client/categories",
+            "/apis/client/images/{imageId}",
+            "/apis/client/images/category"
     );
 
     public static String[] getPermitAllUrls() {

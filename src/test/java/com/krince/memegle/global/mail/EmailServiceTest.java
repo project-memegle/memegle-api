@@ -2,24 +2,29 @@ package com.krince.memegle.global.mail;
 
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@Transactional
-@DisplayName("이메일 서비스 테스트")
+@Tags({
+        @Tag("test"),
+        @Tag("unitTest"),
+        @Tag("mockTest")
+})
+@DisplayName("이메일 서비스 테스트(EmailService)")
 @ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
 
     @InjectMocks
-    EmailService emailService;
+    EmailServiceImpl emailService;
 
     @Mock
     JavaMailSenderImpl javaMailSender;

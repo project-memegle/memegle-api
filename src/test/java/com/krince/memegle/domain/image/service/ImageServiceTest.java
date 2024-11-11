@@ -3,132 +3,155 @@ package com.krince.memegle.domain.image.service;
 import com.krince.memegle.domain.image.dto.RegistImageDto;
 import com.krince.memegle.domain.image.dto.ViewImageDto;
 import com.krince.memegle.domain.image.entity.Image;
+import com.krince.memegle.domain.image.repository.fake.FakeImageRepository;
 import com.krince.memegle.domain.image.repository.ImageRepository;
-import com.krince.memegle.domain.tag.entity.Tag;
-import com.krince.memegle.domain.tag.entity.TagMap;
+import com.krince.memegle.domain.tag.repository.fake.FakeTagMapRepository;
+import com.krince.memegle.domain.tag.repository.fake.FakeTagRepository;
+import com.krince.memegle.domain.tag.repository.TagMapRepository;
+import com.krince.memegle.domain.tag.repository.TagRepository;
+import com.krince.memegle.domain.tag.service.fake.FakeTagService;
 import com.krince.memegle.domain.tag.service.TagService;
+import com.krince.memegle.global.aws.fake.FakeAmazonS3;
+import com.krince.memegle.global.aws.fake.FakeS3Service;
+import com.krince.memegle.global.aws.S3Service;
 import com.krince.memegle.global.constant.Criteria;
 import com.krince.memegle.global.constant.ImageCategory;
-import com.krince.memegle.global.aws.S3Service;
 import com.krince.memegle.global.dto.PageableDto;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
-@DisplayName("이미지 서비스 테스트")
-@ExtendWith(MockitoExtension.class)
+@Tags({
+        @Tag("test"),
+        @Tag("unitTest")
+})
+@DisplayName("이미지 서비스 테스트(ImageService)")
 class ImageServiceTest {
 
-    @InjectMocks
-    private ImageServiceImpl imageService;
+    static ImageService imageService;
 
-    @Mock
-    ImageRepository imageRepository;
+    static ImageRepository imageRepository;
 
-    @Mock
-    S3Service s3Service;
+    static S3Service s3Service;
 
-    @Mock
-    TagService tagService;
+    static TagService tagService;
 
-    @Test
-    @DisplayName("이미지 조회 테스트 - 성공")
-    void getImageSuccess() {
-        //given
-        Image image = generateMockImage();
-        when(imageRepository.findById(anyLong())).thenReturn(Optional.of(image));
+    static TagRepository tagRepository;
 
-        //when
-        ViewImageDto viewImageDto = imageService.getImage(1L);
+    static TagMapRepository tagMapRepository;
 
-        //then
-        assertThat(viewImageDto.getId()).isEqualTo(1L);
-        assertThat(viewImageDto.getImageUrl()).isEqualTo("www.testImageUrl.com");
+    @BeforeAll
+    static void setUp() {
+        imageRepository = new FakeImageRepository();
+        tagRepository = new FakeTagRepository();
+        tagMapRepository = new FakeTagMapRepository();
+        tagService = new FakeTagService(tagRepository, tagMapRepository);
+        s3Service = new FakeS3Service(new FakeAmazonS3(), "testBucket", "testRegion");
+        imageService = new ImageServiceImpl(imageRepository, s3Service, tagService);
     }
 
-    private Image generateMockImage() {
-        Image image = mock(Image.class);
-        when(image.getId()).thenReturn(1L);
-        when(image.getImageUrl()).thenReturn("www.testImageUrl.com");
-        when(image.getCreatedAt()).thenReturn(LocalDateTime.now());
-        when(image.getModifiedAt()).thenReturn(LocalDateTime.now());
-
-        return image;
+    @AfterEach
+    void tearDown() {
+        imageRepository.deleteAll();
+        tagRepository.deleteAll();
+        tagMapRepository.deleteAll();
     }
 
-    @Test
-    @DisplayName("이미지 조회 테스트 - 없는 이미지")
-    void getImageNotFindResource() {
-        //given
-        when(imageRepository.findById(anyLong())).thenThrow(NoSuchElementException.class);
+    @Nested
+    @DisplayName("이미지 단건 조회")
+    class GetImage {
 
-        //when, then
-        assertThatThrownBy(() -> imageService.getImage(1L))
-                .isInstanceOf(NoSuchElementException.class);
+        @Nested
+        @DisplayName("성공")
+        class GetImageSuccess {
+
+            @Test
+            @DisplayName("success")
+            void getImageSuccess() {
+                //given
+                Image image = Image.builder().build();
+                imageRepository.save(image);
+
+                //when
+                ViewImageDto viewImageDto = imageService.getImage(1L);
+
+                //then
+                assertThat(viewImageDto.getId()).isEqualTo(1L);
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class GetImageFail {
+
+            @Test
+            @DisplayName("없는 이미지를 조회하려 하면 예외를 반환한다.")
+            void getImageNotFindResource() {
+                //given
+                Image image = Image.builder().build();
+                imageRepository.save(image);
+
+                //when
+                Exception exception = assertThrows(Exception.class, () -> imageService.getImage(100L));
+
+                //then
+                assertThat(exception).isInstanceOf(NoSuchElementException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("카테고리 이미지 리스트 조회 - 성공")
-    void getCategoryImages() {
-        //given
-        PageableDto mockPageableDto = mock(PageableDto.class);
-        when(mockPageableDto.getPage()).thenReturn(1);
-        when(mockPageableDto.getSize()).thenReturn(10);
-        when(mockPageableDto.getCriteria()).thenReturn(Criteria.CREATED_AT);
-        Page<Image> mockPage = mock(Page.class);
-        when(imageRepository.findAllByImageCategory(any(), any())).thenReturn(mockPage);
+    @Nested
+    @DisplayName("카테고리 이미지 리스트 조회")
+    class GetCategoryImages {
 
-        //when
-        List<ViewImageDto> images = imageService.getCategoryImages(ImageCategory.MUDO, mockPageableDto);
+        @Nested
+        @DisplayName("성공")
+        class GetCategoryImagesSuccess {
 
-        //then
-        assertThat(images.size()).isEqualTo(0);
+            @Test
+            @DisplayName("success")
+            void getCategoryImages() {
+                //given
+                PageableDto pageableDto = PageableDto.builder()
+                        .criteria(Criteria.CREATED_AT)
+                        .page(1)
+                        .size(1)
+                        .build();
+
+                //when
+                List<ViewImageDto> images = imageService.getCategoryImages(ImageCategory.MUDO, pageableDto);
+
+                //then
+                assertThat(images.size()).isEqualTo(0);
+            }
+        }
     }
 
-    @Test
+    @Nested
     @DisplayName("밈 이미지 등록 신청 테스트")
-    void registMemeImage() throws IOException {
-        //given
-        String testImageURL = "https://www.testImageURL.com";
-        String tags = "testTag1 testTag2 testTag3";
-        String delimiter = " ";
+    class RegistMemeImage {
 
-        MultipartFile mockMultipartFile = mock(MultipartFile.class);
-        RegistImageDto mockRegistImageDto = mock(RegistImageDto.class);
-        Tag mockTag = mock(Tag.class);
-        Image mockImage = mock(Image.class);
-        TagMap mockTagMap = mock(TagMap.class);
+        @Nested
+        @DisplayName("성공")
+        class RegistMemeImageSuccess {
 
-        when(mockRegistImageDto.getImageCategory()).thenReturn(ImageCategory.MUDO);
-        when(mockRegistImageDto.getMemeImageFile()).thenReturn(mockMultipartFile);
-        when(mockRegistImageDto.getTags()).thenReturn(tags);
-        when(mockRegistImageDto.getDelimiter()).thenReturn(delimiter);
+            @Test
+            @DisplayName("success")
+            void registMemeImage() throws IOException {
+                //given
+                RegistImageDto registImageDto = RegistImageDto.builder().build();
 
-        when(tagService.getTags(any(), any())).thenReturn(List.of(mockTag, mockTag, mockTag));
-        when(s3Service.uploadFile(any())).thenReturn("https://www.testImageURL.com");
-        when(imageRepository.save(any())).thenReturn(mockImage);
-        when(tagService.registTagMap(any(), any())).thenReturn(mockTagMap);
+                //when
+                String imageURL = imageService.registMemeImage(registImageDto);
 
-        //when
-        String imageURL = imageService.registMemeImage(mockRegistImageDto);
-
-        //then
-        assertThat(imageURL).isEqualTo(testImageURL);
+                //then
+                assertThat(imageURL).isEqualTo("https://testImage.com");
+            }
+        }
     }
 }
