@@ -4,15 +4,14 @@ import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.service.UserService;
+import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
+import com.krince.memegle.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.krince.memegle.global.response.ResponseCode.*;
 
@@ -48,5 +47,11 @@ public class UserControllerImpl implements UserController {
                 .header("Authorization", accessToken)
                 .header("Refresh-Token", refreshToken)
                 .build();
+    }
+
+    @Override
+    @DeleteMapping
+    public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails) {
+        throw new UndevelopedApiException();
     }
 }

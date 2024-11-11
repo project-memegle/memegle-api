@@ -173,5 +173,39 @@ class UserControllerTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("회원 탈퇴")
+    class DropUser {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @WithMockUser
+            @DisplayName("success")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/users";
+
+                //when
+
+                //then
+                mockMvc.perform(delete(uri)
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf()))
+                        .andExpect(status().isNoContent())
+                        .andDo(print());
+
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+    }
 }
 
