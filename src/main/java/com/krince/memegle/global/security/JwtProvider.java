@@ -1,6 +1,6 @@
 package com.krince.memegle.global.security;
 
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

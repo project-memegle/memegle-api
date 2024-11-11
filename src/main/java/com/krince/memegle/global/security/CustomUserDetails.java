@@ -1,6 +1,6 @@
 package com.krince.memegle.global.security;
 
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

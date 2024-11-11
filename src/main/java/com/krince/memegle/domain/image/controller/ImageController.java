@@ -1,7 +1,7 @@
 package com.krince.memegle.domain.image.controller;
 
 import com.krince.memegle.domain.image.dto.ViewImageDto;
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
 import com.krince.memegle.global.response.customexception.*;
 import com.krince.memegle.global.response.ResponseCode;

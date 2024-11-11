@@ -1,6 +1,6 @@
 package com.krince.memegle.global.dto;
 
-import com.krince.memegle.global.Criteria;
+import com.krince.memegle.global.constant.Criteria;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import lombok.*;

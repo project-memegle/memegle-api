@@ -1,7 +1,7 @@
 package com.krince.memegle.domain.image.repository;
 
 import com.krince.memegle.domain.image.entity.Image;
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,36 +1,52 @@
 package com.krince.memegle.global.security;
 
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
+import com.krince.memegle.global.exception.EmptyTokenException;
 import com.krince.memegle.global.exception.JwtTokenInvalidException;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import java.util.Arrays;
+
+import static com.krince.memegle.util.PermitAllUrlsUtil.*;
 
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService customUserDetailsService;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private String TOKEN_TYPE = "Bearer ";
-    private String HEADER_NAME = "Authorization";
+    private final String TOKEN_TYPE = "Bearer ";
+    private final String HEADER_NAME = "Authorization";
 
     @SneakyThrows
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         String token = request.getHeader(HEADER_NAME);
+        String requestURI = request.getRequestURI();
+        String method = request.getMethod();
 
-        if (token == null) {
+        if (isPermitAllURI(requestURI, getPermitAllUrls())) {
             filterChain.doFilter(request, response);
 
             return;
+        }
+
+        if (method.equals("GET") || isPermitAllURI(requestURI, getPermitAllGetUrls())) {
+            filterChain.doFilter(request, response);
+
+            return;
+        }
+
+        if (token == null) {
+            throw new EmptyTokenException();
         }
 
         if (!token.startsWith(TOKEN_TYPE)) {
@@ -53,5 +69,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPermitAllURI(String requestURI, String[] permitAllUrls) {
+        return Arrays.stream(permitAllUrls)
+                .anyMatch(path -> pathMatcher.match(path, requestURI));
     }
 }

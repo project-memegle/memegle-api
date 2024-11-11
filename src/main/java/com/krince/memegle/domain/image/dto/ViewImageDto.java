@@ -1,6 +1,6 @@
 package com.krince.memegle.domain.image.dto;
 
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

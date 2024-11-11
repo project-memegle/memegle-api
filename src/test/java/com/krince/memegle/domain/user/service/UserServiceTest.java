@@ -5,7 +5,7 @@ import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.entity.User;
 import com.krince.memegle.domain.user.repository.UserRepository;
-import com.krince.memegle.global.Role;
+import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.security.JwtProvider;
 import org.junit.jupiter.api.DisplayName;

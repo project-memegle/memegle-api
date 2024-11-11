@@ -1,9 +1,10 @@
-package com.krince.memegle.global;
+package com.krince.memegle.global.constant;
 
 public enum Criteria {
 
     CREATED_AT("createdAt"),
-    MODIFIED_AT("modifiedAt");
+    MODIFIED_AT("modifiedAt"),
+    POPULARITY("popularity");
 
     final String criteria;
 

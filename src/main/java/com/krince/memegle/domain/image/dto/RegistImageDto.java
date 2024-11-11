@@ -1,6 +1,6 @@
 package com.krince.memegle.domain.image.dto;
 
-import com.krince.memegle.global.ImageCategory;
+import com.krince.memegle.global.constant.ImageCategory;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
