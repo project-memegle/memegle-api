@@ -66,6 +66,7 @@ public class SecurityConfig {
             corsConfig.setAllowedOrigins(allowedOrigins);
             corsConfig.setAllowedMethods(allowedMethods);
             corsConfig.setAllowedHeaders(List.of("*"));
+            corsConfig.setExposedHeaders(List.of("Authorization", "refresh-token"));
             return corsConfig;
         };
 

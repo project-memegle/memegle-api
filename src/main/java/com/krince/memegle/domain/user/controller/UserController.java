@@ -24,12 +24,6 @@ public interface UserController {
     @ApiResponse(description = "중복 회원", responseCode = "40002",
             content = @Content(mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = DuplicateUserExceptionResponse.class)))
-    @ApiResponse(description = "없는 로그인 아이디", responseCode = "40102",
-            content = @Content(mediaType = APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = NotFoundResourceExceptionResponse.class)))
-    @ApiResponse(description = "틀린 비밀번호", responseCode = "40401",
-            content = @Content(mediaType = APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = InvalidPasswordExceptionResponse.class)))
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000",
             content = @Content(mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
