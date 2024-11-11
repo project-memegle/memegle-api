@@ -23,6 +23,7 @@ public enum ResponseCode {
     NOT_FOUND(false, 40400, 404, "Not Found", "리소스가 존재하지 않습니다."),
     NOT_FOUND_RESOURCE(false, 40401, 404, "Not Found Resource", "리소스가 존재하지 않습니다."),
     INTERNAL_SERVER_ERROR(false, 50000, 500, "Internal Server Error", "서버 에러입니다 개발자에게 문의해주세요."),
+    IMPLEMENTED(false, 50100, 501, "Implemented", "미구현 api 입니다.")
     ;
 
     private final Boolean isSuccess;

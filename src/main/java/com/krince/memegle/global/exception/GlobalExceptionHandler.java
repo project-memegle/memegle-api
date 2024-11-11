@@ -139,6 +139,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status.getHttpCode()).body(exceptionResponse);
     }
 
+    @ExceptionHandler(UndevelopedApiException.class)
+    private ResponseEntity<ExceptionResponse> UndevelopedApiException(Exception exception) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(IMPLEMENTED);
+
+        return ResponseEntity.status(IMPLEMENTED.getHttpCode()).body(exceptionResponse);
+    }
+
     private void printExceptionInfo(Exception exception) {
         StackTraceElement[] stackTrace = exception.getStackTrace();
 
