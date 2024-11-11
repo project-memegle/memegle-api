@@ -1,11 +1,14 @@
 package com.krince.memegle.domain.user.controller;
 
+import com.krince.memegle.domain.user.dto.request.FindLoginIdDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
+import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.service.UserService;
 import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
+import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,19 @@ import static com.krince.memegle.global.response.ResponseCode.*;
 public class UserControllerImpl implements UserController {
 
     private final UserService userService;
+
+    @Override
+    @DeleteMapping
+    public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails) {
+        throw new UndevelopedApiException();
+    }
+
+    @Override
+    @PreAuthorize("permitAll()")
+    @GetMapping("/login-id")
+    public ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(FindLoginIdDto findLoginIdDto) {
+        throw new UndevelopedApiException();
+    }
 
     @Override
     @PostMapping("/sign/up")
@@ -47,11 +63,5 @@ public class UserControllerImpl implements UserController {
                 .header("Authorization", accessToken)
                 .header("Refresh-Token", refreshToken)
                 .build();
-    }
-
-    @Override
-    @DeleteMapping
-    public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails) {
-        throw new UndevelopedApiException();
     }
 }

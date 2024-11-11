@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (method.equals("GET") || isPermitAllURI(requestURI, getPermitAllGetUrls())) {
+        if (method.equals("GET") && isPermitAllURI(requestURI, getPermitAllGetUrls())) {
             filterChain.doFilter(request, response);
 
             return;
