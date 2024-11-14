@@ -8,7 +8,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @Tags({
         @Tag("test"),
         @Tag("dtoUnitTest"),
-        @Tag("unitTest")
+        @Tag("unitTest"),
+        @Tag("develop")
 })
 @DisplayName("아이디 찾기 dto 테스트")
 class FindLoginIdDtoTest {

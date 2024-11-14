@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Tags({
         @Tag("test"),
-        @Tag("unitTest")
+        @Tag("unitTest"),
 })
 @WebMvcTest(value = UserController.class)
 @DisplayName("회원 컨트롤러 테스트(UserController)")
@@ -176,6 +176,7 @@ class UserControllerTest {
 
     @Nested
     @DisplayName("회원 탈퇴")
+    @Tag("develop")
     class DropUser {
 
         @Nested
