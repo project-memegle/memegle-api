@@ -17,10 +17,10 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayName("로그인 dto 테스트(SignInDto)")
 class SignInDtoTest {
 
-    private Validator validator;
+    private static Validator validator;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
         validatorFactoryBean.afterPropertiesSet();
         validator = validatorFactoryBean;

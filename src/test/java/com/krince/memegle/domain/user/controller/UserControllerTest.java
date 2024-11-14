@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Tags({
         @Tag("test"),
-        @Tag("unitTest")
+        @Tag("unitTest"),
 })
 @WebMvcTest(value = UserController.class)
 @DisplayName("회원 컨트롤러 테스트(UserController)")
@@ -171,6 +171,41 @@ class UserControllerTest {
                         .andExpect(jsonPath("code").value(INVALID_PASSWORD.getCode()))
                         .andDo(print());
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 탈퇴")
+    @Tag("develop")
+    class DropUser {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @WithMockUser
+            @DisplayName("success")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/users";
+
+                //when
+
+                //then
+                mockMvc.perform(delete(uri)
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf()))
+                        .andExpect(status().isNoContent())
+                        .andDo(print());
+
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
         }
     }
 }
