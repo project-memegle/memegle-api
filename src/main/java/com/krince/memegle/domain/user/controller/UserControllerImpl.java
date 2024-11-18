@@ -5,6 +5,7 @@ import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
+import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.service.UserService;
 import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
@@ -25,6 +26,12 @@ import static com.krince.memegle.global.response.ResponseCode.*;
 public class UserControllerImpl implements UserController {
 
     private final UserService userService;
+
+    @Override
+    @GetMapping
+    public ResponseEntity<SuccessResponse<UserInfoDto>> getUserInfo(CustomUserDetails userDetails) {
+        throw new UndevelopedApiException();
+    }
 
     @Override
     @DeleteMapping

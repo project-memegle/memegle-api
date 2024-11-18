@@ -4,6 +4,7 @@ import com.krince.memegle.domain.user.dto.request.FindLoginIdDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.LoginIdDto;
+import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.response.customexception.*;
@@ -20,6 +21,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Tag(name = "회원", description = "회원 관련 API")
 public interface UserController {
+
+    @Operation(summary = "회원 정보 조회(미구현 api)", description = "회원 정보를 조회합니다.")
+    @ApiResponse(description = "회원 정보 조회 성공", responseCode = "20000")
+    @ApiResponse(description = "인증 정보 불일치", responseCode = "40100", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UnauthorizedExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
+    ResponseEntity<SuccessResponse<UserInfoDto>> getUserInfo(@Parameter(hidden = true) CustomUserDetails userDetails);
 
     @Operation(summary = "회원 탈퇴(미구현 api)", description = "회원 정보를 삭제합니다.")
     @ApiResponse(description = "회원 탈퇴 성공", responseCode = "20400")
