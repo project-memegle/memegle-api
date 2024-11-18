@@ -12,6 +12,7 @@ import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +36,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @DeleteMapping
-    public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails) {
+    public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails, @RequestBody @NotNull String deleteUserReason) {
         throw new UndevelopedApiException();
     }
 

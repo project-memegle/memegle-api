@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -32,7 +33,10 @@ public interface UserController {
     @ApiResponse(description = "회원 탈퇴 성공", responseCode = "20400")
     @ApiResponse(description = "인증 정보 불일치", responseCode = "40100", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UnauthorizedExceptionResponse.class)))
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
-    ResponseEntity<ResponseCode> dropUser(@Parameter(hidden = true) CustomUserDetails userDetails);
+    ResponseEntity<ResponseCode> dropUser(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @RequestBody String userDeleteReason
+    );
 
     @Operation(summary = "회원 아이디 찾기(미구현 api)", description = "이메일 인증 코드와 이메일로 해당 회원의 아이디를 조회합니다.")
     @ApiResponse(description = "회원 아이디 조회 성공", responseCode = "20000")
