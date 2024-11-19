@@ -1,10 +1,12 @@
 package com.krince.memegle.domain.user.controller;
 
+import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
 import com.krince.memegle.domain.user.dto.request.FindLoginIdDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
+import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.response.customexception.*;
@@ -15,8 +17,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -45,6 +49,13 @@ public interface UserController {
     @ApiResponse(description = "없는 이메일, 인증코드", responseCode = "40401", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = NotFoundResourceExceptionResponse.class)))
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
     ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(FindLoginIdDto findLoginIdDto);
+
+    @Operation(summary = "회원 비밀번호 변경(미구현 api)", description = "이메일 인증을 마친 회원의 비밀번호를 변경합니다.")
+    @ApiResponse(description = "비밀번호 변경 성공", responseCode = "20000")
+    @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
+    @ApiResponse(description = "필수값 누락", responseCode = "40003", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = RequireValueExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
+    ResponseEntity<ResponseCode> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto, @RequestParam AuthenticationType authenticationType);
 
     @Operation(summary = "회원 등록", description = "회원가입을 진행합니다.")
     @ApiResponse(description = "회원 등록 성공", responseCode = "20400", content = @Content)
