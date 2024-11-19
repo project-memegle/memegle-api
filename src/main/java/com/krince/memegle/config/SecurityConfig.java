@@ -85,6 +85,9 @@ public class SecurityConfig {
         authorizationRequest
                 .requestMatchers(PermitAllUrlsUtil.getPermitAllUrls()).permitAll()
                 .requestMatchers(GET, PermitAllUrlsUtil.getPermitAllGetUrls()).permitAll()
+                .requestMatchers(POST, PermitAllUrlsUtil.getPermitAllPostUrls()).permitAll()
+                .requestMatchers(PUT, PermitAllUrlsUtil.getPermitAllPutUrls()).permitAll()
+                .requestMatchers(DELETE, PermitAllUrlsUtil.getPermitAllDeleteUrls()).permitAll()
                 .anyRequest().authenticated();
     }
 }
