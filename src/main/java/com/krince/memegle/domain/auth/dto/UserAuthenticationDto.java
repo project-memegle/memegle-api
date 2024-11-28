@@ -1,7 +1,9 @@
 package com.krince.memegle.domain.auth.dto;
 
+import com.krince.memegle.global.constant.AuthenticationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -28,4 +30,8 @@ public class UserAuthenticationDto {
     @Size(min = 2, max = 255, message = "이메일은 2자 이상 255자 이하여야합니다.")
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "이메일 형식을 확인해주세요.")
     private String email;
+
+    @Schema(title = "인증 타입", description = "어떤 인증을 위해서 인증 코드 메일을 보내는지 결정합니다.", example = "SIGN_UP")
+    @NotNull(message = "인증 타입은 필수값입니다.")
+    private AuthenticationType authenticationType;
 }

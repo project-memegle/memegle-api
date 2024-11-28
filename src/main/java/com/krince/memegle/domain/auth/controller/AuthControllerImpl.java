@@ -3,6 +3,7 @@ package com.krince.memegle.domain.auth.controller;
 import com.krince.memegle.domain.auth.dto.EmailAuthenticationCodeDto;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.service.AuthService;
+import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -33,6 +34,6 @@ public class AuthControllerImpl implements AuthController {
     @Override
     @PostMapping("/email")
     public ResponseEntity<ResponseCode> validateEmailAuthenticationCode(@RequestBody @Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto) {
-        return null;
+        throw new UndevelopedApiException();
     }
 }
