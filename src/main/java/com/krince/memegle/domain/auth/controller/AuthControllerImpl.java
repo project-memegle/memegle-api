@@ -9,10 +9,7 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/apis/client/auth")
@@ -22,6 +19,18 @@ public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
 
     @Override
+    @GetMapping("/email")
+    public ResponseEntity<ResponseCode> validateDuplicateMail(@RequestParam String email) {
+        throw new UndevelopedApiException();
+    }
+
+    @Override
+    @PostMapping("/email")
+    public ResponseEntity<ResponseCode> validateEmailAuthenticationCode(@RequestBody @Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto) {
+        throw new UndevelopedApiException();
+    }
+
+    @Override
     @PostMapping("/email/send")
     public ResponseEntity<ResponseCode> sendAuthenticationMail(@RequestBody @Valid UserAuthenticationDto userAuthenticationDto) throws MessagingException {
         authService.sendAuthenticationMail(userAuthenticationDto);
@@ -29,11 +38,5 @@ public class AuthControllerImpl implements AuthController {
         ResponseCode responseCode = ResponseCode.NO_CONTENT;
 
         return ResponseEntity.status(responseCode.getHttpCode()).build();
-    }
-
-    @Override
-    @PostMapping("/email")
-    public ResponseEntity<ResponseCode> validateEmailAuthenticationCode(@RequestBody @Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto) {
-        throw new UndevelopedApiException();
     }
 }
