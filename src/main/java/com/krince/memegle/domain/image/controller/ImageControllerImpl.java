@@ -5,6 +5,7 @@ import com.krince.memegle.domain.image.dto.ViewImageDto;
 import com.krince.memegle.domain.image.service.ImageService;
 import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
+import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.security.CustomUserDetails;
@@ -75,5 +76,15 @@ public class ImageControllerImpl implements ImageController {
         return ResponseEntity
                 .status(responseCode.getHttpCode())
                 .build();
+    }
+
+    @Override
+    @GetMapping("/tag")
+    public ResponseEntity<SuccessResponse<List<ViewImageDto>>> getTagImages(
+            @RequestParam @NotBlank @Valid String tagName,
+            @ModelAttribute @Valid PageableDto pageableDto,
+            CustomUserDetails userDetails
+    ) {
+        throw new UndevelopedApiException();
     }
 }

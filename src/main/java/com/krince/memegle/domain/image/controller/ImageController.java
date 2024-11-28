@@ -18,6 +18,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -64,4 +65,16 @@ public interface ImageController {
             @RequestPart @NotNull String delimiterFile,
             @Parameter(hidden = true) CustomUserDetails userDetails
     ) throws IOException;
+
+    @GetMapping("/tag")
+    @Operation(summary = "태그 이미지 리스트 조회(미구현 api)", description = "선택한 태그의 이미지 리스트를 조회합니다.")
+    @ApiResponse(description = "태그 이미지 리스트 조회 성공", responseCode = "20000")
+    @ApiResponse(description = "필수값 누락", responseCode = "40000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = BadRequestExceptionResponse.class)))
+    @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
+    ResponseEntity<SuccessResponse<List<ViewImageDto>>> getTagImages(
+            @RequestParam @NotBlank @Valid String tagName,
+            @ModelAttribute @Valid PageableDto pageableDto,
+            @Parameter(hidden = true) CustomUserDetails userDetails
+    );
 }
