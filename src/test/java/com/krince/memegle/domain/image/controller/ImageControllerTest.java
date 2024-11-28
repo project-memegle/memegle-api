@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -22,10 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest")
-})
+@Tag("test")
 @WebMvcTest(value = ImageController.class)
 @DisplayName("이미지 컨트롤러 테스트(ImageController)")
 class ImageControllerTest {
@@ -36,6 +34,7 @@ class ImageControllerTest {
     @MockBean
     private ImageServiceImpl imageService;
 
+    @Tag("unitTest")
     @Nested
     @DisplayName("이미지 조회")
     class GetImage {
@@ -62,6 +61,70 @@ class ImageControllerTest {
         }
     }
 
+    @Tag("develop")
+    @Nested
+    @DisplayName("즐겨찾기 이미지 리스트 조회")
+    class GetBookmarkImages {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/images/bookmark";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("이미지 즐겨찾기 추가 및 삭제")
+    class ChangeBookmarkState {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("success")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/images/bookmark";
+
+                //when
+
+                //then
+                mockMvc.perform(post(uri)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+    }
+
+    @Tag("unitTest")
     @Nested
     @DisplayName("카테고리 이미지 리스트 조회")
     class GetCategoryImages {
@@ -94,6 +157,7 @@ class ImageControllerTest {
         }
     }
 
+    @Tag("unitTest")
     @Nested
     @DisplayName("밈 이미지 등록 요청")
     class RegistMemeImage {
@@ -160,6 +224,37 @@ class ImageControllerTest {
                         .andDo(print())
                         .andExpect(status().isUnauthorized());
             }
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("태그 이미지 리스트 조회")
+    class GetTagImages {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/images/tag";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
         }
     }
 }
