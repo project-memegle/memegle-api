@@ -3,6 +3,7 @@ package com.krince.memegle.domain.auth.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.service.AuthServiceImpl;
+import com.krince.memegle.global.constant.AuthenticationType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -53,6 +54,7 @@ class AuthControllerTest {
                 UserAuthenticationDto mockUserAuthenticationDto = mock(UserAuthenticationDto.class);
                 when(mockUserAuthenticationDto.getUserName()).thenReturn("testUserName");
                 when(mockUserAuthenticationDto.getEmail()).thenReturn("testEmail@gmail.com");
+                when(mockUserAuthenticationDto.getAuthenticationType()).thenReturn(AuthenticationType.SIGN_UP);
                 when(authService.sendAuthenticationMail(mockUserAuthenticationDto)).thenReturn("1Q2W3E");
 
                 //when, then
