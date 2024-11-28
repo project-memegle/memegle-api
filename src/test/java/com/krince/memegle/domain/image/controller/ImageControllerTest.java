@@ -61,6 +61,38 @@ class ImageControllerTest {
         }
     }
 
+    @Tag("develop")
+    @Nested
+    @DisplayName("이미지 즐겨찾기 추가 및 삭제")
+    class ChangeBookmarkState {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("success")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/images/bookmark";
+
+                //when
+
+                //then
+                mockMvc.perform(post(uri)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+    }
+
     @Tag("unitTest")
     @Nested
     @DisplayName("카테고리 이미지 리스트 조회")
