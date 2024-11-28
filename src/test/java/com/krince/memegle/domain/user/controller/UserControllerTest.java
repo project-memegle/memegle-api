@@ -95,6 +95,24 @@ class UserControllerTest {
 
     @Tag("develop")
     @Nested
+    @DisplayName("회원 닉네임 수정")
+    class ChangeUserNickname {
+
+        @Test
+        @WithMockUser
+        @DisplayName("성공")
+        void Success() throws Exception {
+            Assertions.assertThat(true).isFalse();
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class SignUpFail {
+        }
+    }
+
+    @Tag("develop")
+    @Nested
     @DisplayName("회원 비밀번호 변경")
     class ChangePassword {
 

@@ -1,9 +1,6 @@
 package com.krince.memegle.domain.user.controller;
 
-import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
-import com.krince.memegle.domain.user.dto.request.FindLoginIdDto;
-import com.krince.memegle.domain.user.dto.request.SignInDto;
-import com.krince.memegle.domain.user.dto.request.SignUpDto;
+import com.krince.memegle.domain.user.dto.request.*;
 import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
@@ -44,6 +41,12 @@ public class UserControllerImpl implements UserController {
     @Override
     @GetMapping("/login-id")
     public ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(FindLoginIdDto findLoginIdDto) {
+        throw new UndevelopedApiException();
+    }
+
+    @Override
+    @PutMapping("/nickname")
+    public ResponseEntity<ResponseCode> changeUserNickname(CustomUserDetails userDetails, @RequestBody @Valid ChangeNicknameDto changeNicknameDto) {
         throw new UndevelopedApiException();
     }
 
