@@ -6,12 +6,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import static org.assertj.core.api.Assertions.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("dtoUnitTest"),
-        @Tag("unitTest"),
-        @Tag("develop")
-})
+@Tag("test")
 @DisplayName("비밀번호 변경 dto 테스트")
 class ChangePasswordDtoTest {
 
@@ -24,6 +19,7 @@ class ChangePasswordDtoTest {
         validator = validatorFactoryBean;
     }
 
+    @Tag("develop")
     @Nested
     @DisplayName("")
     class Email {

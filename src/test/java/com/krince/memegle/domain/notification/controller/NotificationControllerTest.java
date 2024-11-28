@@ -13,11 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest"),
-        @Tag("develop")
-})
+@Tag("test")
 @WebMvcTest(NotificationController.class)
 @DisplayName("알림 컨트롤러 테스트(NotificationController)")
 class NotificationControllerTest {
@@ -28,6 +24,7 @@ class NotificationControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Tag("develop")
     @Nested
     @WithMockUser
     @DisplayName("미열람 알림 유무 조회")
@@ -47,8 +44,8 @@ class NotificationControllerTest {
 
                 //then
                 mockMvc.perform(get(uri)
-                        .contentType(APPLICATION_JSON)
-                        .with(csrf()))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf()))
                         .andExpect(status().isOk())
                         .andDo(print());
             }

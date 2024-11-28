@@ -25,11 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest"),
-        @Tag("develop")
-})
+@Tag("test")
 @WebMvcTest(value = UserController.class)
 @DisplayName("회원 컨트롤러 테스트(UserController)")
 class UserControllerTest {
@@ -43,6 +39,7 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @Tag("develop")
     @Nested
     @DisplayName("회원 정보 조회")
     class GetUserInfo {
@@ -60,6 +57,7 @@ class UserControllerTest {
         }
     }
 
+    @Tag("develop")
     @Nested
     @DisplayName("회원 탈퇴")
     class DropUser {
@@ -77,6 +75,7 @@ class UserControllerTest {
         }
     }
 
+    @Tag("develop")
     @Nested
     @DisplayName("회원 아이디 찾기")
     class GetLoginId {
@@ -94,6 +93,7 @@ class UserControllerTest {
         }
     }
 
+    @Tag("develop")
     @Nested
     @DisplayName("회원 비밀번호 변경")
     class ChangePassword {
@@ -111,6 +111,7 @@ class UserControllerTest {
         }
     }
 
+    @Tag("unitTest")
     @Nested
     @DisplayName("회원가입")
     class SignUp {
@@ -137,6 +138,7 @@ class UserControllerTest {
                     .andDo(print());
         }
 
+        @Tag("unitTest")
         @Nested
         @DisplayName("실패")
         class SignUpFail {
@@ -167,6 +169,7 @@ class UserControllerTest {
         }
     }
 
+    @Tag("unitTest")
     @Nested
     @DisplayName("회원 로그인")
     class SignIn {
@@ -196,6 +199,7 @@ class UserControllerTest {
                     .andDo(print());
         }
 
+        @Tag("unitTest")
         @Nested
         @DisplayName("실패")
         class SignUpFail {

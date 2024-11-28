@@ -5,12 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-@Tags({
-        @Tag("test"),
-        @Tag("dtoUnitTest"),
-        @Tag("unitTest"),
-        @Tag("develop")
-})
+@Tag("test")
 @DisplayName("아이디 찾기 dto 테스트")
 class FindLoginIdDtoTest {
 
@@ -23,6 +18,7 @@ class FindLoginIdDtoTest {
         validator = validatorFactoryBean;
     }
 
+    @Tag("develop")
     @Nested
     @DisplayName("")
     class AuthenticationCode {

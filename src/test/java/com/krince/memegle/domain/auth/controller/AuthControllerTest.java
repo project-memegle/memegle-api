@@ -20,10 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest")
-})
+@Tag("test")
 @WebMvcTest(value = AuthController.class)
 @DisplayName("인증 컨트롤러 테스트(AuthController)")
 class AuthControllerTest {
@@ -37,6 +34,33 @@ class AuthControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Nested
+    @DisplayName("중복 이메일 검증 테스트")
+    @Tag("develop")
+    class ValidateDuplicateMail {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("성공")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/auth/email";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+    }
+
+    @Tag("unitTest")
     @Nested
     @DisplayName("인증 이메일 전송 테스트")
     class SendAuthenticationMail {
