@@ -3,6 +3,7 @@ package com.krince.memegle.domain.auth.service;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.repository.EmailAuthenticationRepository;
 import com.krince.memegle.domain.auth.repository.fake.FakeEmailAuthenticationRepository;
+import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.mail.EmailService;
 import com.krince.memegle.global.mail.fake.FakeEmailService;
 import org.junit.jupiter.api.*;
@@ -33,7 +34,9 @@ class AuthServiceTest {
     @DisplayName("인증 이메일 전송 테스트")
     void sendAuthenticationMail() throws Exception {
         //given
-        UserAuthenticationDto authenticationDto = UserAuthenticationDto.builder().build();
+        UserAuthenticationDto authenticationDto = UserAuthenticationDto.builder()
+                .authenticationType(AuthenticationType.SIGN_UP)
+                .build();
 
         //when
         String authCode = authService.sendAuthenticationMail(authenticationDto);

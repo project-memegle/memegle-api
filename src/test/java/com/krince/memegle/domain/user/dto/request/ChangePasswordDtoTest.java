@@ -1,13 +1,14 @@
 package com.krince.memegle.domain.user.dto.request;
 
 import jakarta.validation.Validator;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import static org.assertj.core.api.Assertions.*;
+
 @Tag("test")
-@DisplayName("아이디 찾기 dto 테스트")
-class FindLoginIdDtoTest {
+@DisplayName("비밀번호 변경 dto 테스트")
+class ChangePasswordDtoTest {
 
     private static Validator validator;
 
@@ -21,7 +22,7 @@ class FindLoginIdDtoTest {
     @Tag("develop")
     @Nested
     @DisplayName("")
-    class AuthenticationCode {
+    class Email {
 
         @Nested
         @DisplayName("")
@@ -30,7 +31,7 @@ class FindLoginIdDtoTest {
             @Test
             @DisplayName("")
             void success() {
-                Assertions.assertThat(true).isFalse();
+                assertThat(true).isFalse();
             }
         }
 
@@ -43,7 +44,41 @@ class FindLoginIdDtoTest {
 
     @Nested
     @DisplayName("")
-    class Email {
+    class AuthenticationCode {
+
+        @Nested
+        @DisplayName("")
+        class Success {
+
+        }
+
+        @Nested
+        @DisplayName("")
+        class Fail {
+
+        }
+    }
+
+    @Nested
+    @DisplayName("")
+    class LoginId {
+
+        @Nested
+        @DisplayName("")
+        class Success {
+
+        }
+
+        @Nested
+        @DisplayName("")
+        class Fail {
+
+        }
+    }
+
+    @Nested
+    @DisplayName("")
+    class Password {
 
         @Nested
         @DisplayName("")

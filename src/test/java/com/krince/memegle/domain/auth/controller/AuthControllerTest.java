@@ -3,6 +3,7 @@ package com.krince.memegle.domain.auth.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.service.AuthServiceImpl;
+import com.krince.memegle.global.constant.AuthenticationType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,10 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest")
-})
+@Tag("test")
 @WebMvcTest(value = AuthController.class)
 @DisplayName("인증 컨트롤러 테스트(AuthController)")
 class AuthControllerTest {
@@ -36,6 +34,109 @@ class AuthControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Nested
+    @DisplayName("중복 이메일 검증 테스트")
+    @Tag("develop")
+    class ValidateDuplicateMail {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("성공")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/auth/email";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+
+
+    }
+
+    @Nested
+    @DisplayName("중복 아이디 검증 테스트")
+    @Tag("develop")
+    class ValidateDuplicateLoginId {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("성공")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/auth/login-id";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+
+
+    }
+
+    @Nested
+    @DisplayName("중복 닉네임 검증 테스트")
+    @Tag("develop")
+    class ValidateDuplicateNickname {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("성공")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/auth/nickname";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+
+
+    }
+
+    @Tag("unitTest")
     @Nested
     @DisplayName("인증 이메일 전송 테스트")
     class SendAuthenticationMail {
@@ -53,6 +154,7 @@ class AuthControllerTest {
                 UserAuthenticationDto mockUserAuthenticationDto = mock(UserAuthenticationDto.class);
                 when(mockUserAuthenticationDto.getUserName()).thenReturn("testUserName");
                 when(mockUserAuthenticationDto.getEmail()).thenReturn("testEmail@gmail.com");
+                when(mockUserAuthenticationDto.getAuthenticationType()).thenReturn(AuthenticationType.SIGN_UP);
                 when(authService.sendAuthenticationMail(mockUserAuthenticationDto)).thenReturn("1Q2W3E");
 
                 //when, then

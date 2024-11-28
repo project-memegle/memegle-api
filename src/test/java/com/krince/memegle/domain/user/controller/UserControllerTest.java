@@ -6,6 +6,7 @@ import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.service.UserService;
 import com.krince.memegle.global.exception.DuplicateUserException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,10 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest"),
-})
+@Tag("test")
 @WebMvcTest(value = UserController.class)
 @DisplayName("회원 컨트롤러 테스트(UserController)")
 class UserControllerTest {
@@ -41,6 +39,97 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 정보 조회")
+    class GetUserInfo {
+
+        @Test
+        @WithMockUser
+        @DisplayName("성공")
+        void Success() throws Exception {
+            Assertions.assertThat(true).isFalse();
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class SignUpFail {
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 탈퇴")
+    class DropUser {
+
+        @Test
+        @WithMockUser
+        @DisplayName("성공")
+        void Success() throws Exception {
+            Assertions.assertThat(true).isFalse();
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class SignUpFail {
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 아이디 찾기")
+    class GetLoginId {
+
+        @Test
+        @WithMockUser
+        @DisplayName("성공")
+        void Success() throws Exception {
+            Assertions.assertThat(true).isFalse();
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class SignUpFail {
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 닉네임 수정")
+    class ChangeUserNickname {
+
+        @Test
+        @WithMockUser
+        @DisplayName("성공")
+        void Success() throws Exception {
+            Assertions.assertThat(true).isFalse();
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class SignUpFail {
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 비밀번호 변경")
+    class ChangePassword {
+
+        @Test
+        @WithMockUser
+        @DisplayName("성공")
+        void Success() throws Exception {
+            Assertions.assertThat(true).isFalse();
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class SignUpFail {
+        }
+    }
+
+    @Tag("unitTest")
     @Nested
     @DisplayName("회원가입")
     class SignUp {
@@ -67,6 +156,7 @@ class UserControllerTest {
                     .andDo(print());
         }
 
+        @Tag("unitTest")
         @Nested
         @DisplayName("실패")
         class SignUpFail {
@@ -97,6 +187,7 @@ class UserControllerTest {
         }
     }
 
+    @Tag("unitTest")
     @Nested
     @DisplayName("회원 로그인")
     class SignIn {
@@ -126,6 +217,7 @@ class UserControllerTest {
                     .andDo(print());
         }
 
+        @Tag("unitTest")
         @Nested
         @DisplayName("실패")
         class SignUpFail {
@@ -171,41 +263,6 @@ class UserControllerTest {
                         .andExpect(jsonPath("code").value(INVALID_PASSWORD.getCode()))
                         .andDo(print());
             }
-        }
-    }
-
-    @Nested
-    @DisplayName("회원 탈퇴")
-    @Tag("develop")
-    class DropUser {
-
-        @Nested
-        @DisplayName("성공")
-        class Success {
-
-            @Test
-            @WithMockUser
-            @DisplayName("success")
-            void success() throws Exception {
-                //given
-                String uri = "/apis/client/users";
-
-                //when
-
-                //then
-                mockMvc.perform(delete(uri)
-                                .contentType(APPLICATION_JSON)
-                                .with(csrf()))
-                        .andExpect(status().isNoContent())
-                        .andDo(print());
-
-            }
-        }
-
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-
         }
     }
 }

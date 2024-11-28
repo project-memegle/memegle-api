@@ -18,4 +18,5 @@ public class EmailAuthentication {
     private String email;
     private String userName;
     private String authenticationCode;
+    private String authenticationType;
 }

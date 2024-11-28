@@ -33,13 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
 
-        if (isPermitAllURI(requestURI, getPermitAllUrls())) {
-            filterChain.doFilter(request, response);
-
-            return;
-        }
-
-        if (method.equals("GET") && isPermitAllURI(requestURI, getPermitAllGetUrls())) {
+        if (isPermitAllUrl(requestURI, method)) {
             filterChain.doFilter(request, response);
 
             return;
@@ -69,6 +63,30 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPermitAllUrl(String requestURI, String method) {
+        if (isPermitAllURI(requestURI, getPermitAllUrls())) {
+            return true;
+        }
+
+        if (method.equals("GET") && isPermitAllURI(requestURI, getPermitAllGetUrls())) {
+            return true;
+        }
+
+        if (method.equals("POST") && isPermitAllURI(requestURI, getPermitAllPostUrls())) {
+            return true;
+        }
+
+        if (method.equals("PUT") && isPermitAllURI(requestURI, getPermitAllPutUrls())) {
+            return true;
+        }
+
+        if (method.equals("DELETE") && isPermitAllURI(requestURI, getPermitAllDeleteUrls())) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isPermitAllURI(String requestURI, String[] permitAllUrls) {
