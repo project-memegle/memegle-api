@@ -31,6 +31,18 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
+    @GetMapping("/login-id")
+    public ResponseEntity<ResponseCode> validateDuplicateLoginId(String loginId) {
+        throw new UndevelopedApiException();
+    }
+
+    @Override
+    @GetMapping("/nickname")
+    public ResponseEntity<ResponseCode> validateDuplicateNickname(String nickname) {
+        throw new UndevelopedApiException();
+    }
+
+    @Override
     @PostMapping("/email/send")
     public ResponseEntity<ResponseCode> sendAuthenticationMail(@RequestBody @Valid UserAuthenticationDto userAuthenticationDto) throws MessagingException {
         authService.sendAuthenticationMail(userAuthenticationDto);

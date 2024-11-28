@@ -40,6 +40,24 @@ public interface AuthController {
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
     ResponseEntity<ResponseCode> validateEmailAuthenticationCode(@RequestBody @Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto);
 
+    @GetMapping("/login-id")
+    @ApiResponse(description = "아이디 중복 검증 검증 성공", responseCode = "20400", content = @Content)
+    @ApiResponse(description = "올바르지 않은 요청값", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
+    @ApiResponse(description = "중복된 아이디", responseCode = "40002", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = DuplicateUserExceptionResponse.class)))
+    @ApiResponse(description = "필수값 누락", responseCode = "40003", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = RequireValueExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
+    @Operation(summary = "아이디 중복 검증", description = "해당 아이디가 이미 사용되는 아이디인지 검증합니다. 중복된 아이디라면 예외를 반환합니다.")
+    ResponseEntity<ResponseCode> validateDuplicateLoginId(@RequestParam String loginId);
+
+    @GetMapping("/nickname")
+    @ApiResponse(description = "닉네임 중복 검증 검증 성공", responseCode = "20400", content = @Content)
+    @ApiResponse(description = "올바르지 않은 요청값", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
+    @ApiResponse(description = "중복된 닉네임", responseCode = "40002", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = DuplicateUserExceptionResponse.class)))
+    @ApiResponse(description = "필수값 누락", responseCode = "40003", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = RequireValueExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
+    @Operation(summary = "닉네임 중복 검증", description = "해당 닉네임이가 이미 사용되는 닉네임인지 검증합니다. 중복된 닉네임이라면 예외를 반환합니다.")
+    ResponseEntity<ResponseCode> validateDuplicateNickname(@RequestParam String nickname);
+
     @Operation(summary = "본인 인증 이메일 전송", description = "본인 인증을 위한 인증 메일을 전송합니다.")
     @ApiResponse(description = "이메일 인증 전송 성공", responseCode = "20400", content = @Content)
     @ApiResponse(description = "올바르지 않은 요청값", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))

@@ -58,6 +58,82 @@ class AuthControllerTest {
                         .andExpect(status().isNoContent());
             }
         }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+
+
+    }
+
+    @Nested
+    @DisplayName("중복 아이디 검증 테스트")
+    @Tag("develop")
+    class ValidateDuplicateLoginId {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("성공")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/auth/login-id";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+
+
+    }
+
+    @Nested
+    @DisplayName("중복 닉네임 검증 테스트")
+    @Tag("develop")
+    class ValidateDuplicateNickname {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("성공")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/auth/nickname";
+
+                //when
+
+                //then
+                mockMvc.perform(get(uri)
+                                .contentType(APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+        }
+
+
     }
 
     @Tag("unitTest")
