@@ -66,6 +66,12 @@ public class ImageControllerImpl implements ImageController {
     }
 
     @Override
+    @GetMapping("/bookmark")
+    public ResponseEntity<SuccessResponse<ViewImageDto>> getBookmarkImages(CustomUserDetails userDetails) {
+        throw new UndevelopedApiException();
+    }
+
+    @Override
     @PostMapping("/bookmark")
     public ResponseEntity<ResponseCode> changeBookmarkState(@RequestBody @Valid ImageIdDto imageIdDto, CustomUserDetails userDetails) {
         throw new UndevelopedApiException();

@@ -54,6 +54,17 @@ public interface ImageController {
             Authentication authentication,
             @Parameter(hidden = true) CustomUserDetails userDetails);
 
+    @GetMapping("/bookmark")
+    @Operation(summary = "즐겨찾기 이미지 리스트 조회(미구현 api)", description = "즐겨찾기에 추가한 이미지 리스트를 조회합니다.")
+    @ApiResponse(description = "즐겨찾기 이미지 리스트 조회 성공", responseCode = "20000")
+    @ApiResponse(description = "인증 정보 불일치", responseCode = "40100", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UnauthorizedExceptionResponse.class)))
+    @ApiResponse(description = "유효하지 않은 토큰", responseCode = "40101", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidTokenExceptionResponse.class)))
+    @ApiResponse(description = "토큰 정보 누락", responseCode = "40103", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = EmptyTokenExceptionResponse.class)))
+    @ApiResponse(description = "만료된 토큰", responseCode = "40104", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExpiredTokenExceptionResponse.class)))
+    @ApiResponse(description = "존재하지 않는 리소스", responseCode = "40401", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = NotFoundResourceExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
+    ResponseEntity<SuccessResponse<ViewImageDto>> getBookmarkImages(@Parameter(hidden = true) CustomUserDetails userDetails);
+
     @PostMapping("/bookmark")
     @Operation(summary = "이미지 즐겨찾기 추가 및 삭제(미구현 api)", description = "선택한 이미지의 즐겨찾기 상태를 변경합니다.")
     @ApiResponse(description = "이미지 즐겨찾기 추가 및 삭제 성공", responseCode = "20400")
