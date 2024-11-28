@@ -49,10 +49,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PutMapping("/password")
-    public ResponseEntity<ResponseCode> changePassword(
-            @RequestBody @Valid ChangePasswordDto changePasswordDto,
-            @RequestParam AuthenticationType authenticationType
-    ) {
+    public ResponseEntity<ResponseCode> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto) {
         throw new UndevelopedApiException();
     }
 

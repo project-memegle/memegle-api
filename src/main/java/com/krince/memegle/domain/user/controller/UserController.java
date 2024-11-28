@@ -55,7 +55,7 @@ public interface UserController {
     @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
     @ApiResponse(description = "필수값 누락", responseCode = "40003", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = RequireValueExceptionResponse.class)))
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
-    ResponseEntity<ResponseCode> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto, @RequestParam AuthenticationType authenticationType);
+    ResponseEntity<ResponseCode> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto);
 
     @Operation(summary = "회원 등록", description = "회원가입을 진행합니다.")
     @ApiResponse(description = "회원 등록 성공", responseCode = "20400", content = @Content)
