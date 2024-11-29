@@ -1,0 +1,83 @@
+server:
+  ssl:
+    key-store: /keystore.p12
+    key-store-type: PKCS12
+    key-store-password: ${SSL_KEY_PASSWORD}
+    key-alias: tomcat
+  port: 8443
+
+spring:
+  application:
+    name: memegle
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: ${DRIVER_CLASS_NAME}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_PROPERTIES_SMTP_AUTH}
+          starttls:
+            enable: ${MAIL_PROPERTIES_SMTP_STARTTLS_ENABLE}
+            required: ${MAIL_PROPERTIES_SMTP_STARTTLS_REQUIRED}
+          connectiontimeout: ${MAIL_PROPERTIES_SMTP_CONNECTION_TIMEOUT}
+          timeout: ${MAIL_PROPERTIES_SMTP_TIMEOUT}
+          writetimeout: ${MAIL_PROPERTIES_SMTP_WRITE_TIMEOUT}
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD}
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0B
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+#logging:
+#  level:
+#    root: debug
+#    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
+#    org.springframework.test.context: debug
+
+cloud:
+  aws:
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    stack:
+      auto: ${MAIL_PROPERTIES_SMTP_AUTH}
+    region:
+      static: ${CLOUD_AWS_REGION_STATIC}
+    credentials:
+      accessKey: ${CLOUD_AWS_CREDENTIALS_ACCESS_KEY}
+      secretKey: ${CLOUD_AWS_CREDENTIALS_SECRET_KEY}
+
+jwt:
+  access-token-expired: ${JWT_ACCESS_TOKEN_EXPIRED} #1일
+  refresh-token-expired: ${JWT_REFRESH_TOKEN_EXPIRED} #2주
+  secret:
+    key: ${JWT_SECRET_KEY}
