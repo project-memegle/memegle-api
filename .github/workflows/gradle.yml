@@ -23,6 +23,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Recreate keystore file
+      run: |
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.p12
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
