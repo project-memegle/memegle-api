@@ -38,3 +38,16 @@ out/
 
 ### yml files ###
 *.yml
+
+### Q file ###
+**/generated/com/**
+
+### Dockerfile ###
+Dockerfile
+docker-compose.yml
+
+### Sample Data ###
+/src/test/resources/sample/**
+
+### SSL KEY ###
+/keystore.p12
