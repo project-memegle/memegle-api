@@ -43,7 +43,6 @@ out/
 **/generated/com/**
 
 ### Dockerfile ###
-Dockerfile
 docker-compose.yml
 
 ### Sample Data ###
