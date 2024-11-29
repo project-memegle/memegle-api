@@ -1,4 +1,4 @@
-FROM openjdk:17-slim
+FROM openjdk:17
 
 EXPOSE 8080 8443
 
