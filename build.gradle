@@ -74,6 +74,6 @@ tasks.named('test') {
 
 tasks.test {
 	useJUnitPlatform {
-		excludeTags 'develop'
+		excludeTags 'develop', 'integrationTest'
 	}
 }
