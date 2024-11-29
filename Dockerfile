@@ -1,6 +1,6 @@
 FROM openjdk:17
 
-EXPOSE 8080 8443
+EXPOSE 8443
 
 ARG JAR_FILE=build/libs/*.jar
 
