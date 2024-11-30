@@ -4,7 +4,9 @@ import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
+import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.entity.User;
+import com.krince.memegle.domain.user.repository.UserQueryRepository;
 import com.krince.memegle.domain.user.repository.UserRepository;
 
 import com.krince.memegle.global.constant.Role;
@@ -26,8 +28,16 @@ import java.util.NoSuchElementException;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserQueryRepository userQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+
+    @Override
+    public UserInfoDto getUserInfo(CustomUserDetails userDetails) {
+        Long userId = userDetails.getId();
+
+        return userQueryRepository.findUserInfoDtoByUserId(userId).orElseThrow(NoSuchElementException::new);
+    }
 
     @Override
     public void signUp(SignUpDto signUpDto) {

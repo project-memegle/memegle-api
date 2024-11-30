@@ -4,6 +4,8 @@ import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
+import com.krince.memegle.domain.user.dto.response.UserInfoDto;
+import com.krince.memegle.domain.user.repository.fake.FakeUserQueryRepository;
 import com.krince.memegle.domain.user.repository.fake.FakeUserRepository;
 import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
@@ -37,6 +39,8 @@ class UserServiceTest {
 
     static FakeUserRepository userRepository;
 
+    static FakeUserQueryRepository userQueryRepository;
+
     static PasswordEncoder passwordEncoder;
 
     static JwtProvider jwtProvider;
@@ -44,9 +48,10 @@ class UserServiceTest {
     @BeforeAll
     static void setUp() {
         userRepository = new FakeUserRepository();
+        userQueryRepository = new FakeUserQueryRepository();
         passwordEncoder = new BCryptPasswordEncoder();
         jwtProvider = new JwtProvider(secretKey, accessTokenExpired, refreshTokenExpired);
-        userService = new UserServiceImpl(userRepository, passwordEncoder, jwtProvider);
+        userService = new UserServiceImpl(userRepository, userQueryRepository, passwordEncoder, jwtProvider);
 
         signUpDto = SignUpDto.builder()
                 .loginId("login123")
@@ -63,6 +68,45 @@ class UserServiceTest {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 정보 조회")
+    class GetUserInfo {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("success")
+            void success() {
+                //given
+                CustomUserDetails userDetails = new CustomUserDetails(1L, Role.ROLE_USER);
+
+                //when
+                UserInfoDto findUserInfoDto = userService.getUserInfo(userDetails);
+
+                //then
+                assertThat(findUserInfoDto).isNotNull();
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+            @Test
+            @DisplayName("등록되지 않은 회원은 예외를 반환한다.")
+            void noSuchUser() {
+                //given 2L 은 등록되지 않은 회원의 pk임
+                CustomUserDetails userDetails = new CustomUserDetails(2L, Role.ROLE_USER);
+
+                //when, then
+                assertThrows(NoSuchElementException.class, () -> userService.getUserInfo(userDetails));
+            }
+        }
     }
 
     @Nested
