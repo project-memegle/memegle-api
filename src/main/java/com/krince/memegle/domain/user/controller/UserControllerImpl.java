@@ -27,8 +27,12 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping
-    public ResponseEntity<SuccessResponse<UserInfoDto>> getUserInfo(CustomUserDetails userDetails) {
-        throw new UndevelopedApiException();
+    public ResponseEntity<SuccessResponse<UserInfoDto>> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        UserInfoDto userInfoDto = userService.getUserInfo(userDetails);
+        ResponseCode responseCode = OK;
+        SuccessResponse<UserInfoDto> responseBody = new SuccessResponse<>(responseCode, userInfoDto);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(responseBody);
     }
 
     @Override

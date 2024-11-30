@@ -5,6 +5,7 @@ import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
+import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.service.UserService;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.security.JwtProvider;
@@ -52,8 +53,22 @@ class UserControllerTest {
         @Test
         @WithMockUser
         @DisplayName("성공")
-        void Success() throws Exception {
-            Assertions.assertThat(true).isFalse();
+        void success() throws Exception {
+            //given
+            String uri = "/apis/client/users";
+            UserInfoDto userInfoDto = UserInfoDto.builder().loginId("loginid").nickname("nickname").email("email@email.com").build();
+            when(userService.getUserInfo(any())).thenReturn(userInfoDto);
+
+            //when
+            mockMvc.perform(get(uri)
+                            .contentType(APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.results.loginId").exists())
+                    .andExpect(jsonPath("$.results.email").exists())
+                    .andExpect(jsonPath("$.results.nickname").exists());
+
+            //then
         }
 
         @Nested

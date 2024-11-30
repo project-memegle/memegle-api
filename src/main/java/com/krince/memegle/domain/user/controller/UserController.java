@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,9 +25,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Tag(name = "회원", description = "회원 관련 API")
 public interface UserController {
 
-    @Operation(summary = "회원 정보 조회(미구현 api)", description = "회원 정보를 조회합니다.")
+    @GetMapping
+    @Operation(summary = "회원 정보 조회", description = "회원 정보를 조회합니다.")
     @ApiResponse(description = "회원 정보 조회 성공", responseCode = "20000")
-    @ApiResponse(description = "인증 정보 불일치", responseCode = "40100", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UnauthorizedExceptionResponse.class)))
+    @ApiResponse(description = "유효하지 않은 토큰", responseCode = "40101", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidTokenExceptionResponse.class)))
+    @ApiResponse(description = "토큰 정보 누락", responseCode = "40103", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = EmptyTokenExceptionResponse.class)))
+    @ApiResponse(description = "만료된 토큰", responseCode = "40104", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExpiredTokenExceptionResponse.class)))
+    @ApiResponse(description = "존재하지 않는 리소스", responseCode = "40401", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = NotFoundResourceExceptionResponse.class)))
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
     ResponseEntity<SuccessResponse<UserInfoDto>> getUserInfo(@Parameter(hidden = true) CustomUserDetails userDetails);
 
