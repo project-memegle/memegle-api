@@ -50,4 +50,8 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
 
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
 }

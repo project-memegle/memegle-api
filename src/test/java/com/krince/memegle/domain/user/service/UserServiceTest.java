@@ -1,10 +1,14 @@
 package com.krince.memegle.domain.user.service;
 
+import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.repository.fake.FakeUserRepository;
+import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
+import com.krince.memegle.global.exception.DuplicationResourceException;
+import com.krince.memegle.global.security.CustomUserDetails;
 import com.krince.memegle.global.security.JwtProvider;
 import org.junit.jupiter.api.*;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -140,6 +144,62 @@ class UserServiceTest {
 
                 //when, then
                 assertThrows(BadCredentialsException.class, () -> userService.signIn(wrongPasswordSignInDto));
+            }
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 닉네임 변경")
+    class ChangeNickname {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("중복되지 않은 닉네임으로 가입할 수 있다.")
+            void success() {
+                //given
+                userService.signUp(signUpDto);
+                CustomUserDetails userDetails = new CustomUserDetails(1L, Role.ROLE_USER);
+                ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("anotherNickname").build();
+
+                //when
+                boolean isChangedNickname = userService.changeNickname(userDetails, changeNicknameDto);
+
+                //then
+                assertThat(isChangedNickname).isTrue();
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+            @Test
+            @DisplayName("중복되는 닉네임이 있다면 예외를 반환한다.")
+            void duplicateNickname() {
+                //given
+                userService.signUp(signUpDto);
+                CustomUserDetails userDetails = new CustomUserDetails(1L, Role.ROLE_USER);
+                String duplicateNickname = signUpDto.getNickname();
+                ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname(duplicateNickname).build();
+
+                //when, then
+                assertThrows(DuplicationResourceException.class, () -> userService.changeNickname(userDetails, changeNicknameDto));
+            }
+
+            @Test
+            @DisplayName("등록된 회원이 아니라면 예외를 반환한다.")
+            void unregisteredUser() {
+                //given
+                userService.signUp(signUpDto);
+                CustomUserDetails userDetails = new CustomUserDetails(2L, Role.ROLE_USER);
+                ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("아무닉네임").build();
+
+                //when, then
+                assertThrows(NoSuchElementException.class, () -> userService.changeNickname(userDetails, changeNicknameDto));
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.krince.memegle.domain.user.service;
 
+import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
@@ -8,12 +9,17 @@ import com.krince.memegle.domain.user.repository.UserRepository;
 
 import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
+import com.krince.memegle.global.exception.DuplicationResourceException;
 import com.krince.memegle.global.response.ResponseCode;
+import com.krince.memegle.global.security.CustomUserDetails;
 import com.krince.memegle.global.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -72,6 +78,27 @@ public class UserServiceImpl implements UserService {
 
         if (!isMatchedPassword) {
             throw new BadCredentialsException(ResponseCode.INVALID_PASSWORD.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean changeNickname(CustomUserDetails userDetails, ChangeNicknameDto changeNicknameDto) {
+        Long userId = userDetails.getId();
+        String nickname = changeNicknameDto.getNickname();
+        User findUser = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+
+        validateDuplicateNickname(nickname);
+        findUser.changeNickname(nickname);
+
+        return true;
+    }
+
+    private void validateDuplicateNickname(String nickname) {
+        boolean isDuplicateNickname = userRepository.existsByNickname(nickname);
+
+        if (isDuplicateNickname) {
+            throw new DuplicationResourceException("이미 존재하는 닉네임입니다. 닉네임: " + nickname);
         }
     }
 }
