@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -47,15 +48,18 @@ public interface UserController {
     ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(FindLoginIdDto findLoginIdDto);
 
     @PutMapping("/nickname")
-    @Operation(summary = "회원 닉네임 변경(미구현 api)", description = "회원의 닉네임을 변경합니다.")
+    @Operation(summary = "회원 닉네임 변경", description = "회원의 닉네임을 변경합니다.")
     @ApiResponse(description = "회원 닉네임 변경 성공", responseCode = "20400")
     @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
     @ApiResponse(description = "필수값 누락", responseCode = "40003", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = RequireValueExceptionResponse.class)))
+    @ApiResponse(description = "중복된 리소스", responseCode = "40004", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = DuplicateResourceExceptionResponse.class)))
     @ApiResponse(description = "인증 정보 불일치", responseCode = "40100", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UnauthorizedExceptionResponse.class)))
     @ApiResponse(description = "유효하지 않은 토큰", responseCode = "40101", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidTokenExceptionResponse.class)))
     @ApiResponse(description = "접근 권한 없음", responseCode = "40300", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ForbiddenUserExceptionResponse.class)))
+    @ApiResponse(description = "존재하지 않는 리소스", responseCode = "40401", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = NotFoundResourceExceptionResponse.class)))
+    @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InternalServerErrorExceptionResponse.class)))
     ResponseEntity<ResponseCode> changeUserNickname(
-            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid ChangeNicknameDto changeNicknameDto
     );
 

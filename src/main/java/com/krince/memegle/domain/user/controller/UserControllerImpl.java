@@ -5,7 +5,6 @@ import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.service.UserService;
-import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
@@ -14,7 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static com.krince.memegle.global.response.ResponseCode.*;
@@ -46,8 +45,15 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PutMapping("/nickname")
-    public ResponseEntity<ResponseCode> changeUserNickname(CustomUserDetails userDetails, @RequestBody @Valid ChangeNicknameDto changeNicknameDto) {
-        throw new UndevelopedApiException();
+    public ResponseEntity<ResponseCode> changeUserNickname(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody @Valid ChangeNicknameDto changeNicknameDto
+    ) {
+        userService.changeNickname(userDetails, changeNicknameDto);
+
+        ResponseCode responseCode = NO_CONTENT;
+
+        return ResponseEntity.status(responseCode.getHttpCode()).build();
     }
 
     @Override

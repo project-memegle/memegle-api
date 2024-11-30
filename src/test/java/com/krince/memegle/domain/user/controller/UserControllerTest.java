@@ -1,11 +1,13 @@
 package com.krince.memegle.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.service.UserService;
 import com.krince.memegle.global.exception.DuplicateUserException;
+import com.krince.memegle.global.security.JwtProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @Tag("develop")
     @Nested
@@ -98,16 +103,69 @@ class UserControllerTest {
     @DisplayName("회원 닉네임 수정")
     class ChangeUserNickname {
 
-        @Test
-        @WithMockUser
+        @Nested
         @DisplayName("성공")
-        void Success() throws Exception {
-            Assertions.assertThat(true).isFalse();
+        class Success {
+
+            @Test
+            @WithMockUser
+            @DisplayName("success")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/users/nickname";
+                ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
+                when(userService.changeNickname(any(), any())).thenReturn(true);
+
+                //when, then
+                mockMvc.perform(put(uri)
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(changeNicknameDto))
+                                .header("Authorization", "Bearer testToken")
+                                .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
         }
 
         @Nested
         @DisplayName("실패")
-        class SignUpFail {
+        class Fail {
+
+            @Test
+            @WithMockUser
+            @DisplayName("중복된 닉네임은 예외를 반환한다.")
+            void duplicateNickname() throws Exception {
+                //given
+                String uri = "/apis/client/users/nickname";
+                ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
+                when(userService.changeNickname(any(), any())).thenThrow(DuplicateUserException.class);
+
+                //when, then
+                mockMvc.perform(put(uri)
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(changeNicknameDto))
+                                .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isBadRequest());
+            }
+
+            @Test
+            @WithMockUser
+            @DisplayName("회원 정보가 일치하지 않으면 예외를 반환한다.")
+            void unregisteredUser() throws Exception {
+                //given
+                String uri = "/apis/client/users/nickname";
+                ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
+                when(userService.changeNickname(any(), any())).thenThrow(NoSuchElementException.class);
+
+                //when, then
+                mockMvc.perform(put(uri)
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(changeNicknameDto))
+                                .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isNotFound());
+            }
         }
     }
 
