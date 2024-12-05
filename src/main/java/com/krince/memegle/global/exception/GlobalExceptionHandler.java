@@ -4,6 +4,7 @@ import com.krince.memegle.global.response.ExceptionResponse;
 import com.krince.memegle.global.response.customexception.*;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.validation.UnexpectedTypeException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import static com.krince.memegle.global.response.ResponseCode.*;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     //@Valid 검증 실패 예외
@@ -71,6 +73,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> duplicateUserExceptionHandler(DuplicateUserException exception) {
         ResponseCode responseCode = DUPLICATE_USER;
         DuplicateUserExceptionResponse exceptionResponse = new DuplicateUserExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+    }
+
+    //중복된 리소스 접근 시도
+    @ExceptionHandler(DuplicationResourceException.class)
+    public ResponseEntity<ExceptionResponse> DuplicationResourceExceptionHandler(DuplicationResourceException exception) {
+        ResponseCode responseCode = DUPLICATE_RESOURCE;
+        DuplicateResourceExceptionResponse exceptionResponse = new DuplicateResourceExceptionResponse(responseCode, exception.getMessage());
 
         return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }

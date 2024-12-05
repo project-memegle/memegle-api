@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,8 +57,7 @@ public class ImageControllerImpl implements ImageController {
 
     @Override
     @GetMapping("/{imageId}")
-    public ResponseEntity<SuccessResponse<ViewImageDto>> getImage(@PathVariable Long imageId, Authentication authentication, CustomUserDetails userDetails) {
-
+    public ResponseEntity<SuccessResponse<ViewImageDto>> getImage(@PathVariable Long imageId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         ViewImageDto viewImageDto = imageService.getImage(imageId);
         ResponseCode responseCode = ResponseCode.OK;
         SuccessResponse<ViewImageDto> responseBody = new SuccessResponse<>(responseCode, viewImageDto);
@@ -67,13 +66,16 @@ public class ImageControllerImpl implements ImageController {
 
     @Override
     @GetMapping("/bookmark")
-    public ResponseEntity<SuccessResponse<ViewImageDto>> getBookmarkImages(CustomUserDetails userDetails) {
+    public ResponseEntity<SuccessResponse<ViewImageDto>> getBookmarkImages(@AuthenticationPrincipal CustomUserDetails userDetails) {
         throw new UndevelopedApiException();
     }
 
     @Override
     @PostMapping("/bookmark")
-    public ResponseEntity<ResponseCode> changeBookmarkState(@RequestBody @Valid ImageIdDto imageIdDto, CustomUserDetails userDetails) {
+    public ResponseEntity<ResponseCode> changeBookmarkState(
+            @RequestBody @Valid ImageIdDto imageIdDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         throw new UndevelopedApiException();
     }
 
@@ -82,8 +84,8 @@ public class ImageControllerImpl implements ImageController {
     public ResponseEntity<SuccessResponse<List<ViewImageDto>>> getCategoryImages(
             @RequestParam ImageCategory imageCategory,
             @ModelAttribute @Valid PageableDto pageableDto,
-            CustomUserDetails userDetails) {
-
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         List<ViewImageDto> viewImageDtos = imageService.getCategoryImages(imageCategory, pageableDto);
         ResponseCode responseCode = ResponseCode.OK;
         SuccessResponse<List<ViewImageDto>> responseBody = new SuccessResponse<>(responseCode, viewImageDtos);
@@ -96,7 +98,7 @@ public class ImageControllerImpl implements ImageController {
     public ResponseEntity<SuccessResponse<List<ViewImageDto>>> getTagImages(
             @RequestParam @NotBlank @Valid String tagName,
             @ModelAttribute @Valid PageableDto pageableDto,
-            CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         throw new UndevelopedApiException();
     }
