@@ -2,11 +2,13 @@ package com.krince.memegle.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
+import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.service.UserService;
+import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.security.JwtProvider;
 import org.assertj.core.api.Assertions;
@@ -201,15 +203,37 @@ class UserControllerTest {
     }
 
     @Tag("develop")
+    @Tag("target")
     @Nested
     @DisplayName("회원 비밀번호 변경")
     class ChangePassword {
 
-        @Test
-        @WithMockUser
+        @Nested
         @DisplayName("성공")
-        void Success() throws Exception {
-            Assertions.assertThat(true).isFalse();
+        class Success {
+
+            @Test
+            @WithMockUser
+            @DisplayName("success")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/users/password";
+                ChangePasswordDto changePasswordDto = ChangePasswordDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .loginId("login1")
+                        .password("Password123")
+                        .build();
+
+                //when, then
+                mockMvc.perform(put(uri)
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(changePasswordDto))
+                                .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
         }
 
         @Nested
