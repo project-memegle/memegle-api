@@ -1,6 +1,11 @@
 package com.krince.memegle.domain.user.service;
 
+import com.krince.memegle.domain.auth.entity.EmailAuthentication;
+import com.krince.memegle.domain.auth.repository.fake.FakeEmailAuthenticationRepository;
+import com.krince.memegle.domain.auth.service.AuthService;
+import com.krince.memegle.domain.auth.service.AuthServiceImpl;
 import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
+import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
@@ -9,9 +14,13 @@ import com.krince.memegle.domain.user.entity.SelfAuthentication;
 import com.krince.memegle.domain.user.repository.fake.FakeSelfAuthenticationRepository;
 import com.krince.memegle.domain.user.repository.fake.FakeUserQueryRepository;
 import com.krince.memegle.domain.user.repository.fake.FakeUserRepository;
+import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.exception.DuplicationResourceException;
+import com.krince.memegle.global.exception.InvalidAuthenticationCodeException;
+import com.krince.memegle.global.exception.NoSuchAuthenticationCodeException;
+import com.krince.memegle.global.mail.fake.FakeEmailService;
 import com.krince.memegle.global.security.CustomUserDetails;
 import com.krince.memegle.global.security.JwtProvider;
 import org.junit.jupiter.api.*;
@@ -42,6 +51,11 @@ class UserServiceTest {
     static PasswordEncoder passwordEncoder;
     static JwtProvider jwtProvider;
 
+    static AuthService authService;
+    static FakeEmailAuthenticationRepository emailAuthenticationRepository;
+
+    static FakeEmailService emailService;
+
     @BeforeAll
     static void setUp() {
         userRepository = new FakeUserRepository();
@@ -49,7 +63,22 @@ class UserServiceTest {
         userQueryRepository = new FakeUserQueryRepository();
         passwordEncoder = new BCryptPasswordEncoder();
         jwtProvider = new JwtProvider(secretKey, accessTokenExpired, refreshTokenExpired);
-        userService = new UserServiceImpl(userRepository, selfAuthenticationRepository, userQueryRepository, passwordEncoder, jwtProvider);
+
+        emailService = new FakeEmailService();
+
+        emailAuthenticationRepository = new FakeEmailAuthenticationRepository();
+        authService = new AuthServiceImpl(
+                emailAuthenticationRepository,
+                emailService
+        );
+        userService = new UserServiceImpl(
+                userRepository,
+                selfAuthenticationRepository,
+                userQueryRepository,
+                passwordEncoder,
+                jwtProvider,
+                authService
+        );
 
         signUpDto = SignUpDto.builder()
                 .loginId("login123")
@@ -66,6 +95,8 @@ class UserServiceTest {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
+        selfAuthenticationRepository.deleteAll();
+        emailAuthenticationRepository.deleteAll();
     }
 
     @Tag("develop")
@@ -288,6 +319,205 @@ class UserServiceTest {
 
                 //when, then
                 assertThrows(NoSuchElementException.class, () -> userService.dropUser(userDetails));
+            }
+        }
+    }
+
+    @Tag("develop")
+    @Tag("target")
+    @Nested
+    @DisplayName("비밀번호 변경")
+    class ChangePassword {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("등록된 회원, 본인인증 완료, 인증코드, 인증타입 일치")
+            void success() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                ChangePasswordDto changePasswordDto = ChangePasswordDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .loginId("login123")
+                        .password("Password1234")
+                        .build();
+
+                //when
+                userService.changePassword(changePasswordDto);
+
+                //then
+                String changedPassword = userRepository.findByLoginId("login123").get().getPassword();
+                boolean isMatchesPassword = passwordEncoder.matches("Password1234", changedPassword);
+                assertThat(isMatchesPassword).isTrue();
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+            @Test
+            @DisplayName("회원정보 없음")
+            void noSuchUser() {
+                //given
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                ChangePasswordDto changePasswordDto = ChangePasswordDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .loginId("login123")
+                        .password("Password1234")
+                        .build();
+
+                //when, then
+                assertThrows(NoSuchElementException.class, () -> userService.changePassword(changePasswordDto));
+            }
+
+            @Test
+            @DisplayName("없는 이메일")
+            void noSuchEmail() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                ChangePasswordDto changePasswordDto = ChangePasswordDto.builder()
+                        .email("worngTest@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .loginId("login123")
+                        .password("Password1234")
+                        .build();
+
+                //when, then
+                assertThrows(NoSuchAuthenticationCodeException.class, () -> userService.changePassword(changePasswordDto));
+            }
+
+            @Test
+            @DisplayName("틀린 인증 타입")
+            void noSuchAuthenticationType() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                ChangePasswordDto changePasswordDto = ChangePasswordDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.ID)
+                        .loginId("login123")
+                        .password("Password1234")
+                        .build();
+
+                //when, then
+                assertThrows(NoSuchAuthenticationCodeException.class, () -> userService.changePassword(changePasswordDto));
+            }
+
+            @Test
+            @DisplayName("틀린 인증코드")
+            void noSuchAuthenticationCode() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                ChangePasswordDto changePasswordDto = ChangePasswordDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("Q1W2E3")
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .loginId("login123")
+                        .password("Password1234")
+                        .build();
+
+                //when, then
+                assertThrows(InvalidAuthenticationCodeException.class, () -> userService.changePassword(changePasswordDto));
             }
         }
     }

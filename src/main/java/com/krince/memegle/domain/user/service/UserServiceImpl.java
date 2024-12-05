@@ -1,6 +1,8 @@
 package com.krince.memegle.domain.user.service;
 
+import com.krince.memegle.domain.auth.service.AuthService;
 import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
+import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
@@ -10,9 +12,11 @@ import com.krince.memegle.domain.user.repository.SelfAuthenticationRepository;
 import com.krince.memegle.domain.user.repository.UserQueryRepository;
 import com.krince.memegle.domain.user.repository.UserRepository;
 
+import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.exception.DuplicationResourceException;
+import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.security.CustomUserDetails;
 import com.krince.memegle.global.security.JwtProvider;
@@ -33,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private final UserQueryRepository userQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+
+    private final AuthService authService;
 
     @Override
     public UserInfoDto getUserInfo(CustomUserDetails userDetails) {
@@ -122,5 +128,21 @@ public class UserServiceImpl implements UserService {
         userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         userRepository.deleteById(userId);
         selfAuthenticationRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDto changePasswordDto) {
+        String email = changePasswordDto.getEmail();
+        String authenticationCode = changePasswordDto.getAuthenticationCode();
+        AuthenticationType authenticationType = changePasswordDto.getAuthenticationType();
+
+        authService.validateAuthenticationCode(email, authenticationCode, authenticationType);
+
+        User findUser = userRepository.findByLoginId(changePasswordDto.getLoginId()).orElseThrow(NoSuchElementException::new);
+        String encodedPassword = passwordEncoder.encode(changePasswordDto.getPassword());
+
+        findUser.changePassword(encodedPassword);
+
+        userRepository.saveAndFlush(findUser);
     }
 }

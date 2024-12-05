@@ -46,7 +46,23 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public <S extends User> S saveAndFlush(S entity) {
-        return null;
+        User user = entity;
+
+        if (entity.getId() == null) {
+            User.builder()
+                    .id(++sequence)
+                    .loginId(entity.getLoginId())
+                    .password(entity.getPassword())
+                    .nickname(entity.getNickname())
+                    .role(entity.getRole())
+                    .createdAt(LocalDateTime.now())
+                    .modifiedAt(LocalDateTime.now())
+                    .build();
+        }
+
+        store.put(user.getId(), user);
+
+        return (S) user;
     }
 
     @Override
