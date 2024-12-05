@@ -8,7 +8,7 @@ import static lombok.AccessLevel.*;
 @Getter
 @Builder
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PUBLIC)
 public class UserInfoDto {
 
     @Schema(title = "회원 로그인 아이디", example = "testloginid1")

@@ -25,6 +25,13 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
+    public boolean existsByNickname(String nickname) {
+        return store.values()
+                .stream()
+                .anyMatch(user -> user.getNickname().equals(nickname));
+    }
+
+    @Override
     public Optional<User> findByLoginId(String loginId) {
         return store.values()
                 .stream()
@@ -136,7 +143,10 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long aLong) {
-        return Optional.empty();
+        return store.values()
+                .stream()
+                .filter(user -> user.getId().equals(aLong))
+                .findFirst();
     }
 
     @Override
@@ -161,7 +171,7 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
+        store.remove(aLong);
     }
 
     @Override
