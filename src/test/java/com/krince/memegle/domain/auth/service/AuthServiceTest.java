@@ -48,7 +48,6 @@ class AuthServiceTest {
     }
 
     @Tag("develop")
-    @Tag("target")
     @Nested
     @DisplayName("이메일 인증코드 검증 유무 조회")
     class ValidateAuthenticationCode {

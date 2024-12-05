@@ -203,7 +203,6 @@ class UserControllerTest {
     }
 
     @Tag("develop")
-    @Tag("target")
     @Nested
     @DisplayName("회원 비밀번호 변경")
     class ChangePassword {
