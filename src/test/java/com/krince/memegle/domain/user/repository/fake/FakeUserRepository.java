@@ -171,7 +171,7 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
+        store.remove(aLong);
     }
 
     @Override

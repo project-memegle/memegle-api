@@ -6,6 +6,7 @@ import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.entity.User;
+import com.krince.memegle.domain.user.repository.SelfAuthenticationRepository;
 import com.krince.memegle.domain.user.repository.UserQueryRepository;
 import com.krince.memegle.domain.user.repository.UserRepository;
 
@@ -28,6 +29,7 @@ import java.util.NoSuchElementException;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final SelfAuthenticationRepository selfAuthenticationRepository;
     private final UserQueryRepository userQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -110,5 +112,15 @@ public class UserServiceImpl implements UserService {
         if (isDuplicateNickname) {
             throw new DuplicationResourceException("이미 존재하는 닉네임입니다. 닉네임: " + nickname);
         }
+    }
+
+    @Override
+    @Transactional
+    public void dropUser(CustomUserDetails userDetails) {
+        Long userId = userDetails.getId();
+
+        userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        userRepository.deleteById(userId);
+        selfAuthenticationRepository.deleteByUserId(userId);
     }
 }

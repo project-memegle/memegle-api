@@ -5,6 +5,8 @@ import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
+import com.krince.memegle.domain.user.entity.SelfAuthentication;
+import com.krince.memegle.domain.user.repository.fake.FakeSelfAuthenticationRepository;
 import com.krince.memegle.domain.user.repository.fake.FakeUserQueryRepository;
 import com.krince.memegle.domain.user.repository.fake.FakeUserRepository;
 import com.krince.memegle.global.constant.Role;
@@ -22,10 +24,8 @@ import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest")
-})
+@Tag("test")
+@Tag("unitTest")
 @DisplayName("회원 서비스 테스트(UserService)")
 class UserServiceTest {
 
@@ -36,22 +36,20 @@ class UserServiceTest {
     static SignInDto signInDto;
 
     static UserService userService;
-
     static FakeUserRepository userRepository;
-
+    static FakeSelfAuthenticationRepository selfAuthenticationRepository;
     static FakeUserQueryRepository userQueryRepository;
-
     static PasswordEncoder passwordEncoder;
-
     static JwtProvider jwtProvider;
 
     @BeforeAll
     static void setUp() {
         userRepository = new FakeUserRepository();
+        selfAuthenticationRepository = new FakeSelfAuthenticationRepository();
         userQueryRepository = new FakeUserQueryRepository();
         passwordEncoder = new BCryptPasswordEncoder();
         jwtProvider = new JwtProvider(secretKey, accessTokenExpired, refreshTokenExpired);
-        userService = new UserServiceImpl(userRepository, userQueryRepository, passwordEncoder, jwtProvider);
+        userService = new UserServiceImpl(userRepository, selfAuthenticationRepository, userQueryRepository, passwordEncoder, jwtProvider);
 
         signUpDto = SignUpDto.builder()
                 .loginId("login123")
@@ -244,6 +242,52 @@ class UserServiceTest {
 
                 //when, then
                 assertThrows(NoSuchElementException.class, () -> userService.changeNickname(userDetails, changeNicknameDto));
+            }
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("메서드")
+    class DropUser {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("success")
+            void success() {
+                //given
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .userId(1L)
+                        .email("test@test.com")
+                        .build();
+                userService.signUp(signUpDto);
+                selfAuthenticationRepository.save(selfAuthentication);
+                CustomUserDetails userDetails = new CustomUserDetails(1L, Role.ROLE_USER);
+
+                //when
+                userService.dropUser(userDetails);
+
+                //then
+                assertThat(userRepository.findAll().size()).isEqualTo(0);
+                assertThat(selfAuthenticationRepository.findAll().size()).isEqualTo(0);
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+            @Test
+            @DisplayName("삭제하려는 회원 정보가 없으면 예외를 반환한다.")
+            void notFoundUser() {
+                //given
+                CustomUserDetails userDetails = new CustomUserDetails(1L, Role.ROLE_USER);
+
+                //when, then
+                assertThrows(NoSuchElementException.class, () -> userService.dropUser(userDetails));
             }
         }
     }

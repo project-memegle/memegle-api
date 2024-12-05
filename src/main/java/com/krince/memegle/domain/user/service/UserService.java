@@ -16,4 +16,6 @@ public interface UserService {
     TokenDto signIn(SignInDto signInDto);
 
     boolean changeNickname(CustomUserDetails userDetails, ChangeNicknameDto changeNicknameDto);
+
+    void dropUser(CustomUserDetails userDetails);
 }
