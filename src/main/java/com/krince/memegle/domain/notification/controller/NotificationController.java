@@ -14,12 +14,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import static org.springframework.http.MediaType.*;
 
 @Tag(name = "알림", description = "알림 관련 API")
 public interface NotificationController {
 
+    @GetMapping("/state")
     @Operation(summary = "미열람 알림 유무 조회(미구현 api)", description = "읽지 않은 알림이 있는지 조회합니다.")
     @ApiResponse(description = "알림 상태 유무 조회 성공", responseCode = "20000")
     @ApiResponse(description = "유효하지 않은 토큰", responseCode = "40101", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidTokenExceptionResponse.class)))
