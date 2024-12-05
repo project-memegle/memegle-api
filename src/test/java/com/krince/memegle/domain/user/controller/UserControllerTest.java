@@ -82,16 +82,32 @@ class UserControllerTest {
     @DisplayName("회원 탈퇴")
     class DropUser {
 
-        @Test
-        @WithMockUser
+        @Nested
         @DisplayName("성공")
-        void Success() throws Exception {
-            Assertions.assertThat(true).isFalse();
+        class Success {
+
+            @Test
+            @WithMockUser
+            @DisplayName("성공")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/users";
+                doNothing().when(userService).dropUser(any());
+
+                //when, then
+                mockMvc.perform(delete(uri)
+                                .contentType(APPLICATION_JSON)
+                                .header("Authorization", "Bearer testToken")
+                                .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+
+            }
         }
 
         @Nested
         @DisplayName("실패")
-        class SignUpFail {
+        class Fail {
         }
     }
 

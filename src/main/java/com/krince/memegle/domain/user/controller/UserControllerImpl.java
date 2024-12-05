@@ -37,8 +37,10 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @DeleteMapping
-    public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails, @RequestBody @NotNull String deleteUserReason) {
-        throw new UndevelopedApiException();
+    public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails) {
+        userService.dropUser(userDetails);
+
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override
