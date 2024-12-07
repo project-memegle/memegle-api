@@ -12,11 +12,9 @@ import com.krince.memegle.domain.user.repository.SelfAuthenticationRepository;
 import com.krince.memegle.domain.user.repository.UserQueryRepository;
 import com.krince.memegle.domain.user.repository.UserRepository;
 
-import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.exception.DuplicationResourceException;
-import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.security.CustomUserDetails;
 import com.krince.memegle.global.security.JwtProvider;
@@ -78,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenDto signIn(SignInDto signInDto) {
-        User user = userRepository.findByLoginId(signInDto.getLoginId()).orElseThrow();
+        User user = getUserFromLoginId(signInDto.getLoginId());
 
         validatePassword(signInDto.getPassword(), user.getPassword());
 
@@ -132,17 +130,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(ChangePasswordDto changePasswordDto) {
-        String email = changePasswordDto.getEmail();
-        String authenticationCode = changePasswordDto.getAuthenticationCode();
-        AuthenticationType authenticationType = changePasswordDto.getAuthenticationType();
+        authService.validateAuthenticationCode(
+                changePasswordDto.getEmail(),
+                changePasswordDto.getAuthenticationCode(),
+                changePasswordDto.getAuthenticationType()
+        );
 
-        authService.validateAuthenticationCode(email, authenticationCode, authenticationType);
-
-        User findUser = userRepository.findByLoginId(changePasswordDto.getLoginId()).orElseThrow(NoSuchElementException::new);
+        User findUser = getUserFromLoginId(changePasswordDto.getLoginId());
         String encodedPassword = passwordEncoder.encode(changePasswordDto.getPassword());
 
         findUser.changePassword(encodedPassword);
 
         userRepository.saveAndFlush(findUser);
+    }
+
+    private User getUserFromLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId).orElseThrow(NoSuchElementException::new);
     }
 }
