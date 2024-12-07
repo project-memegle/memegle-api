@@ -138,7 +138,6 @@ class UserRepositoryTest {
     @DisplayName("회원 pk로 userInfoDto 조회")
     class FindUserInfoDtoByUserId {
 
-        @Tag("develop")
         @Nested
         @DisplayName("성공")
         class Success {
@@ -180,7 +179,6 @@ class UserRepositoryTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("이메일로 회원 정보 조회")
     class FindUserByEmail {

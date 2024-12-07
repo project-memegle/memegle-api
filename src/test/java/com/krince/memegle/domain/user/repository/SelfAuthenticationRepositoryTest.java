@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.*;
 
 @Tag("test")
 @Tag("integrationTest")
-@Tag("develop")
 @SpringBootTest
 @DisplayName("본인 인증 리포지토리(SelfAuthenticationRepository)")
 class SelfAuthenticationRepositoryTest {
@@ -20,7 +19,6 @@ class SelfAuthenticationRepositoryTest {
 
     private SelfAuthentication selfAuthentication;
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 아이디로 삭제")
     class DeleteByUserId {

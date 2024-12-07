@@ -45,7 +45,6 @@ class UserControllerTest {
     @MockBean
     private JwtProvider jwtProvider;
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 정보 조회")
     class GetUserInfo {
@@ -77,7 +76,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 탈퇴")
     class DropUser {
@@ -111,7 +109,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 아이디 찾기")
     class GetLoginId {
@@ -149,7 +146,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 닉네임 수정")
     class ChangeUserNickname {
@@ -220,7 +216,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 비밀번호 변경")
     class ChangePassword {

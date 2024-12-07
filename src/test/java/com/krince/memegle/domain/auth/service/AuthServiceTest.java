@@ -52,7 +52,6 @@ class AuthServiceTest {
         assertThat(authCode).isEqualTo("1Q2W3E");
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("이메일 인증코드 검증 유무 조회")
     class ValidateAuthenticationCode {

@@ -93,7 +93,6 @@ class UserServiceTest {
         emailAuthenticationRepository.deleteAll();
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 정보 조회")
     class GetUserInfo {
@@ -215,7 +214,6 @@ class UserServiceTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 닉네임 변경")
     class ChangeNickname {
@@ -271,9 +269,8 @@ class UserServiceTest {
         }
     }
 
-    @Tag("develop")
     @Nested
-    @DisplayName("메서드")
+    @DisplayName("회원 탈퇴")
     class DropUser {
 
         @Nested
@@ -317,7 +314,6 @@ class UserServiceTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("비밀번호 변경")
     class ChangePassword {
@@ -515,7 +511,6 @@ class UserServiceTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 로그인 아이디 찾기")
     class GetLoginId {
