@@ -1,6 +1,8 @@
 package com.krince.memegle.domain.user.service;
 
+import com.krince.memegle.domain.auth.service.AuthService;
 import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
+import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
 import com.krince.memegle.domain.user.dto.request.SignInDto;
 import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
@@ -33,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private final UserQueryRepository userQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+
+    private final AuthService authService;
 
     @Override
     public UserInfoDto getUserInfo(CustomUserDetails userDetails) {
@@ -72,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenDto signIn(SignInDto signInDto) {
-        User user = userRepository.findByLoginId(signInDto.getLoginId()).orElseThrow();
+        User user = getUserFromLoginId(signInDto.getLoginId());
 
         validatePassword(signInDto.getPassword(), user.getPassword());
 
@@ -122,5 +126,25 @@ public class UserServiceImpl implements UserService {
         userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         userRepository.deleteById(userId);
         selfAuthenticationRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDto changePasswordDto) {
+        authService.validateAuthenticationCode(
+                changePasswordDto.getEmail(),
+                changePasswordDto.getAuthenticationCode(),
+                changePasswordDto.getAuthenticationType()
+        );
+
+        User findUser = getUserFromLoginId(changePasswordDto.getLoginId());
+        String encodedPassword = passwordEncoder.encode(changePasswordDto.getPassword());
+
+        findUser.changePassword(encodedPassword);
+
+        userRepository.saveAndFlush(findUser);
+    }
+
+    private User getUserFromLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId).orElseThrow(NoSuchElementException::new);
     }
 }

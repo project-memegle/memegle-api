@@ -156,7 +156,7 @@ public class FakeSelfAuthenticationRepository implements SelfAuthenticationRepos
 
     @Override
     public void deleteAll() {
-
+        store.clear();
     }
 
     @Override

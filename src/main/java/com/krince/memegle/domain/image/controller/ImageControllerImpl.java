@@ -10,6 +10,8 @@ import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.security.CustomUserDetails;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -70,6 +72,7 @@ public class ImageControllerImpl implements ImageController {
         throw new UndevelopedApiException();
     }
 
+    @ApiResponse(description = "이미지 즐겨찾기 추가 및 삭제 성공", responseCode = "20400", content = @Content)
     @Override
     @PostMapping("/bookmark")
     public ResponseEntity<ResponseCode> changeBookmarkState(

@@ -64,7 +64,9 @@ public class UserControllerImpl implements UserController {
     @Override
     @PutMapping("/password")
     public ResponseEntity<ResponseCode> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto) {
-        throw new UndevelopedApiException();
+        userService.changePassword(changePasswordDto);
+
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override
