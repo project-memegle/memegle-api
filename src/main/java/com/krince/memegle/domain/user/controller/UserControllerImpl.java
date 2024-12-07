@@ -5,7 +5,6 @@ import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.service.UserService;
-import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.security.CustomUserDetails;
@@ -43,9 +42,13 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    @GetMapping("/login-id")
-    public ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(FindLoginIdDto findLoginIdDto) {
-        throw new UndevelopedApiException();
+    @PostMapping("/login-id")
+    public ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(@RequestBody @Valid FindLoginIdDto findLoginIdDto) {
+        LoginIdDto loginIdDto = userService.getLoginId(findLoginIdDto);
+        ResponseCode responseCode = OK;
+        SuccessResponse<LoginIdDto> responseBody = new SuccessResponse<>(responseCode, loginIdDto);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(responseBody);
     }
 
     @Override

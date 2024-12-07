@@ -32,6 +32,11 @@ class AuthServiceTest {
         authService = new AuthServiceImpl(emailAuthenticationRepository, emailService);
     }
 
+    @BeforeEach
+    void beforeEach() {
+        emailAuthenticationRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("인증 이메일 전송 테스트")
     void sendAuthenticationMail() throws Exception {
