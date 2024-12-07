@@ -13,4 +13,10 @@ public class LoginIdDto {
 
     @Schema(title = "회원 로그인 아이디", example = "testloginid1")
     private String loginId;
+
+    public static LoginIdDto of(String loginId) {
+        return LoginIdDto.builder()
+                .loginId(loginId)
+                .build();
+    }
 }

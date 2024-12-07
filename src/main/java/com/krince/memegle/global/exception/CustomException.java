@@ -1,6 +1,6 @@
 package com.krince.memegle.global.exception;
 
-public class CustomException extends Exception {
+public class CustomException extends RuntimeException {
 
     public CustomException() {
         super();
