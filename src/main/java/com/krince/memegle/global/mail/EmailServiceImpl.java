@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,13 +22,11 @@ public class EmailServiceImpl implements EmailService {
         this.senderEmail = senderEmail;
     }
 
-    public String sendUserAuthenticationEmail(String email) throws MessagingException {
-        String authenticationCode = RandomCodeUtil.generateRandomCode();
+    @Async
+    public void sendUserAuthenticationEmail(String email, String authenticationCode) throws MessagingException {
         MimeMessage emailForm = createEmailForm(email, authenticationCode);
 
         javaMailSender.send(emailForm);
-
-        return authenticationCode;
     }
 
     private MimeMessage createEmailForm(String email, String authenticationCode) throws MessagingException {

@@ -6,7 +6,6 @@ import jakarta.mail.MessagingException;
 public class FakeEmailService implements EmailService {
 
     @Override
-    public String sendUserAuthenticationEmail(String email) throws MessagingException {
-        return "1Q2W3E";
+    public void sendUserAuthenticationEmail(String email, String authenticationCode) throws MessagingException {
     }
 }

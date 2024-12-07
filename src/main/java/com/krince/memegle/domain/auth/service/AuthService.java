@@ -7,7 +7,7 @@ import jakarta.mail.MessagingException;
 
 public interface AuthService {
 
-    String sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException;
+    void sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException;
 
     void validateAuthenticationCode(String email, String authenticationCode, AuthenticationType authenticationType);
 }

@@ -14,11 +14,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest"),
-        @Tag("mockTest")
-})
+@Tag("test")
+@Tag("unitTest")
 @DisplayName("이메일 서비스 테스트(EmailService)")
 @ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
@@ -34,11 +31,12 @@ class EmailServiceTest {
     void sendUserAuthenticationEmail() throws Exception {
         //given
         String email = "ssk0080@gmail.com";
+        String authenticationCode = "1Q2W3E";
         MimeMessage mockMimeMailMessage = mock(MimeMessage.class);
         when(javaMailSender.createMimeMessage()).thenReturn(mockMimeMailMessage);
 
         //when
-        String authenticationCode = emailService.sendUserAuthenticationEmail(email);
+        emailService.sendUserAuthenticationEmail(email, authenticationCode);
 
         //then
         assertThat(authenticationCode.length()).isEqualTo(6);

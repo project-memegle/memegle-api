@@ -45,11 +45,8 @@ class AuthServiceTest {
                 .authenticationType(AuthenticationType.SIGN_UP)
                 .build();
 
-        //when
-        String authCode = authService.sendAuthenticationMail(authenticationDto);
-
-        //then
-        assertThat(authCode).isEqualTo("1Q2W3E");
+        //when, then
+        authService.sendAuthenticationMail(authenticationDto);
     }
 
     @Nested

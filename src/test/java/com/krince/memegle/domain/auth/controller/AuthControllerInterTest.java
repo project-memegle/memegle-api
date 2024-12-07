@@ -155,7 +155,7 @@ class AuthControllerInterTest {
                 when(mockUserAuthenticationDto.getUserName()).thenReturn("testUserName");
                 when(mockUserAuthenticationDto.getEmail()).thenReturn("testEmail@gmail.com");
                 when(mockUserAuthenticationDto.getAuthenticationType()).thenReturn(AuthenticationType.SIGN_UP);
-                when(authService.sendAuthenticationMail(mockUserAuthenticationDto)).thenReturn("1Q2W3E");
+                doNothing().when(authService).sendAuthenticationMail(mockUserAuthenticationDto);
 
                 //when, then
                 mockMvc.perform(post(uri)
@@ -181,7 +181,7 @@ class AuthControllerInterTest {
                 HashMap<String, String> list = new HashMap<>();
                 list.put("userNam", "testUserName");
                 UserAuthenticationDto mockUserAuthenticationDto = mock(UserAuthenticationDto.class);
-                when(authService.sendAuthenticationMail(mockUserAuthenticationDto)).thenReturn("1Q2W3E");
+                doNothing().when(authService).sendAuthenticationMail(mockUserAuthenticationDto);
 
                 //when, then
                 mockMvc.perform(post(uri)
@@ -201,7 +201,7 @@ class AuthControllerInterTest {
                 //given
                 String uri = "/apis/client/auth/email/send";
                 UserAuthenticationDto mockUserAuthenticationDto = mock(UserAuthenticationDto.class);
-                when(authService.sendAuthenticationMail(mockUserAuthenticationDto)).thenReturn("1Q2W3E");
+                doNothing().when(authService).sendAuthenticationMail(mockUserAuthenticationDto);
 
                 //when, then
                 mockMvc.perform(post(uri)
@@ -223,7 +223,7 @@ class AuthControllerInterTest {
                 list.put("userName", null);
                 list.put("email", " ");
                 UserAuthenticationDto mockUserAuthenticationDto = mock(UserAuthenticationDto.class);
-                when(authService.sendAuthenticationMail(mockUserAuthenticationDto)).thenReturn("1Q2W3E");
+                doNothing().when(authService).sendAuthenticationMail(mockUserAuthenticationDto);
 
                 //when, then
                 mockMvc.perform(post(uri)

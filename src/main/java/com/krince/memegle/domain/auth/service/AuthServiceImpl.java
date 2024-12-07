@@ -7,9 +7,11 @@ import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.InvalidAuthenticationCodeException;
 import com.krince.memegle.global.exception.NoSuchAuthenticationCodeException;
 import com.krince.memegle.global.mail.EmailService;
+import com.krince.memegle.util.RandomCodeUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -21,13 +23,14 @@ public class AuthServiceImpl implements AuthService {
     private final EmailService emailService;
 
     @Override
-    @Transactional
-    public String sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException {
         String email = userAuthenticationDto.getEmail();
         String userName = userAuthenticationDto.getUserName();
         AuthenticationType authenticationType = userAuthenticationDto.getAuthenticationType();
+        String authenticationCode = RandomCodeUtil.generateRandomCode();
 
-        String authenticationCode = emailService.sendUserAuthenticationEmail(email);
+        emailService.sendUserAuthenticationEmail(email, authenticationCode);
 
         EmailAuthentication emailAuthentication = EmailAuthentication.builder()
                 .id(email)
@@ -38,8 +41,6 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         emailAuthenticationRepository.save(emailAuthentication);
-
-        return authenticationCode;
     }
 
     @Override
