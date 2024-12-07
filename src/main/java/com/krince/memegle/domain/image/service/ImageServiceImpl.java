@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 

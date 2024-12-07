@@ -7,10 +7,12 @@ import com.krince.memegle.domain.tag.repository.TagMapRepository;
 import com.krince.memegle.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
@@ -26,6 +28,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public TagMap registTagMap(Image image, Tag tag) {
         TagMap tagMap = TagMap.builder()
                 .image(image)

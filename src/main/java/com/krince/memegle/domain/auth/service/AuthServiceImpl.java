@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
@@ -21,6 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private final EmailService emailService;
 
     @Override
+    @Transactional
     public String sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException {
         String email = userAuthenticationDto.getEmail();
         String userName = userAuthenticationDto.getUserName();

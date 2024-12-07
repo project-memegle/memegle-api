@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import static com.krince.memegle.global.response.ExceptionResponseCode.*;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void signUp(SignUpDto signUpDto) {
         validateDuplicateUser(signUpDto.getLoginId());
 
