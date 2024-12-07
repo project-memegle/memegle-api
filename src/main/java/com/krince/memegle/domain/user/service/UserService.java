@@ -1,9 +1,7 @@
 package com.krince.memegle.domain.user.service;
 
-import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
-import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
-import com.krince.memegle.domain.user.dto.request.SignInDto;
-import com.krince.memegle.domain.user.dto.request.SignUpDto;
+import com.krince.memegle.domain.user.dto.request.*;
+import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.global.security.CustomUserDetails;
@@ -23,4 +21,6 @@ public interface UserService {
     void dropUser(CustomUserDetails userDetails);
 
     void changePassword(ChangePasswordDto changePasswordDto);
+
+    LoginIdDto getLoginId(FindLoginIdDto findLoginIdDto);
 }

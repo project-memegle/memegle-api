@@ -4,15 +4,12 @@ import com.krince.memegle.domain.auth.entity.EmailAuthentication;
 import com.krince.memegle.domain.auth.repository.fake.FakeEmailAuthenticationRepository;
 import com.krince.memegle.domain.auth.service.AuthService;
 import com.krince.memegle.domain.auth.service.AuthServiceImpl;
-import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
-import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
-import com.krince.memegle.domain.user.dto.request.SignInDto;
-import com.krince.memegle.domain.user.dto.request.SignUpDto;
+import com.krince.memegle.domain.user.dto.request.*;
+import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.entity.SelfAuthentication;
 import com.krince.memegle.domain.user.repository.fake.FakeSelfAuthenticationRepository;
-import com.krince.memegle.domain.user.repository.fake.FakeUserQueryRepository;
 import com.krince.memegle.domain.user.repository.fake.FakeUserRepository;
 import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.constant.Role;
@@ -47,7 +44,6 @@ class UserServiceTest {
     static UserService userService;
     static FakeUserRepository userRepository;
     static FakeSelfAuthenticationRepository selfAuthenticationRepository;
-    static FakeUserQueryRepository userQueryRepository;
     static PasswordEncoder passwordEncoder;
     static JwtProvider jwtProvider;
 
@@ -60,7 +56,6 @@ class UserServiceTest {
     static void setUp() {
         userRepository = new FakeUserRepository();
         selfAuthenticationRepository = new FakeSelfAuthenticationRepository();
-        userQueryRepository = new FakeUserQueryRepository();
         passwordEncoder = new BCryptPasswordEncoder();
         jwtProvider = new JwtProvider(secretKey, accessTokenExpired, refreshTokenExpired);
 
@@ -74,7 +69,6 @@ class UserServiceTest {
         userService = new UserServiceImpl(
                 userRepository,
                 selfAuthenticationRepository,
-                userQueryRepository,
                 passwordEncoder,
                 jwtProvider,
                 authService
@@ -517,6 +511,161 @@ class UserServiceTest {
 
                 //when, then
                 assertThrows(InvalidAuthenticationCodeException.class, () -> userService.changePassword(changePasswordDto));
+            }
+        }
+    }
+
+    @Tag("develop")
+    @Nested
+    @DisplayName("회원 로그인 아이디 찾기")
+    class GetLoginId {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("이메일, 인증 코드, 인증 타입 모두 일치")
+            void success() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.ID)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                FindLoginIdDto findLoginIdDto = FindLoginIdDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.ID)
+                        .build();
+
+                //when
+                LoginIdDto loginIdDto = userService.getLoginId(findLoginIdDto);
+
+                //then
+                assertThat(loginIdDto.getLoginId()).isEqualTo("login123");
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+            @Test
+            @DisplayName("없는 이메일")
+            void notFoundEmail() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.ID)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                FindLoginIdDto findLoginIdDto = FindLoginIdDto.builder()
+                        .email("wrongEmail@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.ID)
+                        .build();
+
+                //when, then
+                assertThrows(NoSuchAuthenticationCodeException.class, () -> userService.getLoginId(findLoginIdDto));
+            }
+
+            @Test
+            @DisplayName("틀린 인증코드")
+            void notFoundAuthenticationCode() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.ID)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                FindLoginIdDto findLoginIdDto = FindLoginIdDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("Q1W2E3")
+                        .authenticationType(AuthenticationType.ID)
+                        .build();
+
+                //when, then
+                assertThrows(InvalidAuthenticationCodeException.class, () -> userService.getLoginId(findLoginIdDto));
+            }
+
+            @Test
+            @DisplayName("틀린 인증타입")
+            void notFoundAuthenticationType() {
+                //given
+                //회원 등록
+                userService.signUp(signUpDto);
+
+                //회원 본인인증 등록
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .email("test@test.com")
+                        .userId(1L)
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //이메일 전송
+                EmailAuthentication emailAuthentication = EmailAuthentication.builder()
+                        .authenticationType(AuthenticationType.ID)
+                        .authenticationCode("1Q2W3E")
+                        .userName("login123")
+                        .email("test@test.com")
+                        .id("test@test.com")
+                        .build();
+                emailAuthenticationRepository.save(emailAuthentication);
+
+                FindLoginIdDto findLoginIdDto = FindLoginIdDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.PASSWORD)
+                        .build();
+
+                //when, then
+                assertThrows(NoSuchAuthenticationCodeException.class, () -> userService.getLoginId(findLoginIdDto));
             }
         }
     }
