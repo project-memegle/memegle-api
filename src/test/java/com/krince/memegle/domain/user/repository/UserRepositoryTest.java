@@ -1,5 +1,6 @@
 package com.krince.memegle.domain.user.repository;
 
+import com.krince.memegle.domain.user.entity.SelfAuthentication;
 import com.krince.memegle.domain.user.entity.User;
 import com.krince.memegle.global.constant.Role;
 
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Tag("integrationTest")
 @Tags({
@@ -24,6 +26,9 @@ class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    SelfAuthenticationRepository selfAuthenticationRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -109,6 +114,55 @@ class UserRepositoryTest {
                 //when, then
                 assertThrows(NoSuchElementException.class, () -> userRepository.findByLoginId(loginId).orElseThrow());
             }
+        }
+    }
+
+    @Tag("develop")
+    @Tag("target")
+    @Nested
+    @DisplayName("메서드")
+    class FindUserByEmail {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("회원이 존재함")
+            void foundUser() {
+                //given
+                User findUser = userRepository.findByLoginId("testid1").get();
+                SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                        .userId(findUser.getId())
+                        .email("test@test.com")
+                        .build();
+                selfAuthenticationRepository.save(selfAuthentication);
+
+                //when
+                Optional<User> userByEmail = userRepository.findUserByEmail("test@test.com");
+
+                //then
+                assertThat(userByEmail.isPresent()).isTrue();
+                assertThat(userByEmail.get().getId()).isEqualTo(findUser.getId());
+            }
+
+            @Test
+            @DisplayName("존재하지 않는 회원")
+            void notFoundUser() {
+                //given
+                String email = "test@test.com";
+
+                //when
+                Optional<User> userByEmail = userRepository.findUserByEmail(email);
+
+                //then
+                assertThat(userByEmail.isPresent()).isFalse();
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
         }
     }
 }
