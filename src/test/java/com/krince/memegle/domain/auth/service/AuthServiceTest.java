@@ -32,6 +32,11 @@ class AuthServiceTest {
         authService = new AuthServiceImpl(emailAuthenticationRepository, emailService);
     }
 
+    @BeforeEach
+    void beforeEach() {
+        emailAuthenticationRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("인증 이메일 전송 테스트")
     void sendAuthenticationMail() throws Exception {
@@ -47,7 +52,6 @@ class AuthServiceTest {
         assertThat(authCode).isEqualTo("1Q2W3E");
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("이메일 인증코드 검증 유무 조회")
     class ValidateAuthenticationCode {

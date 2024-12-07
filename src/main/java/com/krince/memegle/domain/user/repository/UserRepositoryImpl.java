@@ -3,6 +3,7 @@ package com.krince.memegle.domain.user.repository;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.entity.QSelfAuthentication;
 import com.krince.memegle.domain.user.entity.QUser;
+import com.krince.memegle.domain.user.entity.User;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class UserQueryRepositoryImpl implements UserQueryRepository {
+public class UserRepositoryImpl implements UserQueryRepository {
 
     private final JPAQueryFactory queryFactory;
     private final QUser user = QUser.user;
@@ -36,4 +37,14 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
         return Optional.ofNullable(queryResult);
     }
 
+    public Optional<User> findUserByEmail(String email) {
+        User user = queryFactory
+                .select(this.user)
+                .from(this.user)
+                .leftJoin(selfAuthentication).on(this.user.id.eq(selfAuthentication.userId))
+                .where(selfAuthentication.email.eq(email))
+                .fetchFirst();
+
+        return Optional.ofNullable(user);
+    }
 }

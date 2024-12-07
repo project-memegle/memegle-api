@@ -22,7 +22,6 @@ class ChangeNicknameDtoTest {
         validator = validatorFactoryBean;
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("닉네임(nickname)")
     class Nickname {

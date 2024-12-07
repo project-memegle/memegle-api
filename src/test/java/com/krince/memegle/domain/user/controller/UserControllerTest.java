@@ -1,17 +1,14 @@
 package com.krince.memegle.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
-import com.krince.memegle.domain.user.dto.request.ChangePasswordDto;
-import com.krince.memegle.domain.user.dto.request.SignInDto;
-import com.krince.memegle.domain.user.dto.request.SignUpDto;
+import com.krince.memegle.domain.user.dto.request.*;
+import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.service.UserService;
 import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.security.JwtProvider;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("test")
+@Tag("unitTest")
 @WebMvcTest(value = UserController.class)
 @DisplayName("회원 컨트롤러 테스트(UserController)")
 class UserControllerTest {
@@ -47,7 +45,6 @@ class UserControllerTest {
     @MockBean
     private JwtProvider jwtProvider;
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 정보 조회")
     class GetUserInfo {
@@ -79,7 +76,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 탈퇴")
     class DropUser {
@@ -113,7 +109,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 아이디 찾기")
     class GetLoginId {
@@ -122,7 +117,27 @@ class UserControllerTest {
         @WithMockUser
         @DisplayName("성공")
         void Success() throws Exception {
-            Assertions.assertThat(true).isFalse();
+            //given
+            String uri = "/apis/client/users/login-id";
+            FindLoginIdDto findLoginIdDto = FindLoginIdDto.builder()
+                    .email("test@test.com")
+                    .authenticationCode("1Q2W3E")
+                    .authenticationType(AuthenticationType.ID)
+                    .build();
+            LoginIdDto loginIdDto = LoginIdDto.builder()
+                    .loginId("login1")
+                    .build();
+
+            when(userService.getLoginId(any())).thenReturn(loginIdDto);
+
+            //when, then
+            mockMvc.perform(post(uri)
+                            .contentType(APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(findLoginIdDto))
+                            .with(csrf()))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.results.loginId").exists());
         }
 
         @Nested
@@ -131,7 +146,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 닉네임 수정")
     class ChangeUserNickname {
@@ -202,7 +216,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("회원 비밀번호 변경")
     class ChangePassword {
@@ -241,7 +254,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("unitTest")
     @Nested
     @DisplayName("회원가입")
     class SignUp {
@@ -299,7 +311,6 @@ class UserControllerTest {
         }
     }
 
-    @Tag("unitTest")
     @Nested
     @DisplayName("회원 로그인")
     class SignIn {

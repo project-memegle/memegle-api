@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("test")
+@Tag("unitTest")
 @WebMvcTest(NotificationController.class)
 @DisplayName("알림 컨트롤러 테스트(NotificationController)")
 class NotificationControllerTest {
