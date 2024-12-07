@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("test")
 @WebMvcTest(value = ImageController.class)
 @DisplayName("이미지 컨트롤러 테스트(ImageController)")
-class ImageControllerTest {
+class ImageControllerInterTest {
 
     @Autowired
     private MockMvc mockMvc;

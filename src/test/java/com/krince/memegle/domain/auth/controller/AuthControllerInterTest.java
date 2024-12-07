@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("test")
 @WebMvcTest(value = AuthController.class)
 @DisplayName("인증 컨트롤러 테스트(AuthController)")
-class AuthControllerTest {
+class AuthControllerInterTest {
 
     @Autowired
     MockMvc mockMvc;

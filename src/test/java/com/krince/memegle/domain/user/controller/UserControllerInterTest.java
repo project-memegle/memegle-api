@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("unitTest")
 @WebMvcTest(value = UserController.class)
 @DisplayName("회원 컨트롤러 테스트(UserController)")
-class UserControllerTest {
+class UserControllerInterTest {
 
     @Autowired
     private MockMvc mockMvc;
