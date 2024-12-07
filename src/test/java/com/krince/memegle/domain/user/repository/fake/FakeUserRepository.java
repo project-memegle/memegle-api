@@ -1,5 +1,6 @@
 package com.krince.memegle.domain.user.repository.fake;
 
+import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.entity.User;
 import com.krince.memegle.domain.user.repository.UserRepository;
 import org.springframework.data.domain.Example;
@@ -46,7 +47,23 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public <S extends User> S saveAndFlush(S entity) {
-        return null;
+        User user = entity;
+
+        if (entity.getId() == null) {
+            User.builder()
+                    .id(++sequence)
+                    .loginId(entity.getLoginId())
+                    .password(entity.getPassword())
+                    .nickname(entity.getNickname())
+                    .role(entity.getRole())
+                    .createdAt(LocalDateTime.now())
+                    .modifiedAt(LocalDateTime.now())
+                    .build();
+        }
+
+        store.put(user.getId(), user);
+
+        return (S) user;
     }
 
     @Override
@@ -203,5 +220,30 @@ public class FakeUserRepository implements UserRepository {
     @Override
     public Page<User> findAll(Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public Optional<UserInfoDto> findUserInfoDtoByUserId(Long userId) {
+        if (userId.equals(1L)) {
+            return Optional.of(
+                    UserInfoDto.builder()
+                            .loginId("loginId")
+                            .email("email@email.com")
+                            .nickname("nickname")
+                            .build()
+            );
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        if (email.equals("test@test.com")) {
+            return Optional.of(
+                    store.get(1L)
+            );
+        }
+        return Optional.empty();
     }
 }

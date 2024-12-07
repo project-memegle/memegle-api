@@ -20,7 +20,8 @@ public class PermitAllUrlsUtil {
 
     public static List<String> permitAllPostUrls = List.of(
             "/apis/client/users/sign/up",
-            "/apis/client/users/sign/in"
+            "/apis/client/users/sign/in",
+            "/apis/client/users/login-id"
     );
 
     public static List<String> permitAllPutUrls = List.of(

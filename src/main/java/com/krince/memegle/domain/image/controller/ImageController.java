@@ -70,7 +70,7 @@ public interface ImageController {
 
     @PostMapping("/bookmark")
     @Operation(summary = "이미지 즐겨찾기 추가 및 삭제(미구현 api)", description = "선택한 이미지의 즐겨찾기 상태를 변경합니다.")
-    @ApiResponse(description = "이미지 즐겨찾기 추가 및 삭제 성공", responseCode = "20400")
+    @ApiResponse(description = "이미지 즐겨찾기 추가 및 삭제 성공", responseCode = "20400", content = @Content)
     @ApiResponse(description = "필수값 누락", responseCode = "40000", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = BadRequestExceptionResponse.class)))
     @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidValueExceptionResponse.class)))
     @ApiResponse(description = "유효하지 않은 토큰", responseCode = "40101", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = InvalidTokenExceptionResponse.class)))

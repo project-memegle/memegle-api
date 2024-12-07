@@ -136,6 +136,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
+    @ExceptionHandler(UndevelopedApiException.class)
+    private ResponseEntity<ExceptionResponse> undevelopedApiExceptionHandler(Exception exception) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(IMPLEMENTED);
+
+        return ResponseEntity.status(IMPLEMENTED.getHttpCode()).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidAuthenticationCodeException.class)
+    private ResponseEntity<ExceptionResponse> invalidAuthenticationCodeExceptionHandler(Exception exception) {
+        ResponseCode responseCode = INVALID_AUTHENTICATION_CODE;
+        ExceptionResponse exceptionResponse = new ExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(NoSuchAuthenticationCodeException.class)
+    private ResponseEntity<ExceptionResponse> noSuchAuthenticationCodeExceptionHandler(Exception exception) {
+        ResponseCode responseCode = NO_SUCH_AUTHENTICATION_CODE;
+        ExceptionResponse exceptionResponse = new ExceptionResponse(responseCode);
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+    }
+
     private ResponseEntity<ExceptionResponse> generateExceptionResponse(Exception exception, ResponseCode status) {
         printExceptionInfo(exception);
         ExceptionResponse exceptionResponse = new ExceptionResponse(status);
@@ -148,13 +171,6 @@ public class GlobalExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse(status, exceptionMessage);
 
         return ResponseEntity.status(status.getHttpCode()).body(exceptionResponse);
-    }
-
-    @ExceptionHandler(UndevelopedApiException.class)
-    private ResponseEntity<ExceptionResponse> UndevelopedApiException(Exception exception) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(IMPLEMENTED);
-
-        return ResponseEntity.status(IMPLEMENTED.getHttpCode()).body(exceptionResponse);
     }
 
     private void printExceptionInfo(Exception exception) {

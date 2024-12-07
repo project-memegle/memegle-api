@@ -1,8 +1,8 @@
 package com.krince.memegle.domain.user.service;
 
-import com.krince.memegle.domain.user.dto.request.ChangeNicknameDto;
-import com.krince.memegle.domain.user.dto.request.SignInDto;
-import com.krince.memegle.domain.user.dto.request.SignUpDto;
+import com.krince.memegle.domain.auth.service.AuthService;
+import com.krince.memegle.domain.user.dto.request.*;
+import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.entity.User;
@@ -30,15 +30,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final SelfAuthenticationRepository selfAuthenticationRepository;
-    private final UserQueryRepository userQueryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+
+    private final AuthService authService;
 
     @Override
     public UserInfoDto getUserInfo(CustomUserDetails userDetails) {
         Long userId = userDetails.getId();
 
-        return userQueryRepository.findUserInfoDtoByUserId(userId).orElseThrow(NoSuchElementException::new);
+        return userRepository.findUserInfoDtoByUserId(userId).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenDto signIn(SignInDto signInDto) {
-        User user = userRepository.findByLoginId(signInDto.getLoginId()).orElseThrow();
+        User user = getUserFromLoginId(signInDto.getLoginId());
 
         validatePassword(signInDto.getPassword(), user.getPassword());
 
@@ -122,5 +123,41 @@ public class UserServiceImpl implements UserService {
         userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         userRepository.deleteById(userId);
         selfAuthenticationRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDto changePasswordDto) {
+        authService.validateAuthenticationCode(
+                changePasswordDto.getEmail(),
+                changePasswordDto.getAuthenticationCode(),
+                changePasswordDto.getAuthenticationType()
+        );
+
+        User findUser = getUserFromLoginId(changePasswordDto.getLoginId());
+        String encodedPassword = passwordEncoder.encode(changePasswordDto.getPassword());
+
+        findUser.changePassword(encodedPassword);
+
+        userRepository.saveAndFlush(findUser);
+    }
+
+    @Override
+    public LoginIdDto getLoginId(FindLoginIdDto findLoginIdDto) {
+        String email = findLoginIdDto.getEmail();
+
+        authService.validateAuthenticationCode(
+                email,
+                findLoginIdDto.getAuthenticationCode(),
+                findLoginIdDto.getAuthenticationType()
+        );
+
+        User user = userRepository.findUserByEmail(email).orElseThrow(NoSuchElementException::new);
+
+        return LoginIdDto.of(user.getLoginId());
+    }
+
+
+    private User getUserFromLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId).orElseThrow(NoSuchElementException::new);
     }
 }

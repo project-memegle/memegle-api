@@ -1,5 +1,6 @@
 package com.krince.memegle.domain.auth.entity;
 
+import com.krince.memegle.global.constant.AuthenticationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
@@ -18,5 +19,5 @@ public class EmailAuthentication {
     private String email;
     private String userName;
     private String authenticationCode;
-    private String authenticationType;
+    private AuthenticationType authenticationType;
 }

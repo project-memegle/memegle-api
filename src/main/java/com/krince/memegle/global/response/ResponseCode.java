@@ -20,6 +20,8 @@ public enum ResponseCode {
     INVALID_PASSWORD(false, 40102, 401, "Invalid Password", "비밀번호를 확인해주세요."),
     EMPTY_TOKEN(false, 40103, 401, "Empty Token", "토큰이 없습니다."),
     EXPIRED_TOKEN(false, 40104, 401, "Expired Token", "만료된 토큰입니다."),
+    INVALID_AUTHENTICATION_CODE(false, 40105, 401, "Invalid Authentication Code", "이메일 인증코드가 일치하지 않습니다."),
+    NO_SUCH_AUTHENTICATION_CODE(false, 40106, 401, "No Such Authentication Code", "인증 이메일 정보가 없거나 만료기간이 초과되었습니다."),
     FORBIDDEN(false, 40300, 403, "Forbidden", "해당 리소스에 접근 권한이 없습니다."),
     NOT_FOUND(false, 40400, 404, "Not Found", "리소스가 존재하지 않습니다."),
     NOT_FOUND_RESOURCE(false, 40401, 404, "Not Found Resource", "리소스가 존재하지 않습니다."),
