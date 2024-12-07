@@ -5,6 +5,7 @@ import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.service.AuthService;
 import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
+import com.krince.memegle.global.response.SuccessResponseCode;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class AuthControllerImpl implements AuthController {
     public ResponseEntity<ResponseCode> sendAuthenticationMail(@RequestBody @Valid UserAuthenticationDto userAuthenticationDto) throws MessagingException {
         authService.sendAuthenticationMail(userAuthenticationDto);
 
-        ResponseCode responseCode = ResponseCode.NO_CONTENT;
+        SuccessResponseCode responseCode = SuccessResponseCode.NO_CONTENT;
 
         return ResponseEntity.status(responseCode.getHttpCode()).build();
     }

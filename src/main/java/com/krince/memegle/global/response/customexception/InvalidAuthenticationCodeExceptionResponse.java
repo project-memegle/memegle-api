@@ -1,7 +1,7 @@
 package com.krince.memegle.global.response.customexception;
 
 import com.krince.memegle.global.response.ExceptionResponse;
-import com.krince.memegle.global.response.ResponseCode;
+import com.krince.memegle.global.response.ExceptionResponseCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class InvalidAuthenticationCodeExceptionResponse extends ExceptionResponse {
@@ -18,11 +18,11 @@ public class InvalidAuthenticationCodeExceptionResponse extends ExceptionRespons
     @Schema(title = "예외 메시지", description = "예외 메시지", example = "이메일 인증코드가 일치하지 않습니다.")
     private String message;
 
-    public InvalidAuthenticationCodeExceptionResponse(ResponseCode responseCode) {
+    public InvalidAuthenticationCodeExceptionResponse(ExceptionResponseCode responseCode) {
         super(responseCode);
     }
 
-    public InvalidAuthenticationCodeExceptionResponse(ResponseCode responseCode, String message) {
+    public InvalidAuthenticationCodeExceptionResponse(ExceptionResponseCode responseCode, String message) {
         super(responseCode, message);
     }
 }

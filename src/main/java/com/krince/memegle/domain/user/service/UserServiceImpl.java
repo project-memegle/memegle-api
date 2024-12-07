@@ -7,13 +7,11 @@ import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.entity.User;
 import com.krince.memegle.domain.user.repository.SelfAuthenticationRepository;
-import com.krince.memegle.domain.user.repository.UserQueryRepository;
 import com.krince.memegle.domain.user.repository.UserRepository;
 
 import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.exception.DuplicationResourceException;
-import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.security.CustomUserDetails;
 import com.krince.memegle.global.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
+
+import static com.krince.memegle.global.response.ExceptionResponseCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
         boolean isMatchedPassword = passwordEncoder.matches(rawPassword, encodedPassword);
 
         if (!isMatchedPassword) {
-            throw new BadCredentialsException(ResponseCode.INVALID_PASSWORD.getMessage());
+            throw new BadCredentialsException(INVALID_PASSWORD.getMessage());
         }
     }
 

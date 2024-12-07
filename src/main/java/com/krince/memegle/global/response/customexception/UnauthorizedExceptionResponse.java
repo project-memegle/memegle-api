@@ -1,6 +1,7 @@
 package com.krince.memegle.global.response.customexception;
 
 import com.krince.memegle.global.response.ExceptionResponse;
+import com.krince.memegle.global.response.ExceptionResponseCode;
 import com.krince.memegle.global.response.ResponseCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,7 +19,7 @@ public class UnauthorizedExceptionResponse extends ExceptionResponse {
     @Schema(title = "예외 메시지", description = "예외 메시지", example = "인증 정보가 일치하지 않습니다.")
     private String message;
 
-    public UnauthorizedExceptionResponse(ResponseCode responseCode) {
+    public UnauthorizedExceptionResponse(ExceptionResponseCode responseCode) {
         super(responseCode);
     }
 

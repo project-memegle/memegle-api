@@ -7,6 +7,7 @@ import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.domain.user.service.UserService;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
+import com.krince.memegle.global.response.SuccessResponseCode;
 import com.krince.memegle.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.krince.memegle.global.response.ResponseCode.*;
+import static com.krince.memegle.global.response.SuccessResponseCode.NO_CONTENT;
+import static com.krince.memegle.global.response.SuccessResponseCode.OK;
 
 @RestController
 @RequestMapping("/apis/client/users")
@@ -27,7 +29,7 @@ public class UserControllerImpl implements UserController {
     @GetMapping
     public ResponseEntity<SuccessResponse<UserInfoDto>> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         UserInfoDto userInfoDto = userService.getUserInfo(userDetails);
-        ResponseCode responseCode = OK;
+        SuccessResponseCode responseCode = OK;
         SuccessResponse<UserInfoDto> responseBody = new SuccessResponse<>(responseCode, userInfoDto);
 
         return ResponseEntity.status(responseCode.getHttpCode()).body(responseBody);
@@ -45,7 +47,7 @@ public class UserControllerImpl implements UserController {
     @PostMapping("/login-id")
     public ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(@RequestBody @Valid FindLoginIdDto findLoginIdDto) {
         LoginIdDto loginIdDto = userService.getLoginId(findLoginIdDto);
-        ResponseCode responseCode = OK;
+        SuccessResponseCode responseCode = OK;
         SuccessResponse<LoginIdDto> responseBody = new SuccessResponse<>(responseCode, loginIdDto);
 
         return ResponseEntity.status(responseCode.getHttpCode()).body(responseBody);
@@ -59,9 +61,7 @@ public class UserControllerImpl implements UserController {
     ) {
         userService.changeNickname(userDetails, changeNicknameDto);
 
-        ResponseCode responseCode = NO_CONTENT;
-
-        return ResponseEntity.status(responseCode.getHttpCode()).build();
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override
@@ -77,9 +77,7 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<ResponseCode> signUp(@RequestBody @Valid SignUpDto signUpDto) {
         userService.signUp(signUpDto);
 
-        ResponseCode responseCode = NO_CONTENT;
-
-        return ResponseEntity.status(responseCode.getHttpCode()).build();
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override
@@ -88,9 +86,8 @@ public class UserControllerImpl implements UserController {
         TokenDto tokenDto = userService.signIn(signInDto);
         String accessToken = tokenDto.getAccessToken();
         String refreshToken = tokenDto.getRefreshToken();
-        ResponseCode responseCode = NO_CONTENT;
 
-        return ResponseEntity.status(responseCode.getHttpCode())
+        return ResponseEntity.status(NO_CONTENT.getHttpCode())
                 .header("Authorization", accessToken)
                 .header("Refresh-Token", refreshToken)
                 .build();

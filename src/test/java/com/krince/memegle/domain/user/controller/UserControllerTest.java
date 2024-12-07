@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.NoSuchElementException;
 
-import static com.krince.memegle.global.response.ResponseCode.*;
+import static com.krince.memegle.global.response.ExceptionResponseCode.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;

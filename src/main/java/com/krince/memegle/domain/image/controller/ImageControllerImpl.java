@@ -9,6 +9,7 @@ import com.krince.memegle.global.dto.PageableDto;
 import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
+import com.krince.memegle.global.response.SuccessResponseCode;
 import com.krince.memegle.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static com.krince.memegle.global.response.SuccessResponseCode.*;
 import static org.springframework.http.MediaType.*;
 
 @RestController
@@ -50,10 +52,9 @@ public class ImageControllerImpl implements ImageController {
                 .build();
 
         imageService.registMemeImage(registImageDto);
-        ResponseCode responseCode = ResponseCode.NO_CONTENT;
 
         return ResponseEntity
-                .status(responseCode.getHttpCode())
+                .status(NO_CONTENT.getHttpCode())
                 .build();
     }
 
@@ -61,8 +62,9 @@ public class ImageControllerImpl implements ImageController {
     @GetMapping("/{imageId}")
     public ResponseEntity<SuccessResponse<ViewImageDto>> getImage(@PathVariable Long imageId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         ViewImageDto viewImageDto = imageService.getImage(imageId);
-        ResponseCode responseCode = ResponseCode.OK;
+        SuccessResponseCode responseCode = OK;
         SuccessResponse<ViewImageDto> responseBody = new SuccessResponse<>(responseCode, viewImageDto);
+
         return ResponseEntity.status(responseCode.getHttpCode()).body(responseBody);
     }
 
@@ -90,7 +92,7 @@ public class ImageControllerImpl implements ImageController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         List<ViewImageDto> viewImageDtos = imageService.getCategoryImages(imageCategory, pageableDto);
-        ResponseCode responseCode = ResponseCode.OK;
+        SuccessResponseCode responseCode = OK;
         SuccessResponse<List<ViewImageDto>> responseBody = new SuccessResponse<>(responseCode, viewImageDtos);
 
         return ResponseEntity.status(responseCode.getHttpCode()).body(responseBody);

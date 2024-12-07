@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
+import static com.krince.memegle.global.response.ExceptionResponseCode.INVALID_TOKEN;
 import static com.krince.memegle.global.response.ResponseCode.*;
 
 @Component
