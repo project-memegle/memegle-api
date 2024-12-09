@@ -30,10 +30,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public TagMap registTagMap(Image image, Tag tag) {
-        TagMap tagMap = TagMap.builder()
-                .image(image)
-                .tag(tag)
-                .build();
+        TagMap tagMap = TagMap.of(tag, image);
 
         return tagMapRepository.save(tagMap);
     }

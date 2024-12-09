@@ -230,11 +230,8 @@ class UserServiceTest {
                 CustomUserDetails userDetails = new CustomUserDetails(1L, Role.ROLE_USER);
                 ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("anotherNickname").build();
 
-                //when
-                boolean isChangedNickname = userService.changeNickname(userDetails, changeNicknameDto);
-
-                //then
-                assertThat(isChangedNickname).isTrue();
+                //when, then
+                assertDoesNotThrow(() -> userService.changeNickname(userDetails, changeNicknameDto));
             }
         }
 

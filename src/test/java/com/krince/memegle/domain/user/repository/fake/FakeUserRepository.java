@@ -238,7 +238,7 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findUserByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         if (email.equals("test@test.com")) {
             return Optional.of(
                     store.get(1L)

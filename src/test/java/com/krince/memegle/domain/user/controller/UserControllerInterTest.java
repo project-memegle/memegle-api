@@ -161,7 +161,7 @@ class UserControllerInterTest {
                 //given
                 String uri = "/apis/client/users/nickname";
                 ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
-                when(userService.changeNickname(any(), any())).thenReturn(true);
+                doNothing().when(userService).changeNickname(any(), any());
 
                 //when, then
                 mockMvc.perform(put(uri)
@@ -185,7 +185,7 @@ class UserControllerInterTest {
                 //given
                 String uri = "/apis/client/users/nickname";
                 ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
-                when(userService.changeNickname(any(), any())).thenThrow(DuplicateUserException.class);
+                doThrow(DuplicateUserException.class).when(userService).changeNickname(any(), any());
 
                 //when, then
                 mockMvc.perform(put(uri)
@@ -203,7 +203,7 @@ class UserControllerInterTest {
                 //given
                 String uri = "/apis/client/users/nickname";
                 ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
-                when(userService.changeNickname(any(), any())).thenThrow(NoSuchElementException.class);
+                doThrow(NoSuchElementException.class).when(userService).changeNickname(any(), any());
 
                 //when, then
                 mockMvc.perform(put(uri)

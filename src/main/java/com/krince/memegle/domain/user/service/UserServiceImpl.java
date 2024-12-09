@@ -9,7 +9,6 @@ import com.krince.memegle.domain.user.entity.User;
 import com.krince.memegle.domain.user.repository.SelfAuthenticationRepository;
 import com.krince.memegle.domain.user.repository.UserRepository;
 
-import com.krince.memegle.global.constant.Role;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.exception.DuplicationResourceException;
 import com.krince.memegle.global.security.CustomUserDetails;
@@ -38,9 +37,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoDto getUserInfo(CustomUserDetails userDetails) {
-        Long userId = userDetails.getId();
-
-        return userRepository.findUserInfoDtoByUserId(userId).orElseThrow(NoSuchElementException::new);
+        return userRepository.findUserInfoDtoByUserId(userDetails.getId())
+                .orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -48,8 +46,8 @@ public class UserServiceImpl implements UserService {
     public void signUp(SignUpDto signUpDto) {
         validateDuplicateUser(signUpDto.getLoginId());
 
-        Role role = Role.ROLE_USER;
-        User user = signUpDtoToUser(signUpDto, role);
+        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+        User user = User.of(signUpDto, encodedPassword);
 
         userRepository.save(user);
     }
@@ -62,30 +60,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private User signUpDtoToUser(SignUpDto signUpDto, Role role) {
-        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
-
-        return User.builder()
-                .loginId(signUpDto.getLoginId())
-                .password(encodedPassword)
-                .nickname(signUpDto.getNickname())
-                .role(role)
-                .build();
-    }
-
     @Override
     public TokenDto signIn(SignInDto signInDto) {
         User user = getUserFromLoginId(signInDto.getLoginId());
-
         validatePassword(signInDto.getPassword(), user.getPassword());
 
-        String accessToken = jwtProvider.createAccessToken(user.getId(), user.getRole());
-        String refreshToken = jwtProvider.createRefreshToken(user.getId());
-
-        return TokenDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return jwtProvider.generateTokenDto(user.getId(), user.getRole());
     }
 
     private void validatePassword(String rawPassword, String encodedPassword) {
@@ -98,15 +78,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean changeNickname(CustomUserDetails userDetails, ChangeNicknameDto changeNicknameDto) {
+    public void changeNickname(CustomUserDetails userDetails, ChangeNicknameDto changeNicknameDto) {
         Long userId = userDetails.getId();
         String nickname = changeNicknameDto.getNickname();
-        User findUser = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        User findUser = getUserFromId(userId);
 
         validateDuplicateNickname(nickname);
         findUser.changeNickname(nickname);
-
-        return true;
     }
 
     private void validateDuplicateNickname(String nickname) {
@@ -122,12 +100,18 @@ public class UserServiceImpl implements UserService {
     public void dropUser(CustomUserDetails userDetails) {
         Long userId = userDetails.getId();
 
-        userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        getUserFromId(userId);
         userRepository.deleteById(userId);
         selfAuthenticationRepository.deleteByUserId(userId);
     }
 
+    private User getUserFromId(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
     @Override
+    @Transactional
     public void changePassword(ChangePasswordDto changePasswordDto) {
         authService.validateAuthenticationCode(
                 changePasswordDto.getEmail(),
@@ -153,7 +137,7 @@ public class UserServiceImpl implements UserService {
                 findLoginIdDto.getAuthenticationType()
         );
 
-        User user = userRepository.findUserByEmail(email).orElseThrow(NoSuchElementException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
 
         return LoginIdDto.of(user.getLoginId());
     }

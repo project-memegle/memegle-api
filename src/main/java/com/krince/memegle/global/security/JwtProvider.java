@@ -1,5 +1,6 @@
 package com.krince.memegle.global.security;
 
+import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.global.constant.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -12,7 +13,6 @@ import java.security.Key;
 import java.util.Date;
 
 import static com.krince.memegle.global.response.ExceptionResponseCode.INVALID_TOKEN;
-import static com.krince.memegle.global.response.ResponseCode.*;
 
 @Component
 public class JwtProvider {
@@ -59,6 +59,13 @@ public class JwtProvider {
                 .setExpiration(validity)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public TokenDto generateTokenDto(final Long id, final Role role) {
+        String accessToken = createAccessToken(id, role);
+        String refreshToken = createRefreshToken(id);
+
+        return TokenDto.of(accessToken, refreshToken);
     }
 
     public Boolean isValidToken(final String token) {

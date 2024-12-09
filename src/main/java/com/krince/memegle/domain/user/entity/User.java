@@ -1,5 +1,6 @@
 package com.krince.memegle.domain.user.entity;
 
+import com.krince.memegle.domain.user.dto.request.SignUpDto;
 import com.krince.memegle.global.constant.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -38,7 +39,8 @@ public class User {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Builder.Default
+    private Role role = Role.ROLE_USER;
 
     @Column(nullable = false)
     @CreatedDate
@@ -56,5 +58,13 @@ public class User {
 
     public void changePassword(String password) {
         this.password = password;
+    }
+
+    public static User of(SignUpDto signUpDto, String encodedPassword) {
+        return User.builder()
+                .loginId(signUpDto.getLoginId())
+                .password(encodedPassword)
+                .nickname(signUpDto.getNickname())
+                .build();
     }
 }
