@@ -2,6 +2,7 @@ package com.krince.memegle.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krince.memegle.global.response.ExceptionResponse;
+import com.krince.memegle.global.response.ExceptionResponseCode;
 import com.krince.memegle.global.response.ResponseCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        ResponseCode status = ResponseCode.FORBIDDEN;
+        ExceptionResponseCode status = ExceptionResponseCode.FORBIDDEN;
         ExceptionResponse exceptionResponse = new ExceptionResponse(status);
         String responseBody = objectMapper.writeValueAsString(exceptionResponse);
 

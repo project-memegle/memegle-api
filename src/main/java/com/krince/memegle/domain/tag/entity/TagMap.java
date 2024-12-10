@@ -27,4 +27,10 @@ public class TagMap {
     @JoinColumn(name = "image_id", nullable = false)
     private Image image;
 
+    public static TagMap of(Tag tag, Image image) {
+        return TagMap.builder()
+                .image(image)
+                .tag(tag)
+                .build();
+    }
 }

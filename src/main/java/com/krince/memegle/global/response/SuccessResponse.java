@@ -10,7 +10,7 @@ public class SuccessResponse<T> extends GlobalResponse {
     @Schema(title = "결과 데이터", description = "결과 데이터")
     private final T results;
 
-    public SuccessResponse(ResponseCode responseCode, T results) {
+    public SuccessResponse(SuccessResponseCode responseCode, T results) {
         super(responseCode);
         this.results = results;
     }

@@ -43,4 +43,12 @@ public class Image {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
+
+    public static Image of(String memeImageUrl, ImageCategory imageCategory) {
+        return Image.builder()
+                .imageUrl(memeImageUrl)
+                .imageCategory(imageCategory)
+                .registStatus(RegistStatus.WAITING)
+                .build();
+    }
 }

@@ -11,5 +11,5 @@ public interface UserQueryRepository {
 
     Optional<UserInfoDto> findUserInfoDtoByUserId(Long userId);
 
-    Optional<User> findUserByEmail(String email);
+    Optional<User> findByEmail(String email);
 }
