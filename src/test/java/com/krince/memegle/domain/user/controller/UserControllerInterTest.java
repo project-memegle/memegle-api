@@ -5,7 +5,7 @@ import com.krince.memegle.domain.user.dto.request.*;
 import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
-import com.krince.memegle.domain.user.service.UserService;
+import com.krince.memegle.domain.user.service.UserApplicationService;
 import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.security.JwtProvider;
@@ -40,7 +40,7 @@ class UserControllerInterTest {
     ObjectMapper objectMapper;
 
     @MockBean
-    private UserService userService;
+    private UserApplicationService userApplicationService;
 
     @MockBean
     private JwtProvider jwtProvider;
@@ -56,7 +56,7 @@ class UserControllerInterTest {
             //given
             String uri = "/apis/client/users";
             UserInfoDto userInfoDto = UserInfoDto.builder().loginId("loginid").nickname("nickname").email("email@email.com").build();
-            when(userService.getUserInfo(any())).thenReturn(userInfoDto);
+            when(userApplicationService.getUserInfo(any())).thenReturn(userInfoDto);
 
             //when
             mockMvc.perform(get(uri)
@@ -90,7 +90,7 @@ class UserControllerInterTest {
             void success() throws Exception {
                 //given
                 String uri = "/apis/client/users";
-                doNothing().when(userService).dropUser(any());
+                doNothing().when(userApplicationService).dropUser(any());
 
                 //when, then
                 mockMvc.perform(delete(uri)
@@ -128,7 +128,7 @@ class UserControllerInterTest {
                     .loginId("login1")
                     .build();
 
-            when(userService.getLoginId(any())).thenReturn(loginIdDto);
+            when(userApplicationService.getLoginId(any())).thenReturn(loginIdDto);
 
             //when, then
             mockMvc.perform(post(uri)
@@ -161,7 +161,7 @@ class UserControllerInterTest {
                 //given
                 String uri = "/apis/client/users/nickname";
                 ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
-                doNothing().when(userService).changeNickname(any(), any());
+                doNothing().when(userApplicationService).changeNickname(any(), any());
 
                 //when, then
                 mockMvc.perform(put(uri)
@@ -185,7 +185,7 @@ class UserControllerInterTest {
                 //given
                 String uri = "/apis/client/users/nickname";
                 ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
-                doThrow(DuplicateUserException.class).when(userService).changeNickname(any(), any());
+                doThrow(DuplicateUserException.class).when(userApplicationService).changeNickname(any(), any());
 
                 //when, then
                 mockMvc.perform(put(uri)
@@ -203,7 +203,7 @@ class UserControllerInterTest {
                 //given
                 String uri = "/apis/client/users/nickname";
                 ChangeNicknameDto changeNicknameDto = ChangeNicknameDto.builder().nickname("test").build();
-                doThrow(NoSuchElementException.class).when(userService).changeNickname(any(), any());
+                doThrow(NoSuchElementException.class).when(userApplicationService).changeNickname(any(), any());
 
                 //when, then
                 mockMvc.perform(put(uri)
@@ -269,7 +269,7 @@ class UserControllerInterTest {
                     .password("testpassword1!")
                     .nickname("testNickname")
                     .build();
-            doNothing().when(userService).signUp(any());
+            doNothing().when(userApplicationService).signUp(any());
 
             //when, then
             mockMvc.perform(post(uri)
@@ -296,7 +296,7 @@ class UserControllerInterTest {
                         .password("testpassword1!")
                         .nickname("testNickname")
                         .build();
-                doThrow(DuplicateUserException.class).when(userService).signUp(any());
+                doThrow(DuplicateUserException.class).when(userApplicationService).signUp(any());
 
                 //when, then
                 mockMvc.perform(post(uri)
@@ -327,7 +327,7 @@ class UserControllerInterTest {
             when(mockSignInDto.getPassword()).thenReturn("TestPassword1!");
             when(mockTokenDto.getAccessToken()).thenReturn("Bearer access_token");
             when(mockTokenDto.getRefreshToken()).thenReturn("Bearer refresh_token");
-            when(userService.signIn(any())).thenReturn(mockTokenDto);
+            when(userApplicationService.signIn(any())).thenReturn(mockTokenDto);
 
             //when, then
             mockMvc.perform(post(uri)
@@ -354,7 +354,7 @@ class UserControllerInterTest {
                 SignInDto mockSignInDto = mock(SignInDto.class);
                 when(mockSignInDto.getLoginId()).thenReturn("wrongid1");
                 when(mockSignInDto.getPassword()).thenReturn("TestPassword1!");
-                when(userService.signIn(any())).thenThrow(NoSuchElementException.class);
+                when(userApplicationService.signIn(any())).thenThrow(NoSuchElementException.class);
 
                 //when, then
                 mockMvc.perform(post(uri)
@@ -375,7 +375,7 @@ class UserControllerInterTest {
                 SignInDto mockSignInDto = mock(SignInDto.class);
                 when(mockSignInDto.getLoginId()).thenReturn("testloginid1");
                 when(mockSignInDto.getPassword()).thenReturn("wrongPassword1!");
-                when(userService.signIn(any())).thenThrow(BadCredentialsException.class);
+                when(userApplicationService.signIn(any())).thenThrow(BadCredentialsException.class);
 
                 //when, then
                 mockMvc.perform(post(uri)

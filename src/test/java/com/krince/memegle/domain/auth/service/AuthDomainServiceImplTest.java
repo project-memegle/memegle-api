@@ -1,52 +1,34 @@
 package com.krince.memegle.domain.auth.service;
 
-import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
+import com.krince.memegle.domain.auth.dto.EmailAuthenticationCodeDto;
 import com.krince.memegle.domain.auth.entity.EmailAuthentication;
 import com.krince.memegle.domain.auth.repository.EmailAuthenticationRepository;
 import com.krince.memegle.domain.auth.repository.fake.FakeEmailAuthenticationRepository;
 import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.InvalidAuthenticationCodeException;
 import com.krince.memegle.global.exception.NoSuchAuthenticationCodeException;
-import com.krince.memegle.global.mail.EmailService;
-import com.krince.memegle.global.mail.fake.FakeEmailService;
 import org.junit.jupiter.api.*;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("test")
 @Tag("unitTest")
-@DisplayName("인증 서비스 테스트(AuthService)")
-class AuthServiceTest {
-
-    static AuthService authService;
+@DisplayName("인증 도메인 서비스 테스트(AuthDomainService)")
+class AuthDomainServiceImplTest {
 
     static EmailAuthenticationRepository emailAuthenticationRepository;
-
-    static EmailService emailService;
+    static AuthDomainService authDomainService;
 
     @BeforeAll
     static void setUp() {
-        emailService = new FakeEmailService();
         emailAuthenticationRepository = new FakeEmailAuthenticationRepository();
-        authService = new AuthServiceImpl(emailAuthenticationRepository, emailService);
+        authDomainService = new AuthDomainServiceImpl(emailAuthenticationRepository);
     }
 
     @BeforeEach
     void beforeEach() {
         emailAuthenticationRepository.deleteAll();
-    }
-
-    @Test
-    @DisplayName("인증 이메일 전송 테스트")
-    void sendAuthenticationMail() throws Exception {
-        //given
-        UserAuthenticationDto authenticationDto = UserAuthenticationDto.builder()
-                .authenticationType(AuthenticationType.SIGN_UP)
-                .build();
-
-        //when, then
-        authService.sendAuthenticationMail(authenticationDto);
     }
 
     @Nested
@@ -65,6 +47,11 @@ class AuthServiceTest {
                 String username = "한지희";
                 String authenticationCode = "1Q2W3E";
                 AuthenticationType authenticationType = AuthenticationType.PASSWORD;
+                EmailAuthenticationCodeDto emailAuthenticationCodeDto = EmailAuthenticationCodeDto.builder()
+                        .email(email)
+                        .authenticationCode(authenticationCode)
+                        .authenticationType(authenticationType)
+                        .build();
                 EmailAuthentication emailAuthentication = EmailAuthentication.builder()
                         .email(email)
                         .userName(username)
@@ -74,7 +61,7 @@ class AuthServiceTest {
                 EmailAuthentication savedEmailAuthentication = emailAuthenticationRepository.save(emailAuthentication);
 
                 //when
-                authService.validateAuthenticationCode(email, authenticationCode, authenticationType);
+                authDomainService.validateAuthenticationCode(emailAuthenticationCodeDto);
 
                 //then
                 assertThat(savedEmailAuthentication.getEmail()).isEqualTo(email);
@@ -94,6 +81,11 @@ class AuthServiceTest {
                 String username = "한지희";
                 String authenticationCode = "1Q2W3E";
                 AuthenticationType authenticationType = AuthenticationType.PASSWORD;
+                EmailAuthenticationCodeDto emailAuthenticationCodeDto = EmailAuthenticationCodeDto.builder()
+                        .email(wrongEmail)
+                        .authenticationCode(authenticationCode)
+                        .authenticationType(authenticationType)
+                        .build();
                 EmailAuthentication emailAuthentication = EmailAuthentication.builder()
                         .email(email)
                         .userName(username)
@@ -104,7 +96,7 @@ class AuthServiceTest {
                 emailAuthenticationRepository.save(emailAuthentication);
 
                 //when, then
-                assertThrows(NoSuchAuthenticationCodeException.class, () -> authService.validateAuthenticationCode(wrongEmail, authenticationCode, authenticationType));
+                assertThrows(NoSuchAuthenticationCodeException.class, () -> authDomainService.validateAuthenticationCode(emailAuthenticationCodeDto));
             }
 
             @Test
@@ -116,6 +108,11 @@ class AuthServiceTest {
                 String authenticationCode = "1Q2W3E";
                 AuthenticationType authenticationType = AuthenticationType.PASSWORD;
                 AuthenticationType wrongAuthenticationType = AuthenticationType.SIGN_UP;
+                EmailAuthenticationCodeDto emailAuthenticationCodeDto = EmailAuthenticationCodeDto.builder()
+                        .email(email)
+                        .authenticationCode(authenticationCode)
+                        .authenticationType(wrongAuthenticationType)
+                        .build();
                 EmailAuthentication emailAuthentication = EmailAuthentication.builder()
                         .email(email)
                         .userName(username)
@@ -126,7 +123,7 @@ class AuthServiceTest {
                 emailAuthenticationRepository.save(emailAuthentication);
 
                 //when, then
-                assertThrows(NoSuchAuthenticationCodeException.class, () -> authService.validateAuthenticationCode(email, authenticationCode, wrongAuthenticationType));
+                assertThrows(NoSuchAuthenticationCodeException.class, () -> authDomainService.validateAuthenticationCode(emailAuthenticationCodeDto));
             }
 
             @Test
@@ -138,6 +135,11 @@ class AuthServiceTest {
                 String authenticationCode = "1Q2W3E";
                 String wrongAuthenticationCode = "Q1W2E3";
                 AuthenticationType authenticationType = AuthenticationType.PASSWORD;
+                EmailAuthenticationCodeDto emailAuthenticationCodeDto = EmailAuthenticationCodeDto.builder()
+                        .email(email)
+                        .authenticationCode(wrongAuthenticationCode)
+                        .authenticationType(authenticationType)
+                        .build();
                 EmailAuthentication emailAuthentication = EmailAuthentication.builder()
                         .email(email)
                         .userName(username)
@@ -148,7 +150,7 @@ class AuthServiceTest {
                 emailAuthenticationRepository.save(emailAuthentication);
 
                 //when, then
-                assertThrows(InvalidAuthenticationCodeException.class, () -> authService.validateAuthenticationCode(email, wrongAuthenticationCode, authenticationType));
+                assertThrows(InvalidAuthenticationCodeException.class, () -> authDomainService.validateAuthenticationCode(emailAuthenticationCodeDto));
             }
         }
     }

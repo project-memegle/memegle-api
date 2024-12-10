@@ -6,7 +6,7 @@ import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
 import com.krince.memegle.global.security.CustomUserDetails;
 
-public interface UserService {
+public interface UserApplicationService {
 
     UserInfoDto getUserInfo(CustomUserDetails userDetails);
 

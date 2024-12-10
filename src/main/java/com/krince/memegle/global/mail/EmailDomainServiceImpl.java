@@ -1,6 +1,5 @@
 package com.krince.memegle.global.mail;
 
-import com.krince.memegle.util.RandomCodeUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,12 +8,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailServiceImpl implements EmailService {
+public class EmailDomainServiceImpl implements EmailDomainService {
 
     private final JavaMailSender javaMailSender;
     private final String senderEmail;
 
-    public EmailServiceImpl(
+    public EmailDomainServiceImpl(
             JavaMailSender javaMailSender,
             @Value("${spring.mail.username}") String senderEmail
     ) {

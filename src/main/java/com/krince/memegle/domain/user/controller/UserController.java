@@ -4,7 +4,7 @@ import com.krince.memegle.domain.user.dto.request.*;
 import com.krince.memegle.domain.user.dto.response.LoginIdDto;
 import com.krince.memegle.domain.user.dto.response.TokenDto;
 import com.krince.memegle.domain.user.dto.response.UserInfoDto;
-import com.krince.memegle.domain.user.service.UserService;
+import com.krince.memegle.domain.user.service.UserApplicationService;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponse;
 import com.krince.memegle.global.response.SuccessResponseCode;
@@ -23,12 +23,12 @@ import static com.krince.memegle.global.response.SuccessResponseCode.OK;
 @RequiredArgsConstructor
 public class UserController extends BaseUserController {
 
-    private final UserService userService;
+    private final UserApplicationService userApplicationService;
 
     @Override
     @GetMapping
     public ResponseEntity<SuccessResponse<UserInfoDto>> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        UserInfoDto userInfoDto = userService.getUserInfo(userDetails);
+        UserInfoDto userInfoDto = userApplicationService.getUserInfo(userDetails);
         SuccessResponseCode responseCode = OK;
         SuccessResponse<UserInfoDto> responseBody = new SuccessResponse<>(responseCode, userInfoDto);
 
@@ -38,7 +38,7 @@ public class UserController extends BaseUserController {
     @Override
     @DeleteMapping
     public ResponseEntity<ResponseCode> dropUser(CustomUserDetails userDetails) {
-        userService.dropUser(userDetails);
+        userApplicationService.dropUser(userDetails);
 
         return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
@@ -46,7 +46,7 @@ public class UserController extends BaseUserController {
     @Override
     @PostMapping("/login-id")
     public ResponseEntity<SuccessResponse<LoginIdDto>> getLoginId(@RequestBody @Valid FindLoginIdDto findLoginIdDto) {
-        LoginIdDto loginIdDto = userService.getLoginId(findLoginIdDto);
+        LoginIdDto loginIdDto = userApplicationService.getLoginId(findLoginIdDto);
         SuccessResponseCode responseCode = OK;
         SuccessResponse<LoginIdDto> responseBody = new SuccessResponse<>(responseCode, loginIdDto);
 
@@ -59,7 +59,7 @@ public class UserController extends BaseUserController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid ChangeNicknameDto changeNicknameDto
     ) {
-        userService.changeNickname(userDetails, changeNicknameDto);
+        userApplicationService.changeNickname(userDetails, changeNicknameDto);
 
         return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
@@ -67,7 +67,7 @@ public class UserController extends BaseUserController {
     @Override
     @PutMapping("/password")
     public ResponseEntity<ResponseCode> changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto) {
-        userService.changePassword(changePasswordDto);
+        userApplicationService.changePassword(changePasswordDto);
 
         return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
@@ -75,7 +75,7 @@ public class UserController extends BaseUserController {
     @Override
     @PostMapping("/sign/up")
     public ResponseEntity<ResponseCode> signUp(@RequestBody @Valid SignUpDto signUpDto) {
-        userService.signUp(signUpDto);
+        userApplicationService.signUp(signUpDto);
 
         return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
@@ -83,7 +83,7 @@ public class UserController extends BaseUserController {
     @Override
     @PostMapping("/sign/in")
     public ResponseEntity<ResponseCode> signIn(@RequestBody @Valid SignInDto signInDto) {
-        TokenDto tokenDto = userService.signIn(signInDto);
+        TokenDto tokenDto = userApplicationService.signIn(signInDto);
         String accessToken = tokenDto.getAccessToken();
         String refreshToken = tokenDto.getRefreshToken();
 

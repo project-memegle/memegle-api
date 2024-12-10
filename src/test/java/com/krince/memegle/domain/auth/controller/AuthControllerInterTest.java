@@ -2,7 +2,7 @@ package com.krince.memegle.domain.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
-import com.krince.memegle.domain.auth.service.AuthServiceImpl;
+import com.krince.memegle.domain.auth.service.AuthApplicationServiceImpl;
 import com.krince.memegle.global.constant.AuthenticationType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ class AuthControllerInterTest {
     MockMvc mockMvc;
 
     @MockBean
-    AuthServiceImpl authService;
+    AuthApplicationServiceImpl authService;
 
     @Autowired
     ObjectMapper objectMapper;

@@ -3,7 +3,6 @@ package com.krince.memegle.global.mail;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,10 +17,10 @@ import static org.mockito.Mockito.*;
 @Tag("unitTest")
 @DisplayName("이메일 서비스 테스트(EmailService)")
 @ExtendWith(MockitoExtension.class)
-class EmailServiceTest {
+class EmailDomainServiceTest {
 
     @InjectMocks
-    EmailServiceImpl emailService;
+    EmailDomainServiceImpl emailService;
 
     @Mock
     JavaMailSenderImpl javaMailSender;

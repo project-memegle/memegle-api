@@ -2,7 +2,7 @@ package com.krince.memegle.domain.auth.controller;
 
 import com.krince.memegle.domain.auth.dto.EmailAuthenticationCodeDto;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
-import com.krince.memegle.domain.auth.service.AuthService;
+import com.krince.memegle.domain.auth.service.AuthApplicationService;
 import com.krince.memegle.global.exception.UndevelopedApiException;
 import com.krince.memegle.global.response.ResponseCode;
 import com.krince.memegle.global.response.SuccessResponseCode;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController extends BaseAuthController {
 
-    private final AuthService authService;
+    private final AuthApplicationService authApplicationService;
 
     @Override
     @GetMapping("/email")
@@ -46,7 +46,7 @@ public class AuthController extends BaseAuthController {
     @Override
     @PostMapping("/email/send")
     public ResponseEntity<ResponseCode> sendAuthenticationMail(@RequestBody @Valid UserAuthenticationDto userAuthenticationDto) throws MessagingException {
-        authService.sendAuthenticationMail(userAuthenticationDto);
+        authApplicationService.sendAuthenticationMail(userAuthenticationDto);
 
         SuccessResponseCode responseCode = SuccessResponseCode.NO_CONTENT;
 
