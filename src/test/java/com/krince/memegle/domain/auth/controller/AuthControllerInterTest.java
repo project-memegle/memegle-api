@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.service.AuthApplicationServiceImpl;
 import com.krince.memegle.global.constant.AuthenticationType;
+import com.krince.memegle.global.exception.DuplicateUserException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("test")
+@Tag("unitTest")
 @WebMvcTest(value = AuthController.class)
 @DisplayName("인증 컨트롤러 테스트(AuthController)")
 class AuthControllerInterTest {
@@ -37,6 +39,7 @@ class AuthControllerInterTest {
     @Nested
     @DisplayName("중복 이메일 검증 테스트")
     @Tag("develop")
+    @Tag("target")
     class ValidateDuplicateMail {
 
         @Nested
@@ -44,16 +47,17 @@ class AuthControllerInterTest {
         class Success {
 
             @Test
-            @DisplayName("성공")
+            @WithMockUser
+            @DisplayName("중복된 이메일 없음")
             void success() throws Exception {
                 //given
                 String uri = "/apis/client/auth/email";
+                doNothing().when(authService).validateDuplicateMail("test@test.com");
 
-                //when
-
-                //then
+                //when, then
                 mockMvc.perform(get(uri)
-                                .contentType(APPLICATION_JSON))
+                                .contentType(APPLICATION_JSON)
+                                .param("email", "test@test.com"))
                         .andDo(print())
                         .andExpect(status().isNoContent());
             }
@@ -63,6 +67,22 @@ class AuthControllerInterTest {
         @DisplayName("실패")
         class Fail {
 
+            @Test
+            @WithMockUser
+            @DisplayName("중복된 이메일 있음")
+            void fail() throws Exception {
+                //given
+                String uri = "/apis/client/auth/email";
+                doThrow(DuplicateUserException.class).when(authService).validateDuplicateMail("test@test.com");
+
+                //when, then
+                mockMvc.perform(get(uri)
+                                .contentType(APPLICATION_JSON)
+                                .param("email", "test@test.com"))
+                        .andDo(print())
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.code").value(40002));
+            }
         }
 
 
