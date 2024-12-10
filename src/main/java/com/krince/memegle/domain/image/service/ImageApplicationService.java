@@ -8,7 +8,7 @@ import com.krince.memegle.global.dto.PageableDto;
 import java.io.IOException;
 import java.util.List;
 
-public interface ImageService {
+public interface ImageApplicationService {
 
     ViewImageDto getImage(Long imageId);
 

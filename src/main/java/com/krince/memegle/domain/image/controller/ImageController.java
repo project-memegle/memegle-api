@@ -3,7 +3,7 @@ package com.krince.memegle.domain.image.controller;
 import com.krince.memegle.domain.image.dto.ImageIdDto;
 import com.krince.memegle.domain.image.dto.RegistImageDto;
 import com.krince.memegle.domain.image.dto.ViewImageDto;
-import com.krince.memegle.domain.image.service.ImageService;
+import com.krince.memegle.domain.image.service.ImageApplicationService;
 import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
 import com.krince.memegle.global.exception.UndevelopedApiException;
@@ -31,7 +31,7 @@ import static org.springframework.http.MediaType.*;
 @RequiredArgsConstructor
 public class ImageController extends BaseImageController {
 
-    private final ImageService imageService;
+    private final ImageApplicationService imageApplicationService;
 
     @Override
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
@@ -49,7 +49,7 @@ public class ImageController extends BaseImageController {
                 .delimiter(delimiter)
                 .build();
 
-        imageService.registMemeImage(registImageDto);
+        imageApplicationService.registMemeImage(registImageDto);
 
         return ResponseEntity
                 .status(NO_CONTENT.getHttpCode())
@@ -59,7 +59,7 @@ public class ImageController extends BaseImageController {
     @Override
     @GetMapping("/{imageId}")
     public ResponseEntity<SuccessResponse<ViewImageDto>> getImage(@PathVariable Long imageId, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        ViewImageDto viewImageDto = imageService.getImage(imageId);
+        ViewImageDto viewImageDto = imageApplicationService.getImage(imageId);
         SuccessResponseCode responseCode = OK;
         SuccessResponse<ViewImageDto> responseBody = new SuccessResponse<>(responseCode, viewImageDto);
 
@@ -88,7 +88,7 @@ public class ImageController extends BaseImageController {
             @ModelAttribute @Valid PageableDto pageableDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        List<ViewImageDto> viewImageDtos = imageService.getCategoryImages(imageCategory, pageableDto);
+        List<ViewImageDto> viewImageDtos = imageApplicationService.getCategoryImages(imageCategory, pageableDto);
         SuccessResponseCode responseCode = OK;
         SuccessResponse<List<ViewImageDto>> responseBody = new SuccessResponse<>(responseCode, viewImageDtos);
 

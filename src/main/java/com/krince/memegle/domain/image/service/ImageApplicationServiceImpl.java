@@ -3,9 +3,9 @@ package com.krince.memegle.domain.image.service;
 import com.krince.memegle.domain.image.dto.RegistImageDto;
 import com.krince.memegle.domain.image.dto.ViewImageDto;
 import com.krince.memegle.domain.image.entity.Image;
-import com.krince.memegle.domain.image.repository.ImageRepository;
 import com.krince.memegle.domain.tag.entity.Tag;
-import com.krince.memegle.domain.tag.service.TagService;
+import com.krince.memegle.domain.tag.entity.TagMap;
+import com.krince.memegle.domain.tag.service.TagDomainService;
 import com.krince.memegle.global.aws.S3Service;
 import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
@@ -18,28 +18,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ImageServiceImpl implements ImageService {
+public class ImageApplicationServiceImpl implements ImageApplicationService {
 
-    private final ImageRepository imageRepository;
+    private final ImageDomainService imageDomainService;
+    private final TagDomainService tagDomainService;
     private final S3Service s3Service;
-    private final TagService tagService;
 
     @Override
     public ViewImageDto getImage(Long imageId) {
-        Image image = imageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
+        Image findImage = imageDomainService.getImageFromId(imageId);
 
-        return ViewImageDto.of(image);
+        return ViewImageDto.of(findImage);
     }
 
     @Override
     public List<ViewImageDto> getCategoryImages(ImageCategory imageCategory, PageableDto pageableDto) {
         Pageable pageable = PageUtil.createSortedPageable(pageableDto);
-        Page<Image> images = imageRepository.findAllByImageCategory(imageCategory, pageable);
+        Page<Image> images = imageDomainService.getPageableImagesFromImageCategory(imageCategory, pageable);
 
         return images.stream()
                 .map(ViewImageDto::of)
@@ -47,12 +46,19 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional
     public String registMemeImage(RegistImageDto registImageDto) throws IOException {
-        List<Tag> tagList = tagService.getTags(registImageDto.getTags(), registImageDto.getDelimiter());
+        String tags = registImageDto.getTags();
+        String delimiter = registImageDto.getDelimiter();
+        String[] tagNameList = tags.split(delimiter);
+        List<Tag> tagList = tagDomainService.getTagListFromTagNameList(tagNameList);
+
         String memeImageUrl = s3Service.uploadFile(registImageDto.getMemeImageFile());
         Image image = Image.of(memeImageUrl, registImageDto.getImageCategory());
-        Image savedImage = imageRepository.save(image);
-        tagList.forEach(tag -> tagService.registTagMap(savedImage, tag));
+        Image savedImage = imageDomainService.registImage(image);
+
+        List<TagMap> tagMapList = tagList.stream().map(tag -> TagMap.of(tag, savedImage)).toList();
+        tagDomainService.registTagMapList(tagMapList);
 
         return memeImageUrl;
     }

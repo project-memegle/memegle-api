@@ -14,7 +14,7 @@ import java.util.*;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class TagServiceImpl implements TagService {
+public class TagApplicationServiceImpl implements TagApplicationService {
 
     private final TagRepository tagRepository;
     private final TagMapRepository tagMapRepository;

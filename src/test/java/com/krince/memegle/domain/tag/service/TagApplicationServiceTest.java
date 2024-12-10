@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.*;
         @org.junit.jupiter.api.Tag("unitTest")
 })
 @DisplayName("태그 서비스 테스트(TagService)")
-class TagServiceTest {
+class TagApplicationServiceTest {
 
-    static TagServiceImpl tagService;
+    static TagApplicationServiceImpl tagService;
 
     static FakeTagRepository tagRepository;
 
@@ -29,7 +29,7 @@ class TagServiceTest {
     static void setUp() {
         tagRepository = new FakeTagRepository();
         tagMapRepository = new FakeTagMapRepository();
-        tagService = new TagServiceImpl(tagRepository, tagMapRepository);
+        tagService = new TagApplicationServiceImpl(tagRepository, tagMapRepository);
     }
 
     @AfterEach

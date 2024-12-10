@@ -9,8 +9,8 @@ import com.krince.memegle.domain.tag.repository.fake.FakeTagMapRepository;
 import com.krince.memegle.domain.tag.repository.fake.FakeTagRepository;
 import com.krince.memegle.domain.tag.repository.TagMapRepository;
 import com.krince.memegle.domain.tag.repository.TagRepository;
-import com.krince.memegle.domain.tag.service.fake.FakeTagService;
-import com.krince.memegle.domain.tag.service.TagService;
+import com.krince.memegle.domain.tag.service.TagDomainService;
+import com.krince.memegle.domain.tag.service.TagDomainServiceImpl;
 import com.krince.memegle.global.aws.fake.FakeAmazonS3;
 import com.krince.memegle.global.aws.fake.FakeS3Service;
 import com.krince.memegle.global.aws.S3Service;
@@ -18,6 +18,7 @@ import com.krince.memegle.global.constant.Criteria;
 import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
 import org.junit.jupiter.api.*;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,33 +27,34 @@ import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tags({
-        @Tag("test"),
-        @Tag("unitTest")
-})
-@DisplayName("이미지 서비스 테스트(ImageService)")
-class ImageServiceTest {
+@Tag("test")
+@Tag("unitTest")
+@DisplayName("이미지 어플리케이션 서비스 테스트(ImageApplicationService)")
+class ImageApplicationServiceTest {
 
-    static ImageService imageService;
+    static ImageApplicationService imageApplicationService;
 
     static ImageRepository imageRepository;
+    static TagRepository tagRepository;
+    static TagMapRepository tagMapRepository;
+
+    static ImageDomainService imageDomainService;
+    static TagDomainService tagDomainService;
 
     static S3Service s3Service;
-
-    static TagService tagService;
-
-    static TagRepository tagRepository;
-
-    static TagMapRepository tagMapRepository;
 
     @BeforeAll
     static void setUp() {
         imageRepository = new FakeImageRepository();
         tagRepository = new FakeTagRepository();
         tagMapRepository = new FakeTagMapRepository();
-        tagService = new FakeTagService(tagRepository, tagMapRepository);
+
+        imageDomainService = new ImageDomainServiceImpl(imageRepository);
+        tagDomainService = new TagDomainServiceImpl(tagRepository, tagMapRepository);
+
         s3Service = new FakeS3Service(new FakeAmazonS3(), "testBucket", "testRegion");
-        imageService = new ImageServiceImpl(imageRepository, s3Service, tagService);
+
+        imageApplicationService = new ImageApplicationServiceImpl(imageDomainService, tagDomainService, s3Service);
     }
 
     @AfterEach
@@ -78,7 +80,7 @@ class ImageServiceTest {
                 imageRepository.save(image);
 
                 //when
-                ViewImageDto viewImageDto = imageService.getImage(1L);
+                ViewImageDto viewImageDto = imageApplicationService.getImage(1L);
 
                 //then
                 assertThat(viewImageDto.getId()).isEqualTo(1L);
@@ -97,7 +99,7 @@ class ImageServiceTest {
                 imageRepository.save(image);
 
                 //when
-                Exception exception = assertThrows(Exception.class, () -> imageService.getImage(100L));
+                Exception exception = assertThrows(Exception.class, () -> imageApplicationService.getImage(100L));
 
                 //then
                 assertThat(exception).isInstanceOf(NoSuchElementException.class);
@@ -124,7 +126,7 @@ class ImageServiceTest {
                         .build();
 
                 //when
-                List<ViewImageDto> images = imageService.getCategoryImages(ImageCategory.MUDO, pageableDto);
+                List<ViewImageDto> images = imageApplicationService.getCategoryImages(ImageCategory.MUDO, pageableDto);
 
                 //then
                 assertThat(images.size()).isEqualTo(0);
@@ -144,10 +146,28 @@ class ImageServiceTest {
             @DisplayName("success")
             void registMemeImage() throws IOException {
                 //given
-                RegistImageDto registImageDto = RegistImageDto.builder().build();
+                com.krince.memegle.domain.tag.entity.Tag test1 = com.krince.memegle.domain.tag.entity.Tag.builder()
+                        .tagName("test1")
+                        .build();
+                tagRepository.save(test1);
+                com.krince.memegle.domain.tag.entity.Tag test2 = com.krince.memegle.domain.tag.entity.Tag.builder()
+                        .tagName("test2")
+                        .build();
+                tagRepository.save(test2);
+                MockMultipartFile mockFile = new MockMultipartFile(
+                        "testfile",
+                        "test-image.png",
+                        "image/png",
+                        "imageContent".getBytes()
+                );
+                RegistImageDto registImageDto = RegistImageDto.builder()
+                        .memeImageFile(mockFile)
+                        .tags("test1 test2")
+                        .delimiter(" ")
+                        .build();
 
                 //when
-                String imageURL = imageService.registMemeImage(registImageDto);
+                String imageURL = imageApplicationService.registMemeImage(registImageDto);
 
                 //then
                 assertThat(imageURL).isEqualTo("https://testImage.com");

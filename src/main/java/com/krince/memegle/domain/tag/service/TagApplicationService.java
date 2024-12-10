@@ -6,7 +6,7 @@ import com.krince.memegle.domain.tag.entity.TagMap;
 
 import java.util.List;
 
-public interface TagService {
+public interface TagApplicationService {
 
     List<Tag> getTags(String tags, String delimiter);
 

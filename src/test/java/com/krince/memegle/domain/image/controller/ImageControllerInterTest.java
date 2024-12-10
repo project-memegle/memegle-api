@@ -1,7 +1,7 @@
 package com.krince.memegle.domain.image.controller;
 
 import com.krince.memegle.domain.image.dto.ViewImageDto;
-import com.krince.memegle.domain.image.service.ImageServiceImpl;
+import com.krince.memegle.domain.image.service.ImageApplicationServiceImpl;
 import com.krince.memegle.global.constant.ImageCategory;
 import com.krince.memegle.global.dto.PageableDto;
 import org.junit.jupiter.api.*;
@@ -32,7 +32,7 @@ class ImageControllerInterTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ImageServiceImpl imageService;
+    private ImageApplicationServiceImpl imageService;
 
     @Tag("unitTest")
     @Nested
