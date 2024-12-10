@@ -88,4 +88,13 @@ public class UserDomainServiceImpl implements UserDomainService {
         return userRepository.findByEmail(email)
                 .orElseThrow(NoSuchElementException::new);
     }
+
+    @Override
+    public void validateDuplicateEmail(String email) {
+        boolean isUsedEmail = selfAuthenticationRepository.existsByEmail(email);
+
+        if (isUsedEmail) {
+            throw new DuplicateUserException();
+        }
+    }
 }

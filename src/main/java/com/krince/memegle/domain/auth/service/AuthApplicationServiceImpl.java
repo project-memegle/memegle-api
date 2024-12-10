@@ -2,7 +2,9 @@ package com.krince.memegle.domain.auth.service;
 
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.entity.EmailAuthentication;
+import com.krince.memegle.domain.user.service.UserDomainService;
 import com.krince.memegle.global.mail.EmailDomainService;
+import com.krince.memegle.global.validateor.CustomValidator;
 import com.krince.memegle.util.RandomCodeUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ public class AuthApplicationServiceImpl implements AuthApplicationService {
 
     private final AuthDomainService authDomainService;
     private final EmailDomainService emailDomainService;
+    private final UserDomainService userDomainService;
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -26,5 +29,11 @@ public class AuthApplicationServiceImpl implements AuthApplicationService {
 
         EmailAuthentication emailAuthentication = EmailAuthentication.of(userAuthenticationDto, authenticationCode);
         authDomainService.registEmailAuthentication(emailAuthentication);
+    }
+
+    @Override
+    public void validateDuplicateMail(String email) {
+        CustomValidator.validateEmailFormat(email);
+        userDomainService.validateDuplicateEmail(email);
     }
 }

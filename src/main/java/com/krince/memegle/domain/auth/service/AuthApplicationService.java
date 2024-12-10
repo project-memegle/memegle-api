@@ -7,4 +7,6 @@ import jakarta.mail.MessagingException;
 public interface AuthApplicationService {
 
     void sendAuthenticationMail(UserAuthenticationDto userAuthenticationDto) throws MessagingException;
+
+    void validateDuplicateMail(String email);
 }

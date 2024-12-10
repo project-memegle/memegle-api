@@ -118,6 +118,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
     }
 
+    //메서드의 인자가 올바르지 않음
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> illegalArgumentExceptionHandler(IllegalArgumentException exception) {
+        ExceptionResponseCode responseCode = INVALID_VALUE;
+        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode, exception.getMessage());
+
+        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ExceptionResponse> accessDeniedExceptionHandler(AccessDeniedException exception) {
         return generateExceptionResponse(exception, UNAUTHORIZED);
@@ -130,6 +139,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> exceptionHandler(Exception exception) {
+        printExceptionInfo(exception);
         ExceptionResponseCode responseCode = INTERNAL_SERVER_ERROR;
         InternalServerErrorExceptionResponse exceptionResponse = new InternalServerErrorExceptionResponse(responseCode);
 
