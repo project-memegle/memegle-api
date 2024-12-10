@@ -41,7 +41,6 @@ class UserDomainServiceTest {
     }
 
     @Tag("develop")
-    @Tag("target")
     @Nested
     @DisplayName("중복 이메일 유무 테스트(중복 이메일 없어야 통과)")
     class ValidateDuplicateEmail {

@@ -39,7 +39,6 @@ class AuthControllerInterTest {
     @Nested
     @DisplayName("중복 이메일 검증 테스트")
     @Tag("develop")
-    @Tag("target")
     class ValidateDuplicateMail {
 
         @Nested

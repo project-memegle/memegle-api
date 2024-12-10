@@ -72,7 +72,6 @@ class AuthApplicationServiceTest {
     }
 
     @Tag("develop")
-    @Tag("target")
     @Nested
     @DisplayName("이메일 중복 검증")
     class ValidateDuplicateMail {
