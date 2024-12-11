@@ -127,25 +127,28 @@ class AuthControllerTest {
     }
 
     @Nested
-    @DisplayName("중복 아이디 검증 테스트")
+    @DisplayName("중복 닉네임 검증 테스트")
     @Tag("develop")
-    class ValidateDuplicateLoginId {
+    @Tag("target")
+    class ValidateDuplicateNickname {
 
         @Nested
         @DisplayName("성공")
         class Success {
 
             @Test
+            @WithMockUser
             @DisplayName("성공")
             void success() throws Exception {
                 //given
-                String uri = "/apis/client/auth/login-id";
+                String uri = "/apis/client/auth/nickname";
 
                 //when
 
                 //then
                 mockMvc.perform(get(uri)
-                                .contentType(APPLICATION_JSON))
+                                .contentType(APPLICATION_JSON)
+                                .param("nickname", "nickname"))
                         .andDo(print())
                         .andExpect(status().isNoContent());
             }
@@ -161,9 +164,9 @@ class AuthControllerTest {
     }
 
     @Nested
-    @DisplayName("중복 닉네임 검증 테스트")
+    @DisplayName("중복 로그인 아이디 검증 테스트")
     @Tag("develop")
-    class ValidateDuplicateNickname {
+    class ValidateDuplicateLoginId {
 
         @Nested
         @DisplayName("성공")

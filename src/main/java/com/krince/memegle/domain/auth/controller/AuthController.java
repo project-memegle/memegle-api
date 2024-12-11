@@ -48,7 +48,9 @@ public class AuthController extends BaseAuthController {
     @Override
     @GetMapping("/nickname")
     public ResponseEntity<ResponseCode> validateDuplicateNickname(String nickname) {
-        throw new UndevelopedApiException();
+        authApplicationService.validateDuplicateNickname(nickname);
+
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override
