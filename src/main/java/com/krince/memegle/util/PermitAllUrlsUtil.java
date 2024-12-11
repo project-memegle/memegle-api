@@ -18,7 +18,8 @@ public class PermitAllUrlsUtil {
 
             "/apis/client/users/login-id",
 
-            "/apis/client/auth/email"
+            "/apis/client/auth/email",
+            "/apis/client/auth/login-id"
     );
 
     public static List<String> permitAllPostUrls = List.of(

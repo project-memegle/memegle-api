@@ -39,8 +39,10 @@ public class AuthController extends BaseAuthController {
 
     @Override
     @GetMapping("/login-id")
-    public ResponseEntity<ResponseCode> validateDuplicateLoginId(String loginId) {
-        throw new UndevelopedApiException();
+    public ResponseEntity<ResponseCode> validateDuplicateLoginId(@RequestParam String loginId) {
+        authApplicationService.validateDuplicateLoginId(loginId);
+
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override

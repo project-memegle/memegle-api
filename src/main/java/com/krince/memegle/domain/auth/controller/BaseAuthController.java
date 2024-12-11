@@ -36,7 +36,7 @@ public abstract class BaseAuthController {
     public abstract ResponseEntity<SuccessResponseCode> validateEmailAuthenticationCode(@RequestBody @Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto);
 
     @GetMapping("/login-id")
-    @Operation(summary = "아이디 중복 검증(미구현 api)", description = "해당 아이디가 이미 사용되는 아이디인지 검증합니다. 중복된 아이디라면 예외를 반환합니다.")
+    @Operation(summary = "아이디 중복 검증", description = "해당 아이디가 이미 사용되는 아이디인지 검증합니다. 중복된 아이디라면 예외를 반환합니다.")
     @ApiResponse(description = "아이디 중복 검증 검증 성공", responseCode = "20400", content = @Content)
     @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001", ref = "#/components/responses/40001")
     @ApiResponse(description = "중복된 회원", responseCode = "40002", ref = "#/components/responses/40002")
@@ -59,6 +59,7 @@ public abstract class BaseAuthController {
     @ApiResponse(description = "올바르지 않은 양식", responseCode = "40001", ref = "#/components/responses/40001")
     @ApiResponse(description = "중복된 회원", responseCode = "40002", ref = "#/components/responses/40002")
     @ApiResponse(description = "필수값 누락", responseCode = "40003", ref = "#/components/responses/40003")
+
     @ApiResponse(description = "알 수 없는 에러", responseCode = "50000", ref = "#/components/responses/50000")
     public abstract ResponseEntity<ResponseCode> sendAuthenticationMail(@RequestBody @Valid UserAuthenticationDto userAuthenticationDto) throws MessagingException;
 }

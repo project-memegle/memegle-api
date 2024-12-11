@@ -163,6 +163,7 @@ class AuthControllerTest {
     @Nested
     @DisplayName("중복 닉네임 검증 테스트")
     @Tag("develop")
+    @Tag("target")
     class ValidateDuplicateNickname {
 
         @Nested
@@ -170,16 +171,16 @@ class AuthControllerTest {
         class Success {
 
             @Test
+            @WithMockUser
             @DisplayName("성공")
             void success() throws Exception {
                 //given
-                String uri = "/apis/client/auth/nickname";
+                String uri = "/apis/client/auth/login-id";
 
-                //when
-
-                //then
+                //when, then
                 mockMvc.perform(get(uri)
-                                .contentType(APPLICATION_JSON))
+                                .contentType(APPLICATION_JSON)
+                                .param("loginId", "test@test.com"))
                         .andDo(print())
                         .andExpect(status().isNoContent());
             }
