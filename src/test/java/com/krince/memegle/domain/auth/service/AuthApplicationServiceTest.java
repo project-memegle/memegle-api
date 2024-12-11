@@ -157,7 +157,6 @@ class AuthApplicationServiceTest {
     }
 
     @Tag("develop")
-    @Tag("target")
     @Nested
     @DisplayName("메서드")
     class ChangeBookmarkState {

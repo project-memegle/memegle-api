@@ -129,7 +129,6 @@ class AuthControllerTest {
     @Nested
     @DisplayName("중복 닉네임 검증 테스트")
     @Tag("develop")
-    @Tag("target")
     class ValidateDuplicateNickname {
 
         @Nested
