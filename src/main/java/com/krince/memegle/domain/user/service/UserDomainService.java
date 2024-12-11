@@ -24,4 +24,6 @@ public interface UserDomainService {
     void deleteSelfAuthenticationFromUserId(Long userId);
 
     User getUserFromEmail(String email);
+
+    void validateDuplicateEmail(String email);
 }

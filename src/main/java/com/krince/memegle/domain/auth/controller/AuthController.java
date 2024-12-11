@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.krince.memegle.global.response.SuccessResponseCode.*;
+
 @RestController
 @RequestMapping("/apis/client/auth")
 @RequiredArgsConstructor
@@ -21,8 +23,10 @@ public class AuthController extends BaseAuthController {
 
     @Override
     @GetMapping("/email")
-    public ResponseEntity<ResponseCode> validateDuplicateMail(@RequestParam String email) {
-        throw new UndevelopedApiException();
+    public ResponseEntity<SuccessResponseCode> validateDuplicateMail(@RequestParam String email) {
+        authApplicationService.validateDuplicateMail(email);
+
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override

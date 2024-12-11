@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface SelfAuthenticationRepository extends JpaRepository<SelfAuthentication, Long> {
 
+    boolean existsByEmail(String email);
+
     void deleteByUserId(Long userId);
 }
