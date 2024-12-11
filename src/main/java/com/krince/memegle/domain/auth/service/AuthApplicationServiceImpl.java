@@ -1,5 +1,6 @@
 package com.krince.memegle.domain.auth.service;
 
+import com.krince.memegle.domain.auth.dto.EmailAuthenticationCodeDto;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.entity.EmailAuthentication;
 import com.krince.memegle.domain.user.service.UserDomainService;
@@ -35,5 +36,10 @@ public class AuthApplicationServiceImpl implements AuthApplicationService {
     public void validateDuplicateMail(String email) {
         CustomValidator.validateEmailFormat(email);
         userDomainService.validateDuplicateEmail(email);
+    }
+
+    @Override
+    public void validateEmailAuthenticationCode(EmailAuthenticationCodeDto emailAuthenticationCodeDto) {
+        authDomainService.validateAuthenticationCode(emailAuthenticationCodeDto);
     }
 }

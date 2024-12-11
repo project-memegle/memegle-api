@@ -33,7 +33,7 @@ public class FakeEmailAuthenticationRepository implements EmailAuthenticationRep
 
     @Override
     public Optional<EmailAuthentication> findById(String s) {
-        return Optional.empty();
+        return Optional.ofNullable(store.get(s));
     }
 
     @Override
