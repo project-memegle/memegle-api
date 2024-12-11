@@ -14,11 +14,11 @@ import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.DuplicateUserException;
 import com.krince.memegle.global.mail.EmailDomainService;
 import com.krince.memegle.global.mail.fake.FakeEmailDomainService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("test")
