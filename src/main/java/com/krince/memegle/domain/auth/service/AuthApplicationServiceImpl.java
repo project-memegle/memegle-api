@@ -42,4 +42,9 @@ public class AuthApplicationServiceImpl implements AuthApplicationService {
     public void validateEmailAuthenticationCode(EmailAuthenticationCodeDto emailAuthenticationCodeDto) {
         authDomainService.validateAuthenticationCode(emailAuthenticationCodeDto);
     }
+
+    @Override
+    public void validateDuplicateLoginId(String loginId) {
+        userDomainService.validateDuplicateUser(loginId);
+    }
 }

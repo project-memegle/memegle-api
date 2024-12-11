@@ -13,4 +13,6 @@ public interface AuthApplicationService {
     void validateDuplicateMail(String email);
 
     void validateEmailAuthenticationCode(@Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto);
+
+    void validateDuplicateLoginId(String loginId);
 }

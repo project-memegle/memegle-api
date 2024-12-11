@@ -9,9 +9,6 @@ import com.krince.memegle.global.exception.NoSuchAuthenticationCodeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AuthDomainServiceImpl implements AuthDomainService {
