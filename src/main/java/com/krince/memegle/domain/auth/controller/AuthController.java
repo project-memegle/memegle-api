@@ -31,8 +31,10 @@ public class AuthController extends BaseAuthController {
 
     @Override
     @PostMapping("/email")
-    public ResponseEntity<ResponseCode> validateEmailAuthenticationCode(@RequestBody @Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto) {
-        throw new UndevelopedApiException();
+    public ResponseEntity<SuccessResponseCode> validateEmailAuthenticationCode(@RequestBody @Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto) {
+        authApplicationService.validateEmailAuthenticationCode(emailAuthenticationCodeDto);
+
+        return ResponseEntity.status(NO_CONTENT.getHttpCode()).build();
     }
 
     @Override

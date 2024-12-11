@@ -5,7 +5,6 @@ import java.util.List;
 public class PermitAllUrlsUtil {
 
     public static List<String> permitAllUrls = List.of(
-            "/apis/client/auth/email/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/favicon.ico"
@@ -13,15 +12,22 @@ public class PermitAllUrlsUtil {
 
     public static List<String> permitAllGetUrls = List.of(
             "/apis/client/categories",
+
             "/apis/client/images/{imageId}",
             "/apis/client/images/category",
-            "/apis/client/users/login-id"
+
+            "/apis/client/users/login-id",
+
+            "/apis/client/auth/email"
     );
 
     public static List<String> permitAllPostUrls = List.of(
             "/apis/client/users/sign/up",
             "/apis/client/users/sign/in",
-            "/apis/client/users/login-id"
+            "/apis/client/users/login-id",
+
+            "/apis/client/auth/email",
+            "/apis/client/auth/email/send"
     );
 
     public static List<String> permitAllPutUrls = List.of(

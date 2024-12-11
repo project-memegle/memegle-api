@@ -1,6 +1,7 @@
 package com.krince.memegle.domain.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.krince.memegle.domain.auth.dto.EmailAuthenticationCodeDto;
 import com.krince.memegle.domain.auth.dto.UserAuthenticationDto;
 import com.krince.memegle.domain.auth.service.AuthApplicationServiceImpl;
 import com.krince.memegle.global.constant.AuthenticationType;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("unitTest")
 @WebMvcTest(value = AuthController.class)
 @DisplayName("인증 컨트롤러 테스트(AuthController)")
-class AuthControllerInterTest {
+class AuthControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -85,6 +86,45 @@ class AuthControllerInterTest {
         }
 
 
+    }
+
+    @Tag("develop")
+    @Tag("target")
+    @Nested
+    @DisplayName("이메일 인증코드 검증")
+    class ValidateEmailAuthenticationCode {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @WithMockUser
+            @DisplayName("success")
+            void success() throws Exception {
+                //given
+                String uri = "/apis/client/auth/email";
+                EmailAuthenticationCodeDto emailAuthenticationCodeDto = EmailAuthenticationCodeDto.builder()
+                        .email("test@test.com")
+                        .authenticationCode("1Q2W3E")
+                        .authenticationType(AuthenticationType.ID)
+                        .build();
+                doNothing().when(authService).validateEmailAuthenticationCode(any());
+
+                //when, then
+                mockMvc.perform(post(uri)
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(emailAuthenticationCodeDto))
+                                .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+        }
     }
 
     @Nested
