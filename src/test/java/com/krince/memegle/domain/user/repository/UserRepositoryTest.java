@@ -12,7 +12,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -181,7 +180,7 @@ class UserRepositoryTest {
 
     @Nested
     @DisplayName("이메일로 회원 정보 조회")
-    class FindUserByEmail {
+    class FindByEmail {
 
         @Nested
         @DisplayName("성공")
@@ -199,7 +198,7 @@ class UserRepositoryTest {
                 selfAuthenticationRepository.save(selfAuthentication);
 
                 //when
-                Optional<User> userByEmail = userRepository.findUserByEmail("test@test.com");
+                Optional<User> userByEmail = userRepository.findByEmail("test@test.com");
 
                 //then
                 assertThat(userByEmail.isPresent()).isTrue();
@@ -213,7 +212,7 @@ class UserRepositoryTest {
                 String email = "test@test.com";
 
                 //when
-                Optional<User> userByEmail = userRepository.findUserByEmail(email);
+                Optional<User> userByEmail = userRepository.findByEmail(email);
 
                 //then
                 assertThat(userByEmail.isPresent()).isFalse();

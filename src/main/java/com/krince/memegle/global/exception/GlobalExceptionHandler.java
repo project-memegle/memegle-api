@@ -1,8 +1,7 @@
 package com.krince.memegle.global.exception;
 
 import com.krince.memegle.global.response.ExceptionResponse;
-import com.krince.memegle.global.response.customexception.*;
-import com.krince.memegle.global.response.ResponseCode;
+import com.krince.memegle.global.response.ExceptionResponseCode;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +17,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.krince.memegle.global.response.ResponseCode.*;
+import static com.krince.memegle.global.response.ExceptionResponseCode.*;
 
 @RestControllerAdvice
 @Slf4j
@@ -37,8 +37,8 @@ public class GlobalExceptionHandler {
                     return fieldName + ": " + message;
                 })
                 .collect(Collectors.joining());
-        ResponseCode responseCode = INVALID_VALUE;
-        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode, exceptionMessage);
+        ExceptionResponseCode responseCode = INVALID_VALUE;
+        ExceptionResponse exceptionResponse = new ExceptionResponse(responseCode, exceptionMessage);
 
         printExceptionInfo(exception);
 
@@ -47,10 +47,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ExceptionResponse> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException exception) {
-        ResponseCode responseCode = INVALID_VALUE;
-        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, INVALID_VALUE);
     }
 
     //request 타입 불일치 예외
@@ -62,60 +59,45 @@ public class GlobalExceptionHandler {
     // 올바르지 않은 request body
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException exception) {
-        ResponseCode responseCode = INVALID_VALUE;
-        InvalidValueExceptionResponse exceptionResponse = new InvalidValueExceptionResponse(responseCode);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, INVALID_VALUE);
     }
 
     //중복 회원 등록 시도 예외
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ExceptionResponse> duplicateUserExceptionHandler(DuplicateUserException exception) {
-        ResponseCode responseCode = DUPLICATE_USER;
-        DuplicateUserExceptionResponse exceptionResponse = new DuplicateUserExceptionResponse(responseCode);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, DUPLICATE_USER);
     }
 
     //중복된 리소스 접근 시도
     @ExceptionHandler(DuplicationResourceException.class)
     public ResponseEntity<ExceptionResponse> DuplicationResourceExceptionHandler(DuplicationResourceException exception) {
-        ResponseCode responseCode = DUPLICATE_RESOURCE;
-        DuplicateResourceExceptionResponse exceptionResponse = new DuplicateResourceExceptionResponse(responseCode, exception.getMessage());
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, DUPLICATE_RESOURCE);
     }
 
     //필수 파라미터 누락 예외
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ExceptionResponse> missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException exception) {
         String exceptionMessage = exception.getParameterName() + "은 필수 입력값입니다.";
-        ResponseCode responseCode = BAD_REQUEST;
-        BadRequestExceptionResponse exceptionResponse = new BadRequestExceptionResponse(responseCode, exceptionMessage);
 
-        printExceptionInfo(exception);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateMessageExceptionResponse(exception, BAD_REQUEST, exceptionMessage);
     }
 
     //비밀번호 오류
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> badCredentialsExceptionHandler(BadCredentialsException exception) {
-        ResponseCode responseCode = INVALID_PASSWORD;
-        InvalidPasswordExceptionResponse exceptionResponse = new InvalidPasswordExceptionResponse(responseCode, responseCode.getMessage());
-
-        printExceptionInfo(exception);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, INVALID_PASSWORD);
     }
 
     //없는 리소스 조회 시도 예외
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ExceptionResponse> noSuchElementExceptionHandler(NoSuchElementException exception) {
-        ResponseCode responseCode = NOT_FOUND_RESOURCE;
-        NotFoundResourceExceptionResponse exceptionResponse = new NotFoundResourceExceptionResponse(responseCode);
+        return generateExceptionResponse(exception, NOT_FOUND_RESOURCE);
+    }
 
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+    //메서드의 인자가 올바르지 않음
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> illegalArgumentExceptionHandler(IllegalArgumentException exception) {
+        return generateExceptionResponse(exception, INVALID_VALUE);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -130,43 +112,42 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> exceptionHandler(Exception exception) {
-        ResponseCode responseCode = INTERNAL_SERVER_ERROR;
-        InternalServerErrorExceptionResponse exceptionResponse = new InternalServerErrorExceptionResponse(responseCode);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UndevelopedApiException.class)
     private ResponseEntity<ExceptionResponse> undevelopedApiExceptionHandler(Exception exception) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(IMPLEMENTED);
-
-        return ResponseEntity.status(IMPLEMENTED.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, IMPLEMENTED);
     }
 
     @ExceptionHandler(InvalidAuthenticationCodeException.class)
     private ResponseEntity<ExceptionResponse> invalidAuthenticationCodeExceptionHandler(Exception exception) {
-        ResponseCode responseCode = INVALID_AUTHENTICATION_CODE;
-        ExceptionResponse exceptionResponse = new ExceptionResponse(responseCode);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, INVALID_AUTHENTICATION_CODE);
     }
 
     @ExceptionHandler(NoSuchAuthenticationCodeException.class)
     private ResponseEntity<ExceptionResponse> noSuchAuthenticationCodeExceptionHandler(Exception exception) {
-        ResponseCode responseCode = NO_SUCH_AUTHENTICATION_CODE;
-        ExceptionResponse exceptionResponse = new ExceptionResponse(responseCode);
-
-        return ResponseEntity.status(responseCode.getHttpCode()).body(exceptionResponse);
+        return generateExceptionResponse(exception, NO_SUCH_AUTHENTICATION_CODE);
     }
 
-    private ResponseEntity<ExceptionResponse> generateExceptionResponse(Exception exception, ResponseCode status) {
+    private ResponseEntity<ExceptionResponse> generateExceptionResponse(Exception exception, ExceptionResponseCode status) {
         printExceptionInfo(exception);
-        ExceptionResponse exceptionResponse = new ExceptionResponse(status);
+
+        String exceptionMessage = getExistExceptionMessage(exception, status);
+        ExceptionResponse exceptionResponse = new ExceptionResponse(status, exceptionMessage);
 
         return ResponseEntity.status(status.getHttpCode()).body(exceptionResponse);
     }
 
-    private ResponseEntity<ExceptionResponse> generateMessageExceptionResponse(Exception exception, ResponseCode status, String exceptionMessage) {
+    private String getExistExceptionMessage(Exception exception, ExceptionResponseCode status) {
+        if (Objects.isNull(exception.getMessage())) {
+            return status.getMessage();
+        }
+
+        return exception.getMessage();
+    }
+
+    private ResponseEntity<ExceptionResponse> generateMessageExceptionResponse(Exception exception, ExceptionResponseCode status, String exceptionMessage) {
         printExceptionInfo(exception);
         ExceptionResponse exceptionResponse = new ExceptionResponse(status, exceptionMessage);
 
