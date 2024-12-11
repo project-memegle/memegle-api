@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("커스텀 검증 클래스(CustomValidator)")
 class CustomValidatorTest {
 
-    @Tag("develop")
     @Nested
     @DisplayName("이메일 형식 검증")
     class ValidateEmailFormat {

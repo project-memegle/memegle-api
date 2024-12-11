@@ -74,7 +74,6 @@ class AuthApplicationServiceTest {
         authApplicationService.sendAuthenticationMail(authenticationDto);
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("이메일 중복 검증")
     class ValidateDuplicateMail {
@@ -115,7 +114,6 @@ class AuthApplicationServiceTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("메서드")
     class validateDuplicateLoginId {
@@ -156,7 +154,6 @@ class AuthApplicationServiceTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("메서드")
     class ChangeBookmarkState {

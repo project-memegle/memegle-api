@@ -39,7 +39,6 @@ class AuthControllerTest {
 
     @Nested
     @DisplayName("중복 이메일 검증 테스트")
-    @Tag("develop")
     class ValidateDuplicateMail {
 
         @Nested
@@ -88,7 +87,6 @@ class AuthControllerTest {
 
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("이메일 인증코드 검증")
     class ValidateEmailAuthenticationCode {
@@ -128,7 +126,6 @@ class AuthControllerTest {
 
     @Nested
     @DisplayName("중복 닉네임 검증 테스트")
-    @Tag("develop")
     class ValidateDuplicateNickname {
 
         @Nested
@@ -164,7 +161,6 @@ class AuthControllerTest {
 
     @Nested
     @DisplayName("중복 로그인 아이디 검증 테스트")
-    @Tag("develop")
     class ValidateDuplicateLoginId {
 
         @Nested
