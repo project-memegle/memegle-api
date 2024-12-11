@@ -89,7 +89,6 @@ class AuthControllerTest {
     }
 
     @Tag("develop")
-    @Tag("target")
     @Nested
     @DisplayName("이메일 인증코드 검증")
     class ValidateEmailAuthenticationCode {
