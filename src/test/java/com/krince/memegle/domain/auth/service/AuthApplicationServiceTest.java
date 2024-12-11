@@ -13,8 +13,10 @@ import com.krince.memegle.domain.user.service.UserDomainService;
 import com.krince.memegle.domain.user.service.UserDomainServiceImpl;
 import com.krince.memegle.global.constant.AuthenticationType;
 import com.krince.memegle.global.exception.DuplicateUserException;
+import com.krince.memegle.global.exception.DuplicationResourceException;
 import com.krince.memegle.global.mail.EmailDomainService;
 import com.krince.memegle.global.mail.fake.FakeEmailDomainService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,7 +74,6 @@ class AuthApplicationServiceTest {
         authApplicationService.sendAuthenticationMail(authenticationDto);
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("이메일 중복 검증")
     class ValidateDuplicateMail {
@@ -113,7 +114,6 @@ class AuthApplicationServiceTest {
         }
     }
 
-    @Tag("develop")
     @Nested
     @DisplayName("메서드")
     class validateDuplicateLoginId {
@@ -150,6 +150,46 @@ class AuthApplicationServiceTest {
 
                 //when, then
                 assertThrows(DuplicateUserException.class, () -> authApplicationService.validateDuplicateLoginId("test@test.com"));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("메서드")
+    class ChangeBookmarkState {
+
+        @Nested
+        @DisplayName("성공")
+        class Success {
+
+            @Test
+            @DisplayName("중복되는 닉네임이 없으면 예외를 반환하지 않는다.")
+            void success() {
+                //given
+                String nickname = "nickname";
+
+                //when, then
+                assertDoesNotThrow(() -> authApplicationService.validateDuplicateNickname(nickname));
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class Fail {
+
+            @Test
+            @DisplayName("success")
+            void success() {
+                //given
+                User user = User.builder()
+                        .loginId("test@test.com")
+                        .password("password")
+                        .nickname("nickname")
+                        .build();
+                userRepository.save(user);
+
+                //when, then
+                assertThrows(DuplicationResourceException.class, () -> authApplicationService.validateDuplicateNickname("nickname"));
             }
         }
     }

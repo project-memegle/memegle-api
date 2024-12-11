@@ -15,4 +15,6 @@ public interface AuthApplicationService {
     void validateEmailAuthenticationCode(@Valid EmailAuthenticationCodeDto emailAuthenticationCodeDto);
 
     void validateDuplicateLoginId(String loginId);
+
+    void validateDuplicateNickname(String nickname);
 }

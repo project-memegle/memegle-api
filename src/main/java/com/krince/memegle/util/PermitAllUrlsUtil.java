@@ -19,7 +19,8 @@ public class PermitAllUrlsUtil {
             "/apis/client/users/login-id",
 
             "/apis/client/auth/email",
-            "/apis/client/auth/login-id"
+            "/apis/client/auth/login-id",
+            "/apis/client/auth/nickname"
     );
 
     public static List<String> permitAllPostUrls = List.of(

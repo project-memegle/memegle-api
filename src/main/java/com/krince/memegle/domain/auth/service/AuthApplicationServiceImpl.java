@@ -47,4 +47,9 @@ public class AuthApplicationServiceImpl implements AuthApplicationService {
     public void validateDuplicateLoginId(String loginId) {
         userDomainService.validateDuplicateUser(loginId);
     }
+
+    @Override
+    public void validateDuplicateNickname(String nickname) {
+        userDomainService.validateDuplicateNickname(nickname);
+    }
 }
