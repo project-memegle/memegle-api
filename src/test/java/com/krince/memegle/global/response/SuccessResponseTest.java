@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
+import static com.krince.memegle.global.response.SuccessResponseCode.*;
 import static org.assertj.core.api.Assertions.*;
 
 @Tags({
@@ -19,7 +20,7 @@ class SuccessResponseTest {
     void createTest() {
         //given
         String results = "testResultMessage";
-        ResponseCode responseCode = ResponseCode.OK;
+        SuccessResponseCode responseCode = OK;
 
         //when
         SuccessResponse<String> successResponse = new SuccessResponse<>(responseCode, results);

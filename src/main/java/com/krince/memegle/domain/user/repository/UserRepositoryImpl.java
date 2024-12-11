@@ -37,7 +37,7 @@ public class UserRepositoryImpl implements UserQueryRepository {
         return Optional.ofNullable(queryResult);
     }
 
-    public Optional<User> findUserByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         User user = queryFactory
                 .select(this.user)
                 .from(this.user)

@@ -101,7 +101,15 @@ public class FakeSelfAuthenticationRepository implements SelfAuthenticationRepos
 
     @Override
     public <S extends SelfAuthentication> S save(S entity) {
-        return null;
+        SelfAuthentication selfAuthentication = SelfAuthentication.builder()
+                .id(++sequence)
+                .email(entity.getEmail())
+                .userId(entity.getUserId())
+                .build();
+
+        store.put(sequence, selfAuthentication);
+
+        return (S) selfAuthentication;
     }
 
     @Override
@@ -167,6 +175,12 @@ public class FakeSelfAuthenticationRepository implements SelfAuthenticationRepos
     @Override
     public Page<SelfAuthentication> findAll(Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return store.values().stream()
+                .anyMatch(selfAuthentication -> selfAuthentication.getEmail().equals(email));
     }
 
     @Override
